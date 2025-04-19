@@ -3,6 +3,7 @@ import datetime
 from __future__ import annotations
 from app.utils import uuid_pk
 from app.db.base import Base
+from sqlalchemy.sql import func
 from sqlalchemy import (
     String,
     DateTime,
@@ -12,7 +13,6 @@ from sqlalchemy.orm import (
     mapped_column,
     relationship,
 )
-from sqlalchemy.sql import func
 
 
 class User(Base):
