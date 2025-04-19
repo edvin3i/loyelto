@@ -1,8 +1,10 @@
+from __future__ import annotations
 import uuid
 import datetime
-from __future__ import annotations
 from app.utils import uuid_pk
 from app.db.base import Base
+
+# from app.models import Wallet
 from sqlalchemy.sql import func
 from sqlalchemy import (
     String,

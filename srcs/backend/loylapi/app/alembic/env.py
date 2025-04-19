@@ -13,6 +13,7 @@ fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
 
+
 def run_migrations_offline() -> None:
     """
     Migration without connection to DB
@@ -29,6 +30,7 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+
 async def run_migrations_online() -> None:
     """
     Migrations over asyncio engine
@@ -39,7 +41,7 @@ async def run_migrations_online() -> None:
     )
     async with connectable.connect() as connection:
         await connection.run_sync(
-            lambda sync_conn:context.configure(
+            lambda sync_conn: context.configure(
                 connection=sync_conn,
                 target_metadata=target_metadata,
                 compare_type=True,
@@ -49,10 +51,12 @@ async def run_migrations_online() -> None:
             await connection.run_sync(lambda sync_conn: context.run_migrations())
     await connectable.dispose()
 
+
 def run() -> None:
     if context.is_offline_mode():
         run_migrations_offline()
     else:
         asyncio.run(run_migrations_online())
+
 
 run()

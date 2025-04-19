@@ -1,8 +1,10 @@
+from __future__ import annotations
 import uuid
 import datetime
 from app.db.base import Base
+
+# from app.models import Token
 from app.utils import uuid_pk
-from __future__ import annotations
 from sqlalchemy.sql import func
 from sqlalchemy import (
     String,

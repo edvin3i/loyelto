@@ -1,7 +1,8 @@
-import uuid
 from __future__ import annotations
+import uuid
 from app.db.base import Base
-from app.models.business import Business
+
+# from app.models import Business
 from app.utils import uuid_pk
 from decimal import Decimal
 from sqlalchemy import (
@@ -26,7 +27,7 @@ class Token(Base):
     symbol: Mapped[str] = mapped_column(String(6))
     decimals: Mapped[int] = mapped_column(Integer, default=2)
     business_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey(Business.id, ondelete="SET NULL")
+        ForeignKey("businesses.id", ondelete="SET NULL")
     )
     settlement_token: Mapped[bool] = mapped_column(
         Boolean, default=False
@@ -36,6 +37,6 @@ class Token(Base):
     min_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 6), nullable=True)
     max_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 6), nullable=True)
 
-    business: Mapped[Business] = relationship(
+    business: Mapped["Business"] = relationship(
         back_populates="loyalty_token", lazy="noload"
     )
