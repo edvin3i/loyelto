@@ -33,5 +33,5 @@ class Business(Base):
     loyalty_token: Mapped["Token"] = relationship(
         back_populates="business",
         uselist=False,
-        lazy="joined",
+        lazy="selectin",
     )

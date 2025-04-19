@@ -3,8 +3,6 @@ import uuid
 import datetime
 from app.utils import uuid_pk
 from app.db.base import Base
-
-# from app.models import Wallet
 from sqlalchemy.sql import func
 from sqlalchemy import (
     String,
@@ -31,4 +29,4 @@ class User(Base):
         nullable=False,
     )
 
-    wallets: Mapped[list["Wallet"]] = relationship(back_populates="user", lazy="noload")
+    wallets: Mapped[list["Wallet"]] = relationship(back_populates="user", lazy="selectin")

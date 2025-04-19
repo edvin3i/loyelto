@@ -38,5 +38,5 @@ class Token(Base):
     max_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 6), nullable=True)
 
     business: Mapped["Business"] = relationship(
-        back_populates="loyalty_token", lazy="noload"
+        back_populates="loyalty_token", lazy="selectin"
     )
