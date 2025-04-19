@@ -210,3 +210,4 @@ data/
 migrations/
 
 .DS_Store
+*.db
