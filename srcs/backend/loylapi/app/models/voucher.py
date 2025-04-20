@@ -37,7 +37,7 @@ class VoucherTemplate(Base):
     price_points: Mapped[int] = mapped_column(BigInteger)
     supply: Mapped[int]
     expires_at: Mapped[datetime.datetime | None]
-    collection_mint: Mapped[str | None] = mapped_column(String(64))
+    collection_mint: Mapped[str | None] = mapped_column(String(64), unique=True)
 
     vouchers: Mapped[list["VoucherNFT"]] = relationship(
         back_populates="template",
@@ -52,7 +52,7 @@ class VoucherTemplate(Base):
 
 class VoucherNFT(Base):
     __tablename__ = "voucher_nfts"
-    __taable_args__ = (
+    __table_args__ = (
         UniqueConstraint("template_id", "asset_id", name="uq_template_asset"),
     )
 
@@ -71,8 +71,8 @@ class VoucherNFT(Base):
     )
     redeemed_at: Mapped[datetime.datetime | None] = mapped_column(
         DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False,
+        nullable=True,
+        default=None,
     )
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
