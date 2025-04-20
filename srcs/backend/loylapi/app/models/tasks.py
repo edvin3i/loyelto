@@ -2,7 +2,7 @@ from __future__ import annotations
 import uuid, enum, datetime
 from app.db.base import Base
 from app.utils import uuid_pk
-from sqlalchemy import String, JSON, Enum as PgEnum, DateTime
+from sqlalchemy import BigInteger, String, JSON, Enum as PgEnum, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
@@ -19,13 +19,15 @@ class CeleryTaskLog(Base):
 
     id: Mapped[uuid.UUID] = uuid_pk()
     task_id: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    queue: Mapped[str] = mapped_column(String(32))
+    queue: Mapped[str] = mapped_column(String(32), index=True)
     status: Mapped[TaskStatus] = mapped_column(
-        PgEnum(TaskStatus, name="task_status_enum")
+        PgEnum(TaskStatus, name="task_status_enum"),
+        index=True,
     )
     payload: Mapped[dict | None] = mapped_column(JSON)
     result: Mapped[str | None] = mapped_column(String(32))
-    created_at: Mapped[datetime.datetime] = mapped_column(
+    # duration: Mapped[datetime.timedelta] = mapped_column() # maybe add later
+    created_at: Mapped[BigInteger] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
