@@ -24,7 +24,8 @@ from sqlalchemy.orm import (
 class Token(Base):
     __tablename__ = "tokens"
     __table_args__ = (
-        CheckConstraint("min_rate <= max_rate"),
+        CheckConstraint("min_rate <= max_rate", name="check_min_le_max_rate"),
+        CheckConstraint("decimals BETWEEN 0 AND 9", name="check_decimals_range"),
     )
 
     id: Mapped[uuid.UUID] = uuid_pk()
