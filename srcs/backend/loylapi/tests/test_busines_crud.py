@@ -5,11 +5,15 @@ from app.models import Business, Token
 
 @pytest.mark.anyio
 async def test_create_business(async_session):
-    biz = Business(
-        name="Bondar Coffee",
-        slug="bondar-coffee",
-        logo_url="https://example.com/logo.png",
-        owner_email="owner@Bondar.com",
+    biz = Business(name="Bondar Coffee",
+                   slug="bondar-coffee",
+                   logo_url="https://example.com/logo.png",
+                   owner_email="owner@iBondar.pro",
+                   description="Best coffee in town",
+                   country="France",
+                   city="Paris",
+                   address="1 Rue de Café",
+                   zip_code="75000",
     )
     async_session.add(biz)
     await async_session.commit()
@@ -20,20 +24,32 @@ async def test_create_business(async_session):
     biz_from_db = result.scalar_one()
 
     assert biz_from_db.name == "Bondar Coffee"
-    assert biz_from_db.owner_email == "owner@Bondar.com"
+    assert biz_from_db.owner_email == "owner@iBondar.pro"
 
 
 @pytest.mark.anyio
 async def test_business_unique_constraints(async_session):
     b1 = Business(
-        name="PizzaCo",
-        slug="pizza-co",
-        owner_email="p1@example.com",
+        name="Bondar Coffee",
+        slug="bondar-coffee",
+        logo_url="https://example.com/logo.png",
+        owner_email="owner@iBondar.pro",
+        description="Best coffee in town",
+        country="France",
+        city="Paris",
+        address="1 Rue de Café",
+        zip_code="75000",
     )
     b2 = Business(
-        name="PizzaCo",     # name dublicat
-        slug="pizza-co-2",
-        owner_email="p2@example.com",
+        name="Bondar Coffee",
+        slug="sveta-pizza",
+        logo_url="https://example.com/logo.png",
+        owner_email="owner@svydrina.com",
+        description="Best pizza in town",
+        country="France",
+        city="Viljuif",
+        address="2 Rue de Pizza",
+        zip_code="93130",
     )
     async_session.add(b1)
     await async_session.commit()
@@ -45,10 +61,15 @@ async def test_business_unique_constraints(async_session):
 
 @pytest.mark.anyio
 async def test_business_loyalty_token_relationship(async_session):
-    biz = Business(
-        name="BurgerBar",
-        slug="burger-bar",
-        owner_email="bb@example.com",
+    biz = Business(name="Bondar Coffee",
+                   slug="bondar-coffee",
+                   logo_url="https://example.com/logo.png",
+                   owner_email="owner@iBondar.pro",
+                   description="Best coffee in town",
+                   country="France",
+                   city="Paris",
+                   address="1 Rue de Café",
+                   zip_code="75000",
     )
     async_session.add(biz)
     await async_session.commit()

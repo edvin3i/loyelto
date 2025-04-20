@@ -29,4 +29,6 @@ class User(Base):
         nullable=False,
     )
 
-    wallets: Mapped[list["Wallet"]] = relationship(back_populates="user", lazy="selectin")
+    wallets: Mapped[list["Wallet"]] = relationship(
+        back_populates="user", lazy="selectin"
+    )

@@ -3,21 +3,18 @@ import uuid, datetime
 from app.db.base import Base
 from app.models import Wallet
 from app.utils import uuid_pk
-from decimal import Decimal
-from sqlalchemy import (
-    ForeignKey, UniqueConstraint, BigInteger, DateTime
-)
-from sqlalchemy.orm import (
-    Mapped, mapped_column, relationship
-)
+from sqlalchemy import ForeignKey, UniqueConstraint, BigInteger, DateTime
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 
 class Balance(Base):
     __tablename__ = "balances"
-    __tabe_args__ = (UniqueConstraint("wallet_id", "token_id", name="uq_wallet_token"),)
+    __table_args__ = (
+        UniqueConstraint("wallet_id", "token_id", name="uq_wallet_token"),
+    )
 
-    id = Mapped[uuid.UUID] = uuid_pk()
+    id: Mapped[uuid.UUID] = uuid_pk()
     wallet_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("wallets.id", ondelete="CASCADE"),
     )

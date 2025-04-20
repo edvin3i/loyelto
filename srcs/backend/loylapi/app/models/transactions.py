@@ -17,12 +17,12 @@ from sqlalchemy.orm import (
 from sqlalchemy.sql import func
 
 
-
 class TxType(str, enum.Enum):
     EARN = "earn"
     REDEEM = "redeem"
     SWAP_IN = "swap_in"
     SWAP_OUT = "swap_out"
+
 
 class PointTx(Base):
     __tablename__ = "point_txs"
@@ -44,6 +44,7 @@ class PointTx(Base):
 
     wallet: Mapped["Wallet"] = relationship(lazy="noload")
     wallet: Mapped["Token"] = relationship(lazy="noload")
+
 
 class SwapTx(Base):
     __tablename__ = "swap_txs"

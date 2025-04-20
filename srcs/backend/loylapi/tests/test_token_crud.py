@@ -5,17 +5,22 @@ from app.models import Business, Token
 
 @pytest.mark.anyio
 async def test_create_token_with_business(async_session):
-    biz = Business(
-        name="TeaBar",
-        slug="tea-bar",
-        owner_email="tea@example.com",
+    biz = Business(name="Bondar Coffee",
+                   slug="bondar-coffee",
+                   logo_url="https://example.com/logo.png",
+                   owner_email="owner@iBondar.pro",
+                   description="Best coffee in town",
+                   country="France",
+                   city="Paris",
+                   address="1 Rue de Café",
+                   zip_code="75000",
     )
     async_session.add(biz)
     await async_session.commit()
 
     token = Token(
-        mint="MINT_TEA_001",
-        symbol="TEAPOINT",
+        mint="MINT_CFE_001",
+        symbol="BNDCFEE",
         decimals=2,
         business_id=biz.id,
         min_rate=0.01,
@@ -26,12 +31,12 @@ async def test_create_token_with_business(async_session):
 
     # test token
     result = await async_session.execute(
-        select(Token).where(Token.mint == "MINT_TEA_001")
+        select(Token).where(Token.mint == "MINT_CFE_001")
     )
     token_from_db = result.scalar_one()
-    assert token_from_db.symbol == "TEAPOINT"
+    assert token_from_db.symbol == "BNDCFEE"
     assert token_from_db.min_rate == 0.01
-    assert token_from_db.business.name == "TeaBar"
+    assert token_from_db.business.name == "Bondar Coffee"
 
 
 @pytest.mark.anyio

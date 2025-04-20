@@ -19,6 +19,7 @@ from sqlalchemy.orm import (
 
 class Business(Base):
     __tablename__ = "businesses"
+
     id: Mapped[uuid.UUID] = uuid_pk()
     name: Mapped[str] = mapped_column(String(128), unique=True)
     slug: Mapped[str] = mapped_column(String(64), unique=True)
@@ -39,4 +40,9 @@ class Business(Base):
         back_populates="business",
         uselist=False,
         lazy="selectin",
+    )
+    voucher_templates: Mapped[list["VoucherTemplate"]] = relationship(
+        back_populates="business",
+        lazy="selectin",
+        cascade="all, delete-orphan",
     )
