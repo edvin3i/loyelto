@@ -3,6 +3,7 @@ import uuid, enum, datetime
 from app.db.base import Base
 from app.utils import uuid_pk
 from sqlalchemy import (
+    CheckConstraint,
     ForeignKey,
     BigInteger,
     String,
@@ -26,10 +27,12 @@ class TxType(str, enum.Enum):
 
 class PointTx(Base):
     __tablename__ = "point_txs"
+    __table_args__ = (CheckConstraint("fee_bps BETWEEN 0 AND 10_000"),)
 
     id: Mapped[uuid.UUID] = uuid_pk()
     wallet_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("wallets.id", ondelete="SET NULL"),
+        index=True,
     )
     token_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tokens.id"))
     tx_type: Mapped[TxType] = mapped_column(PgEnum(TxType, name="tx_type_enum"))
@@ -42,16 +45,18 @@ class PointTx(Base):
         nullable=False,
     )
 
-    wallet: Mapped["Wallet"] = relationship(lazy="noload")
-    wallet: Mapped["Token"] = relationship(lazy="noload")
+    wallet: Mapped["Wallet"] = relationship(lazy="noload", foreign_keys=[wallet_id])
+    token: Mapped["Token"] = relationship(lazy="noload", foreign_keys=[token_id])
 
 
 class SwapTx(Base):
     __tablename__ = "swap_txs"
+    __table_args__ = (CheckConstraint("from_amount > 0 AND to_amount > 0"),)
 
     id: Mapped[uuid.UUID] = uuid_pk()
     user_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"),
+        index=True,
     )
     from_token_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tokens.id"))
     to_token_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tokens.id"))
