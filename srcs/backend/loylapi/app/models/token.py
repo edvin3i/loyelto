@@ -6,6 +6,7 @@ from app.db.base import Base
 from app.utils import uuid_pk
 from decimal import Decimal
 from sqlalchemy import (
+    UniqueConstraint,
     ForeignKey,
     Boolean,
     Numeric,
@@ -24,7 +25,7 @@ class Token(Base):
 
     id: Mapped[uuid.UUID] = uuid_pk()
     mint: Mapped[str] = mapped_column(String(64), unique=True, index=True)
-    symbol: Mapped[str] = mapped_column(String(6))
+    symbol: Mapped[str] = mapped_column(String(6), unique=True)
     decimals: Mapped[int] = mapped_column(Integer, default=2)
     business_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("businesses.id", ondelete="SET NULL")
