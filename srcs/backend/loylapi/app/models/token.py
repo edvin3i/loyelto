@@ -6,6 +6,7 @@ from app.db.base import Base
 from app.utils import uuid_pk
 from decimal import Decimal
 from sqlalchemy import (
+    CheckConstraint,
     UniqueConstraint,
     ForeignKey,
     Boolean,
@@ -22,6 +23,9 @@ from sqlalchemy.orm import (
 
 class Token(Base):
     __tablename__ = "tokens"
+    __table_args__ = (
+        CheckConstraint("min_rate <= max_rate"),
+    )
 
     id: Mapped[uuid.UUID] = uuid_pk()
     mint: Mapped[str] = mapped_column(String(64), unique=True, index=True)
@@ -35,8 +39,8 @@ class Token(Base):
     )  # flag for LOYL
 
     # need to check later
-    min_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 6), nullable=True)
-    max_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 6), nullable=True)
+    min_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 6), nullable=False)
+    max_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 6), nullable=False)
 
     business: Mapped["Business"] = relationship(
         back_populates="loyalty_token", lazy="selectin"
