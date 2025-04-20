@@ -4,9 +4,10 @@ from app.db.base import Base
 from app.models import Wallet
 from app.utils import uuid_pk
 from sqlalchemy import ForeignKey, UniqueConstraint, BigInteger, DateTime, \
-    CheckConstraint
+    CheckConstraint, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
+from decimal import Decimal
 
 
 class Balance(Base):
@@ -22,13 +23,17 @@ class Balance(Base):
     token_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("tokens.id", ondelete="CASCADE"), # maybe need to add index
     )
-    amount: Mapped[int] = mapped_column(
-        BigInteger, CheckConstraint("amount >= 0"), nullable=False)
+    amount: Mapped[Decimal] = mapped_column(
+        Numeric(38, 0), nullable=False)
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
     updated_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now(),
-        nullable=False,
     )
 
     wallet: Mapped["Wallet"] = relationship(lazy="noload")
