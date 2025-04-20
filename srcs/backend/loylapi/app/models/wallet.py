@@ -26,7 +26,7 @@ class Wallet(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE")
     )
-    pubkey: Mapped[str] = mapped_column(String(44))
+    pubkey: Mapped[str] = mapped_column(String(44), unique=True, index=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
         # default=datetime.datetime.now(datetime.UTC)
         DateTime(timezone=True),

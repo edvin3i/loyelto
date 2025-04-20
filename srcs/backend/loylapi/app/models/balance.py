@@ -17,10 +17,10 @@ class Balance(Base):
 
     id: Mapped[uuid.UUID] = uuid_pk()
     wallet_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("wallets.id", ondelete="CASCADE"),
+        ForeignKey("wallets.id", ondelete="CASCADE"), # maybe need to add index
     )
     token_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("tokens.id", ondelete="CASCADE"),
+        ForeignKey("tokens.id", ondelete="CASCADE"), # maybe need to add index
     )
     amount: Mapped[int] = mapped_column(
         BigInteger, CheckConstraint("amount >= 0"), nullable=False)
