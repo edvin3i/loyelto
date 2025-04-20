@@ -24,6 +24,11 @@ class Business(Base):
     slug: Mapped[str] = mapped_column(String(64), unique=True)
     logo_url: Mapped[str | None] = mapped_column(String(512))
     owner_email: Mapped[str] = mapped_column(String(320))
+    description: Mapped[str] = mapped_column(String(512))
+    country: Mapped[str] = mapped_column(String(32))
+    city: Mapped[str] = mapped_column(String(64))
+    address: Mapped[str] = mapped_column(String(128))
+    zip_code: Mapped[str] = mapped_column(String(12))
     created_at: Mapped[datetime.datetime] = mapped_column(
         # default=datetime.datetime.now(datetime.UTC)
         DateTime(timezone=True),
