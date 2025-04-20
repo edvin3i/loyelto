@@ -22,7 +22,7 @@ class Business(Base):
 
     id: Mapped[uuid.UUID] = uuid_pk()
     name: Mapped[str] = mapped_column(String(128), unique=True)
-    slug: Mapped[str] = mapped_column(String(64), unique=True)
+    slug: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     logo_url: Mapped[str | None] = mapped_column(String(512))
     owner_email: Mapped[str] = mapped_column(String(320))
     description: Mapped[str] = mapped_column(String(512))
@@ -31,7 +31,11 @@ class Business(Base):
     address: Mapped[str] = mapped_column(String(128))
     zip_code: Mapped[str] = mapped_column(String(12))
     created_at: Mapped[datetime.datetime] = mapped_column(
-        # default=datetime.datetime.now(datetime.UTC)
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
@@ -43,6 +47,6 @@ class Business(Base):
     )
     voucher_templates: Mapped[list["VoucherTemplate"]] = relationship(
         back_populates="business",
-        lazy="selectin",
         cascade="all, delete-orphan",
+        lazy="selectin",
     )
