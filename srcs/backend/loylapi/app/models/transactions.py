@@ -27,7 +27,7 @@ class TxType(str, enum.Enum):
 
 class PointTx(Base):
     __tablename__ = "point_txs"
-    __table_args__ = (CheckConstraint("fee_bps BETWEEN 0 AND 10_000"),)
+    __table_args__ = (CheckConstraint("fee_bps BETWEEN 0 AND 10000"),)
 
     id: Mapped[uuid.UUID] = uuid_pk()
     wallet_id: Mapped[uuid.UUID | None] = mapped_column(
