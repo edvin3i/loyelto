@@ -2,7 +2,6 @@ from __future__ import annotations
 import uuid
 import datetime
 
-from sqlalchemy.sql.functions import char_length
 
 from app.db.base import Base
 
