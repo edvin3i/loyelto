@@ -18,4 +18,3 @@ class UserOut(BaseDBSchema):
     privy_id: PrivyIDStr
     phone: PhoneStr
     email: EmailStr
-
