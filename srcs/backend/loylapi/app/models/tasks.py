@@ -27,7 +27,7 @@ class CeleryTaskLog(Base):
     payload: Mapped[dict | None] = mapped_column(JSON)
     result: Mapped[str | None] = mapped_column(String(32))
     # duration: Mapped[datetime.timedelta] = mapped_column() # maybe add later
-    created_at: Mapped[BigInteger] = mapped_column(
+    created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,

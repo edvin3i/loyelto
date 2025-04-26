@@ -2,6 +2,7 @@ from pydantic import constr, conint, condecimal
 
 from app.models.voucher import VoucherStatus
 from app.models.transactions import TxType
+from app.models.tasks import TaskStatus
 
 
 def LimitedStr(min_length: int = 1, max_length: int = 128):
@@ -31,3 +32,4 @@ TxTypeEnum = TxType
 FeeBpsInt = conint(ge=0, le=10_000)
 SolSigStr = LimitedStr(1, 128)
 VouchStatEnum = VoucherStatus
+TaskStatusEnum = TaskStatus
