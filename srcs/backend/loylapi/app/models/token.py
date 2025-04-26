@@ -31,6 +31,7 @@ class Token(Base):
     id: Mapped[uuid.UUID] = uuid_pk()
     mint: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     symbol: Mapped[str] = mapped_column(String(6), unique=True)
+    coin_logo_url: Mapped[str | None] = mapped_column(String(512))
     decimals: Mapped[int] = mapped_column(Integer, default=2)
     business_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("businesses.id", ondelete="SET NULL")
