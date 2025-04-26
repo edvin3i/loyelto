@@ -14,5 +14,8 @@ class UserUpdate(BaseSchema):
     email: EmailStr | None = None
 
 
-class UserOut(UserCreate, BaseDBSchema):
-    pass
+class UserOut(BaseDBSchema):
+    privy_id: PrivyIDStr
+    phone: PhoneStr
+    email: EmailStr
+

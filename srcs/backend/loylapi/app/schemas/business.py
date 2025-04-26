@@ -35,5 +35,13 @@ class BusinessUpdate(BaseSchema):
     zip_code: ZipCodeStr | None = None
 
 
-class BusinessOut(BusinessCreate, BaseDBSchema):
-    pass
+class BusinessOut(BaseDBSchema):
+    name: NameStr
+    slug: SlugStr
+    logo_url: AnyUrl | None
+    owner_email: EmailStr
+    description: TextAreaStr
+    country: CountryStr
+    city: CityStr
+    address: AddressStr
+    zip_code: ZipCodeStr

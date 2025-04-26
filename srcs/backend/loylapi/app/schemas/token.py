@@ -27,4 +27,11 @@ class TokenUpdate(BaseSchema):
 
 
 class TokenOut(TokenCreate, BaseDBSchema):
-    pass
+    mint: MintStr
+    symbol: SymbolStr
+    coin_logo_url: AnyUrl | None
+    min_rate: RateDecimals | None
+    max_rate: RateDecimals | None
+    business_id: UUID | None
+    settlement_token: bool | None
+    decimals: Decimals
