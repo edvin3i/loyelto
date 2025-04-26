@@ -3,11 +3,19 @@ import uuid, datetime
 from app.db.base import Base
 from app.models import Wallet
 from app.utils import uuid_pk
-from sqlalchemy import ForeignKey, UniqueConstraint, BigInteger, DateTime, \
-    CheckConstraint, Numeric
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql import func
 from decimal import Decimal
+from sqlalchemy.sql import func
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship
+    )
+from sqlalchemy import (
+    ForeignKey,
+    UniqueConstraint,
+    DateTime,
+    Numeric
+    )
 
 
 class Balance(Base):

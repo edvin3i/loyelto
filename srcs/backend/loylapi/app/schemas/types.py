@@ -1,5 +1,3 @@
-from symtable import Symbol
-
 from pydantic import constr, conint, condecimal
 
 
@@ -24,3 +22,4 @@ SymbolStr = LimitedStr(3, 6)
 MintStr = ExactLenStr(64)
 Decimals = conint(ge=0, le=9)
 RateDecimals = condecimal(max_digits=18, decimal_places=6)
+GeZero = condecimal(ge=0, max_digits=38, decimal_places=0)
