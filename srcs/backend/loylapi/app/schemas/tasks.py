@@ -12,10 +12,12 @@ class CeleryTaskLogCreate(BaseSchema):
     payload: dict | None
     result: LimitedStr(1, 32) | None
 
+
 class CeleryTaskLogUpdate(BaseSchema):
     status: TaskStatusEnum = None
     payload: dict | None = None
     result: LimitedStr(1, 32) | None = None
+
 
 class CeleryTaskLogOut(BaseDBSchema):
     task_id: LimitedStr(1, 50)

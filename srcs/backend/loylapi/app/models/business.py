@@ -22,7 +22,9 @@ from sqlalchemy.orm import (
 
 class Business(Base):
     __tablename__ = "businesses"
-    __table_args__ = (CheckConstraint("length(slug) >= 3", name="check_slug_min_length"),)
+    __table_args__ = (
+        CheckConstraint("length(slug) >= 3", name="check_slug_min_length"),
+    )
 
     id: Mapped[uuid.UUID] = uuid_pk()
     name: Mapped[str] = mapped_column(String(128), unique=True)

@@ -52,6 +52,7 @@ class VoucherNFTUpdate(BaseSchema):
     status: VouchStatEnum | None = None
     redeemed_at: datetime | None = None
 
+
 class VoucherNFTOut(BaseDBSchema):
     template_id: UUID
     user_id: UUID | None

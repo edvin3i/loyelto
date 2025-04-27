@@ -41,8 +41,12 @@ class Token(Base):
     )  # flag for LOYL
 
     # need to check later
-    min_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 6),)
-    max_rate: Mapped[Decimal | None] = mapped_column(Numeric(18, 6),)
+    min_rate: Mapped[Decimal | None] = mapped_column(
+        Numeric(18, 6),
+    )
+    max_rate: Mapped[Decimal | None] = mapped_column(
+        Numeric(18, 6),
+    )
 
     business: Mapped["Business"] = relationship(
         back_populates="loyalty_token", lazy="selectin"
