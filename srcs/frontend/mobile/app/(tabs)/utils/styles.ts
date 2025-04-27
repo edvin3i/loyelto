@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#F8F9FA',
@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
     },
     pointsContainer: {
       alignItems: 'center',
+      marginTop: 16,
       marginBottom: 8,
     },
     pointsValue: {
@@ -120,3 +121,4 @@ export const styles = StyleSheet.create({
     },
   });
   
+  export default styles;

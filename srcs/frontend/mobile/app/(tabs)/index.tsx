@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { styles } from './styles'
+import styles from './utils/styles';
 
 const MOCK_STORES = [
   { id: 1, name: 'Pizza place Paris', points: 65, coupons: 2, icon: '🍕' },
@@ -27,7 +27,7 @@ export default function HomeScreen() {
         </View>
         <ThemedView style={styles.pointsContainer}>
           <ThemedText style={styles.pointsValue}>11123</ThemedText>
-          <ThemedText style={styles.pointsLabel}>your points</ThemedText>
+          <ThemedText style={styles.pointsLabel}>your LOYEL</ThemedText>
         </ThemedView>
       </ThemedView>
 
