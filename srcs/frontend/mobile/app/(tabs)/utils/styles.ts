@@ -33,12 +33,14 @@ const styles = StyleSheet.create({
     },
     pointsContainer: {
       alignItems: 'center',
-      marginTop: 16,
       marginBottom: 8,
+      paddingTop: 4,    // Add this
+      paddingBottom: 4, // And this
     },
     pointsValue: {
-      fontSize: 36,
+      fontSize: 24,
       fontWeight: 'bold',
+      lineHeight: 32, // Add this for more space
     },
     pointsLabel: {
       fontSize: 14,
@@ -46,24 +48,27 @@ const styles = StyleSheet.create({
     },
     tabsContainer: {
       backgroundColor: '#FFFFFF',
-      paddingHorizontal: 16,
-      paddingVertical: 4,
-      height: 16,
-    flexShrink: 1, // Prevents excessive expansion
+      paddingHorizontal: 8,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexShrink: 1, // Prevents excessive expansion
     },
     tab: {
-      paddingHorizontal: 12,
-      paddingVertical: 6,
+      paddingHorizontal: 10,
+      paddingVertical: 2,
       borderRadius: 16,
-      marginRight: 8,
+      marginRight: 6,
       backgroundColor: '#F0F0F0',
+      justifyContent: 'center',
     },
     activeTab: {
       backgroundColor: '#E8F5E9',
     },
     tabText: {
       color: '#666',
-      fontSize: 13,
+      fontSize: 12,
+      lineHeight: 14,
     },
     activeTabText: {
       color: '#4CAF50',

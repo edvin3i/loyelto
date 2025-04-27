@@ -32,7 +32,7 @@ export default function HomeScreen() {
       </ThemedView>
 
       {/* Tabs */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsContainer}>
+      <View style={styles.tabsContainer}>
         {TABS.map((tab, index) => (
           <TouchableOpacity
             key={index}
@@ -42,7 +42,7 @@ export default function HomeScreen() {
             </ThemedText>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
 
       {/* Store List */}
       <ScrollView style={styles.storeList}>
