@@ -1,16 +1,34 @@
+import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Stack, SvgIcon, Box } from '@mui/material';
+import { Stack, SvgIcon, Box, useScrollTrigger } from '@mui/material';
+
 import svgLogo from '../assets/loyelto_cropped.svg'
 import { useTheme, Theme } from '@mui/material/styles'
 
-export default function LoyelToBar() {
+interface Props {
+    children?: React.ReactElement<{ elevation?: number }>;
+}
+
+function ElevationScroll(props: Props) {
+    const { children } = props;
+    const trigger = useScrollTrigger({
+        disableHysteresis: true,
+        threshold: 0,
+    });
+    return children ? React.cloneElement(children, {
+        elevation: trigger ? 4 : 0,
+    })
+        : null;
+}
+
+export default function LoyelToBar(props: Props) {
     const theme = useTheme<Theme>();
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position='fixed' sx={{zIndex: 10, backgroundColor: theme.palette.primary.light}}>
+        <ElevationScroll {...props}>
+            <AppBar position='fixed' sx={{ zIndex: 10, backgroundColor: theme.palette.primary.light }}>
                 <Toolbar>
                     <Stack direction="row" spacing={4} sx={{ marginLeft: 5, marginTop: 2 }}>
                         <div style={{ paddingLeft: '1rem' }}>
@@ -29,6 +47,6 @@ export default function LoyelToBar() {
                     </Stack>
                 </Toolbar>
             </AppBar>
-        </Box>
+        </ElevationScroll>
     )
 }
