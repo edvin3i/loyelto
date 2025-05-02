@@ -40,8 +40,8 @@ export default function LoyelToBar(props: Props) {
                             alignItems: 'center',
                             justifyContent: 'space-around'
                         }}>
-                            <Typography variant="h3" color="initial" sx={{ fontFamily: "Inter", fontWeight: "600", letterSpacing: '0.15rem' }}>LOYELTO</Typography>
-                            <Typography variant="subtitle1" color="initial" sx={{ fontFamily: "Inter" }}>Swap & Save</Typography>
+                            <Typography variant="h3" color="initial" sx={{ fontFamily: "Nunito", fontWeight: "bold", letterSpacing: '0.15rem' }}>LOYELTO</Typography>
+                            <Typography variant="subtitle1" color="initial" sx={{ fontFamily: "Inter" }}>Loyalty Exchange</Typography>
                         </Box>
 
                     </Stack>
