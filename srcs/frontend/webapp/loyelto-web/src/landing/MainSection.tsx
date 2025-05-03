@@ -28,7 +28,7 @@ export default function MainSection() {
                             textAlign: 'left' 
                         }}
                     >
-                        Swap & Save: Loyalty Points Without Limits
+                        Swap & Save: <br/> La Fidélité Nouvelle Génération
                     </Typography>
                     <Button fullWidth size="large" variant="contained"
                         sx={{
