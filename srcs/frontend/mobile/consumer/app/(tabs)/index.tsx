@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import styles from './utils/styles';
+import styles from '../utils/styles';
 
 const MOCK_STORES = [
   { id: 1, name: 'Pizza place Paris', points: 65, coupons: 2, icon: '🍕' },

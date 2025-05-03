@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -34,10 +34,25 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="scan_qr"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Scan',
+          tabBarIcon: ({ color }) => (
+            <View style={{ 
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: 6,
+              padding: 4
+            }}>
+              <IconSymbol size={28} name="qrcode" color={color} />
+            </View>
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="shops_list"
+        options={{
+          title: 'Shop',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="storefront.fill" color={color} />
         }}
       />
     </Tabs>
