@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, Box } from "@mui/material";
 import SloganBox from "./SloganBox";
 
 interface SloganStackProps{
@@ -9,11 +9,13 @@ interface SloganStackProps{
 
 export default function SlogansStack({bgcolor, slogans}: SloganStackProps){
     return (
-        <Stack direction="row" spacing={2}>
+        <Box style={{ padding: 5, width: '98vw', marginTop: 40 }}>
+        <Stack direction="row" spacing={2} >
                 {slogans.map((sl) => {
                     return <SloganBox slogan={sl.slogan} comment={sl.comment} bgcolor={bgcolor} />
                 })}
             </Stack>
+            </Box>
             
             
     )
