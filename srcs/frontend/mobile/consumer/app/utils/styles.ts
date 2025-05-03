@@ -124,6 +124,26 @@ const styles = StyleSheet.create({
       fontSize: 20,
       fontWeight: '600',
     },
+    // Add these new styles
+    filterItem: {
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      backgroundColor: '#F0F0F0',
+      borderRadius: 20,
+      marginRight: 10,
+    },
+    activeFilterItem: {
+      backgroundColor: '#E0E0E0',
+    },
+    filterText: {
+      fontSize: 14,
+    },
+    activeFilterText: {
+      fontWeight: 'bold',
+    },
+    filtersScroll: {
+      flexGrow: 1,
+    },
   });
   
   export default styles;

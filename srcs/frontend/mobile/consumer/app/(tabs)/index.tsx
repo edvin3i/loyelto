@@ -2,6 +2,7 @@ import { Image, StyleSheet, View, ScrollView, TouchableOpacity } from 'react-nat
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import styles from '../utils/styles';
+import { useState } from 'react';
 
 const MOCK_STORES = [
   { id: 1, name: 'Pizza place Paris', points: 65, coupons: 2, icon: '🍕' },
@@ -15,6 +16,23 @@ const MOCK_STORES = [
 const TABS = ['most recent', 'favourites', 'near me', 'less'];
 
 export default function HomeScreen() {
+  const [activeFilter, setActiveFilter] = useState('most recent');
+  
+  const renderFilterItem = (title: string) => (
+    <TouchableOpacity 
+      key={title}
+      style={[
+        styles.filterItem, 
+        activeFilter === title && styles.activeFilterItem
+      ]}
+      onPress={() => setActiveFilter(title)}
+    >
+      <ThemedText style={[styles.filterText, activeFilter === title && styles.activeFilterText]}>
+        {title}
+      </ThemedText>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -33,15 +51,9 @@ export default function HomeScreen() {
 
       {/* Tabs */}
       <View style={styles.tabsContainer}>
-        {TABS.map((tab, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.tab, index === 0 && styles.activeTab]}>
-            <ThemedText style={[styles.tabText, index === 0 && styles.activeTabText]}>
-              {tab}
-            </ThemedText>
-          </TouchableOpacity>
-        ))}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          {TABS.map((tab) => renderFilterItem(tab))}
+        </ScrollView>
       </View>
 
       {/* Store List */}
