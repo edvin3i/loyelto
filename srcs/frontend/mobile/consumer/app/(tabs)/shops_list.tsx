@@ -5,11 +5,11 @@ import { Colors } from '@/constants/Colors';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import styles_shops_list from '../utils/styles_shops_list';
 
-// Add this type definition
+// Update the interface with a string type for icon
 interface Shop {
   id: string;
   name: string;
-  icon: string;
+  icon: string; // Changed from SFSymbols6_0 to string
   coupons: number;
   rating: number;
   promotions: number;

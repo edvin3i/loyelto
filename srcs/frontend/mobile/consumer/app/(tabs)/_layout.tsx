@@ -34,9 +34,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="scan_qr"
+        name="show_qr"
         options={{
-          title: 'Scan',
+          title: 'Show QR',
           tabBarIcon: ({ color }) => (
             <View style={{ 
               backgroundColor: 'rgba(255,255,255,0.2)',
@@ -51,7 +51,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="shops_list"
         options={{
-          title: 'Shop',
+          title: 'Browse',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="storefront.fill" color={color} />
         }}
       />
