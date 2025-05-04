@@ -4,56 +4,53 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import styles_shops_list from '../utils/styles_shops_list';
+import { useRouter } from 'expo-router';
 
-// Update the interface with a string type for icon
+// Define the Shop interface
 interface Shop {
   id: string;
   name: string;
-  icon: string; // Changed from SFSymbols6_0 to string
+  backgroundColor: string;
+  icon: string;
   coupons: number;
   rating: number;
   promotions: number;
-  backgroundColor: string;
 }
 
-// Mock data for shops - replace with actual data fetching logic later
+// Mock data for shops
 const mockShops: Shop[] = [
-  { 
-    id: '1', 
-    name: 'Pizza place Paris', 
-    icon: 'fork.knife', // Changed from 'wifi' to a valid SF Symbol
-    coupons: 2, 
-    rating: 4.9, 
-    promotions: 5,
-    backgroundColor: '#FFF2CC' 
+  {
+    id: '1',
+    name: 'Pizza Place Paris',
+    backgroundColor: '#FFE0E0',
+    icon: 'fork.knife',
+    coupons: 2,
+    rating: 4.8,
+    promotions: 3
   },
-  { 
-    id: '2', 
-    name: 'Best Coffee Shop Clichy', 
-    icon: 'cup.and.saucer.fill', // This one is already valid
-    coupons: 4, 
-    rating: 4.7, 
-    promotions: 4,
-    backgroundColor: '#FFCCC9' 
+  {
+    id: '2',
+    name: 'Coffee Shop',
+    backgroundColor: '#E0F0FF',
+    icon: 'cup.and.saucer.fill',
+    coupons: 1,
+    rating: 4.5,
+    promotions: 2
   },
-  { 
-    id: '3', 
-    name: 'Grocery Store 24Shop', 
-    icon: 'cart.fill', // Changed from 'bag.fill' to ensure it's valid
-    coupons: 1, 
-    rating: 4.5, 
-    promotions: 3,
-    backgroundColor: '#E6CCFF' 
-  },
+  // Add more mock shops as needed
 ];
 
 export default function ShopsList() {
   const colorScheme = useColorScheme();
   const [activeFilter, setActiveFilter] = useState('most recent');
   const [sortOption, setSortOption] = useState('less points left');
+  const router = useRouter();
 
   const renderShopItem = ({ item }: { item: Shop }) => (
-    <View style={styles_shops_list.shopItemContainer}>
+    <TouchableOpacity 
+      style={styles_shops_list.shopItemContainer}
+      onPress={() => router.push(`../business/${item.id}`)}
+    >
       <View style={[styles_shops_list.shopItem, { backgroundColor: item.backgroundColor }]}>
         <IconSymbol size={24} name={item.icon} color="black" />
         <Text style={styles_shops_list.shopName}>{item.name}</Text>
@@ -73,7 +70,7 @@ export default function ShopsList() {
         <Text style={styles_shops_list.promotionText}>{item.promotions} Promotions available</Text>
         <IconSymbol size={16} name="chevron.right" color="#007AFF" />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderFilterItem = (title: string) => (

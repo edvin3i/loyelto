@@ -3,6 +3,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import styles from '../utils/styles';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
 const MOCK_STORES = [
   { id: 1, name: 'Pizza place Paris', points: 65, coupons: 2, icon: '🍕' },
@@ -17,6 +18,7 @@ const TABS = ['most recent', 'favourites', 'near me', 'less'];
 
 export default function HomeScreen() {
   const [activeFilter, setActiveFilter] = useState('most recent');
+  const router = useRouter();
   
   const renderFilterItem = (title: string) => (
     <TouchableOpacity 
@@ -45,7 +47,7 @@ export default function HomeScreen() {
         </View>
         <ThemedView style={styles.pointsContainer}>
           <ThemedText style={styles.pointsValue}>11123</ThemedText>
-          <ThemedText style={styles.pointsLabel}>your LOYEL</ThemedText>
+          <ThemedText style={styles.pointsLabel}>your LOYL</ThemedText>
         </ThemedView>
       </ThemedView>
 
@@ -59,7 +61,11 @@ export default function HomeScreen() {
       {/* Store List */}
       <ScrollView style={styles.storeList}>
         {MOCK_STORES.map((store) => (
-          <TouchableOpacity key={store.id} style={styles.storeItem}>
+          <TouchableOpacity 
+            key={store.id} 
+            style={styles.storeItem}
+            onPress={() => router.push(`../business/${store.id}`)}
+          >
             <View style={styles.storeLeft}>
               <View style={styles.storeIcon}>
                 <ThemedText style={styles.storeIconText}>{store.icon}</ThemedText>
