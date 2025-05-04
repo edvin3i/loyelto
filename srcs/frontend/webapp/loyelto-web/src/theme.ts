@@ -1,5 +1,20 @@
 import { createTheme, PaletteOptions } from '@mui/material/styles';
 
+declare module '@mui/material/styles' {
+  interface Palette {
+    neutral: {
+      main: string;
+      contrastText: string;
+    };
+  }
+  interface PaletteOptions {
+    neutral?: {
+      main: string;
+      contrastText: string;
+    };
+  }
+}
+
 const theme = createTheme({
   typography: {
     fontFamily: 
@@ -13,15 +28,15 @@ const theme = createTheme({
       contrastText: '#000',
     },
     secondary: {
-      main: '#f0ffda',
+      main: '#d7ffce',
       light: '#e3fbf7',
       dark: 'rgb(200, 20, 80)',
       contrastText: '#ffffff',
     },
     neutral: {
-      main: '#64748B',
-      light: '#A0AEC0',
-      dark: '#1A202C',
+      main: '#f0ffda',
+      // light: '#A0AEC0',
+      // dark: '#1A202C',
       contrastText: '#ffffff',
     },
     info: {

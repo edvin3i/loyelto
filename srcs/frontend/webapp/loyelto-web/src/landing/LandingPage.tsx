@@ -21,7 +21,7 @@ export default function LandingPage() {
             <Box style={{ padding: 20, width: '98vw', marginTop: 70, marginBottom: 40 }}>
                 <MainSection />
                 <SlogansSection forWhom='Pour les MARQUES' bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
-                <SlogansSection forWhom='Pour les CLIENTS' bgcolor={theme.palette.secondary.main} slogans={consumerSlogans} />
+                <SlogansSection forWhom='Pour les CLIENTS' bgcolor={theme.palette.neutral.main} slogans={consumerSlogans} />
                 {/* <Typography variant='h1' sx={{ color: theme.palette.secondary.dark, fontSize: '4rem', textAlign: 'center', mb: 4}}>WELCOME TO LOYELTO
             </Typography>
             <Stack direction="row" spacing={2} justifyContent='center'>

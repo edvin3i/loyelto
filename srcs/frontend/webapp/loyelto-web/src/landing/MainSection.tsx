@@ -17,23 +17,25 @@ export default function MainSection() {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: "center",
-                padding: 2
+                // padding: 2
             }}>
                 <Typography
                     variant="h1"
                     color="initial"
+                    gutterBottom
                     sx={{
-                        fontSize: {xs: '2.5rem', sm: '5.1rem'},
+                        fontSize: {xs: '2.5rem', sm: '5rem'},
                         fontWeight: '600',
                         textAlign: 'left'
                     }}  
                 >
                     Swap & Save: <br /> La Fidélité Nouvelle Génération
                 </Typography>
+                <Box sx={{marginRight: 2, marginTop: 1}}>
                 <Button fullWidth size="large" variant="contained"
                     sx={{
                         alignSelf: 'center',
-                        marginTop: 3,
+                        // margin: 3,
                         fontWeight: 'bold',
                         paddingY: 1.5,
                         borderRadius: 3,
@@ -43,6 +45,7 @@ export default function MainSection() {
                 >
                     Join LoyelTo
                 </Button>
+                </Box>
             </Box>
             <Box sx={{
                 display: 'flex',

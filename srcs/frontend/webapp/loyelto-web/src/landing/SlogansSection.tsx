@@ -21,7 +21,10 @@ export default function SlogansSection({ forWhom, bgcolor, slogans }: SlogansPro
             sx={{
                 textAlign: 'left',
                 paddingY: 3,
-                fontWeight: '600'}}>
+                fontWeight: '600',
+                fontSize: {xs: '2rem', sm: '3rem'}
+                
+                }}>
                 {forWhom}
             </Typography>
             <SlogansStack bgcolor={bgcolor} slogans={slogans}></SlogansStack>
