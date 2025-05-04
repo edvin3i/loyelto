@@ -9,14 +9,14 @@ interface SloganStackProps{
 
 export default function SlogansStack({bgcolor, slogans}: SloganStackProps){
     return (
-        <Box style={{ padding: 5, width: '98vw', marginTop: 40 }}>
-        <Stack direction="row" spacing={2} >
+        // <Box style={{ padding: 5, width: '98vw', marginTop: 40 }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} >
                 {slogans.map((sl) => {
                     return <SloganBox slogan={sl.slogan} comment={sl.comment} bgcolor={bgcolor} />
                 })}
             </Stack>
-            </Box>
-            
+            // </Box>
+            //direction={{ xs: 'column', sm: 'row' }} 
             
     )
 }

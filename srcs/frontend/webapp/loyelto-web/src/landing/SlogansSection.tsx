@@ -16,7 +16,8 @@ export default function SlogansSection({ forWhom, bgcolor, slogans }: SlogansPro
     // const theme = useTheme<Theme>();
     return (
         <div>
-            <Typography variant="h3" color="initial" 
+            <Typography variant="h3" 
+            color="initial" 
             sx={{
                 textAlign: 'left',
                 paddingY: 3,
