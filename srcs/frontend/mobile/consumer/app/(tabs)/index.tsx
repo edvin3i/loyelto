@@ -72,11 +72,12 @@ export default function HomeScreen() {
               </View>
               <View>
                 <ThemedText style={styles.storeName}>{store.name}</ThemedText>
-                {store.coupons > 0 && (
+                {/* Conditional rendering of coupons */}
+                {store.coupons > 0 ? (
                   <View style={styles.couponBadge}>
                     <ThemedText style={styles.couponText}>{store.coupons} coupons</ThemedText>
                   </View>
-                )}
+                ) : null}
               </View>
             </View>
             <View style={styles.pointsRight}>

@@ -46,28 +46,28 @@ export default function ShopsList() {
   const [sortOption, setSortOption] = useState('less points left');
   const router = useRouter();
 
-  const renderShopItem = ({ item }: { item: Shop }) => (
+  const renderShopItem = ({ item: store }: { item: Shop }) => (
     <TouchableOpacity 
       style={styles_shops_list.shopItemContainer}
-      onPress={() => router.push(`../business/${item.id}`)}
+      onPress={() => router.push(`../business/${store.id}`)}
     >
-      <View style={[styles_shops_list.shopItem, { backgroundColor: item.backgroundColor }]}>
-        <IconSymbol size={24} name={item.icon} color="black" />
-        <Text style={styles_shops_list.shopName}>{item.name}</Text>
+      <View style={[styles_shops_list.shopItem, { backgroundColor: store.backgroundColor }]}>
+        <IconSymbol size={24} name={store.icon} color="black" />
+        <Text style={styles_shops_list.shopName}>{store.name}</Text>
       </View>
       
       <View style={styles_shops_list.couponContainer}>
         <View style={styles_shops_list.couponBadge}>
-          <Text style={styles_shops_list.couponText}>{item.coupons} coupons</Text>
+          <Text style={styles_shops_list.couponText}>{store.coupons} coupons</Text>
         </View>
         <View style={styles_shops_list.ratingContainer}>
           <IconSymbol size={16} name="star.fill" color="black" />
-          <Text style={styles_shops_list.ratingText}>{item.rating}</Text>
+          <Text style={styles_shops_list.ratingText}>{store.rating}</Text>
         </View>
       </View>
       
       <TouchableOpacity style={styles_shops_list.promotionButton}>
-        <Text style={styles_shops_list.promotionText}>{item.promotions} Promotions available</Text>
+        <Text style={styles_shops_list.promotionText}>{store.promotions} Promotions available</Text>
         <IconSymbol size={16} name="chevron.right" color="#007AFF" />
       </TouchableOpacity>
     </TouchableOpacity>
@@ -122,7 +122,7 @@ export default function ShopsList() {
       <FlatList
         data={mockShops}
         renderItem={renderShopItem}
-        keyExtractor={item => item.id}
+        keyExtractor={store => store.id}
         contentContainerStyle={styles_shops_list.listContainer}
       />
     </View>
