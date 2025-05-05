@@ -12,13 +12,25 @@ import { businessSlogans, consumerSlogans } from "./slogans";
 
 export default function LandingPage() {
     const theme = useTheme<Theme>();
+     // padding: {sm: '20'}, 
+                // width: '98vw', 
+                // marginTop: 70, 
+                // marginBottom: 40 }}>
 
     return (
         <div>
             <CssBaseline />
             <LoyelToBar />
             <Toolbar />
-            <Box style={{ padding: 20, width: '98vw', marginTop: 70, marginBottom: 40 }}>
+            <Box
+            sx={{
+                padding: {sm: 5},
+                marginTop: 5,
+                marginBottom: 7
+              
+            }}> 
+              
+               
                 <MainSection />
                 <SlogansSection forWhom='Pour les MARQUES' bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
                 <SlogansSection forWhom='Pour les CLIENTS' bgcolor={theme.palette.neutral.main} slogans={consumerSlogans} />
