@@ -22,7 +22,7 @@ export default function SlogansSection({ forWhom, bgcolor, slogans }: SlogansPro
                 textAlign: 'left',
                 paddingY: 3,
                 fontWeight: '600',
-                fontSize: {xs: '2rem', sm: '3rem'}
+                fontSize: {xs: '2rem', sm: '2.6rem'}
                 
                 }}>
                 {forWhom}

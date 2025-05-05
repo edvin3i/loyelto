@@ -12,13 +12,14 @@ export default function MainSection() {
     const theme = useTheme<Theme>();
     return (
 
-        <Stack direction={{ xs: 'column-reverse', sm: 'row' }}>
+        <Stack direction={{ xs: 'column-reverse', sm: 'row' }} sx={{marginBottom: 5}}>
             <Box sx={{
                 // backgroundColor: theme.palette.secondary.dark,
                 width: { sm: '50%', xs: '100%' },
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: "center",
+                
                 // padding: 2
             }}>
                 <Typography
@@ -41,10 +42,10 @@ export default function MainSection() {
                             alignSelf: 'center',
                             // margin: 3,
                             fontWeight: 'bold',
-                            paddingY: 1.5,
+                            paddingY: {sm:1.5, xs: 1},
                             borderRadius: 3,
                             textTransform: 'none',
-                            fontSize: '1.5rem', 
+                            fontSize: {sm:'1.5rem', xs: '1.2rem'}, 
                            
                         }}
                     >
