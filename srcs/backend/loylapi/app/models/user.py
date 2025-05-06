@@ -1,6 +1,6 @@
+from __future__ import annotations
 import uuid
 import datetime
-from __future__ import annotations
 from app.utils import uuid_pk
 from app.db.base import Base
 from sqlalchemy.sql import func
@@ -29,4 +29,6 @@ class User(Base):
         nullable=False,
     )
 
-    wallets: Mapped[list["Wallet"]] = relationship(back_populates="user", lazy="noload")
+    wallets: Mapped[list["Wallet"]] = relationship(
+        back_populates="user", lazy="selectin"
+    )
