@@ -12,10 +12,6 @@ import { businessSlogans, consumerSlogans } from "./slogans";
 
 export default function LandingPage() {
     const theme = useTheme<Theme>();
-     // padding: {sm: '20'}, 
-                // width: '98vw', 
-                // marginTop: 70, 
-                // marginBottom: 40 }}>
 
     return (
         <div>
