@@ -1,6 +1,7 @@
 import { Stack, Box, Typography, Button } from "@mui/material"
 import { styled } from '@mui/material/styles'
 import { useTheme, Theme } from '@mui/material/styles'
+import { Outlet } from "react-router-dom";
 
 
 const Image = styled('img')({
@@ -11,7 +12,7 @@ const Image = styled('img')({
 export default function MainSection() {
     const theme = useTheme<Theme>();
     return (
-
+<>
         <Stack direction={{ xs: 'column-reverse', sm: 'row' }} sx={{marginBottom: 5}}>
             <Box sx={{
                 // backgroundColor: theme.palette.secondary.dark,
@@ -56,12 +57,13 @@ export default function MainSection() {
                             fontSize: {sm:'1.5rem', xs: '1.2rem'}, 
                            
                         }}
+                        href="/form-business"
                     >
                         Rejoindre LoyelTo
                     </Button>
                 </Box>
             </Box>
-            <Box
+            <Box 
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -82,5 +84,7 @@ export default function MainSection() {
                     }} />
             </Box>
         </Stack>
+        <Outlet/>
+        </>
     )
 }
