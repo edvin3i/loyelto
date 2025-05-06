@@ -1,0 +1,24 @@
+version: "3.9"
+networks: {tnet: {external: true}}
+
+services:
+  landing:
+    image: loyelto/landing:latest
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.landing.rule=Host(`loyel.to`)
+      - traefik.http.routers.landing.entrypoints=websecure
+      - traefik.http.routers.landing.tls.certresolver=le
+    networks: [tnet]
+
+  api:
+    image: loyelto/api:latest
+    env_file: infra/env/prod.env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.rule=Host(`api.loyel.to`)
+      - traefik.http.routers.api.entrypoints=websecure
+      - traefik.http.routers.api.tls.certresolver=le
+      - traefik.http.services.api.loadbalancer.server.port=8000
+    depends_on: [postgres, redis]
+    networks: [tnet]

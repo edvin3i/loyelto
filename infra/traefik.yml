@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  traefik:
+    image: traefik:v3.4
+    restart: always
+    command:
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entryPoints.web.address=:80
+      - --entryPoints.websecure.address=:443
+      # LetsEncrypt (ACME)
+      - --certificatesResolvers.le.acme.email=${ACME_EMAIL}
+      - --certificatesResolvers.le.acme.storage=/acme/acme.json
+      - --certificatesResolvers.le.acme.httpChallenge.entryPoint=web
+    # - --entryPoints.websecure.http.tls.certificates:
+    # - certFile: "/certs/loyel.to.crt"
+    #   keyFile:  "/certs/loyel.to.key"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"          # dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-acme:/acme
+      - ./certs:/certs:ro    # for custom certs later
+    networks: [tnet]
+
+volumes:
+  traefik-acme:
+
+networks:
+  tnet:
+    external: true

@@ -1,0 +1,16 @@
+version: "3.9"
+networks: {tnet: {external: true}}
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    env_file: infra/env/${STACK:-prod}.env   # env
+    volumes:
+      - /mnt/HC_Volume_102520323/loylvolume/pgdata:/var/lib/postgresql/data
+    networks: [tnet]
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    networks: [tnet]
