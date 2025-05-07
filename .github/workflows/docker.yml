@@ -13,9 +13,9 @@ jobs:
       matrix:
         include:
           - dir: containers/landing/Dockerfile
-            image: loyelto/landing
+            image: edvin3i/loyelto:landing
           - dir: containers/fastapi/Dockerfile
-            image: loyelto/fastapi
+            image: edvin3i/loyelto:fastapi
 
     steps:
       - uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
           script: |
             cd /home/loylapp/loyelto
             git pull --ff-only
-            docker pull loyelto/landing:latest
-            docker pull loyelto/api:latest
+            docker pull edvin3i/loyelto:landing
+            docker pull edvin3i/loyelto:fastapi
             make up-prod
             docker image prune -f
