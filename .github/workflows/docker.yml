@@ -2,9 +2,8 @@ name: Docker CI/CD
 
 on:
   push:
-    branches: [ master ]          # prod
-  pull_request:
-    branches: [ master ]          # staging
+    branches: [ master, stage ]
+
 
 jobs:
   build:
@@ -34,11 +33,11 @@ jobs:
           file: ${{ matrix.dir }}
           push: true
           tags: |
-            ${{ matrix.image }}:${{ github.event_name == 'push' && 'latest' || 'staging' }}
+            ${{ matrix.image }}:${{ github.event_name == 'master' && 'latest' || 'staging' }}
             ${{ matrix.image }}:${{ github.sha }}
-  deploy-prod:
+  deploy:
     needs: build
-    if: github.event_name == 'push'
+    if: github.event_name == 'master' || github.ref_name == 'stage'
     runs-on: ubuntu-latest
     steps:
       - name: Start on VPS
@@ -50,7 +49,7 @@ jobs:
           script: |
             cd /home/loylapp/loyelto
             git pull --ff-only
-            docker pull edvin3i/loyelto-landing
-            docker pull edvin3i/loyelto-fastapi
-            make up-prod
+            docker pull edvin3i/loyelto-landing:${{ github.ref_name == 'master' && 'latest' || 'stage' }}
+            docker pull edvin3i/loyelto-fastapi:${{ github.ref_name == 'master' && 'latest' || 'stage' }}
+            make up-${{ github.ref_name == 'main' && 'latest' || 'stage' }}
             docker image prune -f
