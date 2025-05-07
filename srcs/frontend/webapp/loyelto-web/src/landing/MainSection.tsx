@@ -34,7 +34,7 @@ export default function MainSection() {
 
                     }}
                 >
-                    Swap & SaVe: <br /> La Fidélité Nouvelle Génération
+                    Swap & Save: <br /> La Fidélité Nouvelle Génération
                 </Typography>
                 <Box sx={{ marginLeft: {sm: 0}, marginTop: 1, marginX: {xs: 2}}}>
                     <Button fullWidth size="large" variant="contained"
@@ -64,7 +64,7 @@ export default function MainSection() {
                     borderRadius: 7,
                     overflow: 'hidden' // Ensures the image is cropped if it overflows
                 }}>
-                <Image src='/assets/ecran_julien_nobg.png'
+                <Image src='ecran_julien_nobg.png'
                     sx={{
                         width: { xs: '85%', sm: '50%' },
                         marginTop: { xs: 4, sm: 7 },
