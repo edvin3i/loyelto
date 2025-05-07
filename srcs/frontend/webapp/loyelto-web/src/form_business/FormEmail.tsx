@@ -1,17 +1,9 @@
 import { Typography, TextField, Box } from "@mui/material";
-import React from "react";
 
-
-
-interface FormTextProps {
-    h: string;
-}
-
-export default function FormText({ h }: FormTextProps) {
+export default function FormEmail() {
     return (
         <Box
             component="form"
-            noValidate
             autoComplete="off"
             sx={{
                 display: 'flex',
@@ -23,11 +15,12 @@ export default function FormText({ h }: FormTextProps) {
                 console.log("Form submitted");
             }}
         >
-            <Typography variant="h3" color="initial">{h}</Typography>
+            <Typography variant="h3" color="initial">Dites-nous votre email</Typography>
             <TextField
                 required
-                id="BusinessName"
-                label="Requis"
+                id="BusinessEmail"
+                type="email"
+                label="Email"
                 defaultValue=""
                 variant="standard"
             />
