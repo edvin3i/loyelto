@@ -8,7 +8,18 @@ interface SloganBoxProps {
 
 export default function SloganBox({ slogan, comment, bgcolor }: SloganBoxProps) {
     return (
-        <Box sx={{ backgroundColor: bgcolor, borderRadius: 4, paddingY: 2, paddingX: 2, textAlign: 'left' }}>
+        <Box 
+          sx={{ 
+            bgcolor: bgcolor,
+            padding: 2,
+            borderRadius: 2,
+            minHeight: 130,
+            width: '100%',    // Full width within its container
+            display: 'flex',
+            justifyContent: 'center',  
+            flexDirection: 'column'
+          }}
+        >
             <Typography variant="h5" color="initial"
              sx={{fontWeight: '700'}} gutterBottom>
                     {slogan}

@@ -7,6 +7,8 @@ import LoyelToBar from './LoyelToBar';
 import MainSection from './MainSection';
 import SlogansSection from './SlogansSection';
 import { businessSlogans, consumerSlogans } from "./slogans";
+import WaitlistForm from './WaitlistForm';
+import SocialLinks from './SocialLinks';
 
 
 
@@ -29,11 +31,16 @@ export default function LandingPage() {
                 marginBottom: 7
               
             }}> 
-              
-               
                 <MainSection />
-                <SlogansSection forWhom='Pour les MARQUES' bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
+                <SlogansSection forWhom='Pour les BUSINESSES' bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
                 <SlogansSection forWhom='Pour les CLIENTS' bgcolor={theme.palette.neutral.main} slogans={consumerSlogans} />
+                
+                {/* Add Waitlist Form */}
+                <WaitlistForm />
+                
+                {/* Add Social Links */}
+                <SocialLinks />
+                
                 {/* <Typography variant='h1' sx={{ color: theme.palette.secondary.dark, fontSize: '4rem', textAlign: 'center', mb: 4}}>WELCOME TO LOYELTO
             </Typography>
             <Stack direction="row" spacing={2} justifyContent='center'>
