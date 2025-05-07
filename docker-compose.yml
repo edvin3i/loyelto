@@ -18,8 +18,6 @@ networks:
   tnet:
     name: tnet
     driver: bridge
-env_file:
-  - ./infra/env/env.prod
 services:
   landing:
     container_name: landing
