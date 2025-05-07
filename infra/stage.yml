@@ -2,11 +2,11 @@ services:
   postgres:
     env_file: ./infra/env/stage.env
     volumes:
-      - /mnt/HC_Volume_102520323/loylvolume/pgdata:/var/lib/postgresql/data
+      - /mnt/HC_Volume_102520323/loylvolume/pgdata-stage:/var/lib/postgresql/data
     networks: [tnet-stage]
     depends_on: [redis]
   redis:
-    env_file: ./infra/env/${STACK:-prod}.env
+    env_file: ./infra/env/prod.env
     networks: [tnet-stage] 
   landing:
     image: edvin3i/loyelto-landing:stage

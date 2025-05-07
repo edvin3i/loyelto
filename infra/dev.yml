@@ -4,6 +4,7 @@ volumes:
 networks:
   tnet-dev:
     driver: bridge
+    external: true
 
 services:
   postgres:
