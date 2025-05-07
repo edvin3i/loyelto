@@ -1,12 +1,20 @@
 services:
+  postgres:
+    volumes:
+      - /mnt/HC_Volume_102520323/loylvolume/pgdata:/var/lib/postgresql/data
+    networks: [tnet-stage]
+    depends_on: [redis]
   landing:
     image: edvin3i/loyelto-landing:stage
     labels:
       - traefik.enable=true
       - traefik.http.routers.landing.rule=Host(`stage.loyel.to`)
+    networks: [tnet-stage]
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
     env_file: ./infra/env/stage.env
     labels:
       - traefik.enable=true
       - traefik.http.routers.fastapi.rule=Host(`api.stage.loyel.to`)
+    depends_on: [postgres, redis]
+    networks: [tnet-stage]

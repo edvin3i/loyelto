@@ -1,15 +1,17 @@
-networks: {tnet: {external: true}}
+networks:
+  tnet-stage:
+    external: true
+  tnet-prod:
+    external: true
 
 services:
   postgres:
     image: postgres:17.4
     restart: always
     env_file: ./infra/env/${STACK:-prod}.env   # env
-    volumes:
-      - /mnt/HC_Volume_102520323/loylvolume/pgdata:/var/lib/postgresql/data
-    networks: [tnet]
+    networks: [tnet-stage, tnet-prod]
 
   redis:
     image: redis:8-alpine
     restart: always
-    networks: [tnet]
+    networks: [tnet-stage, tnet-prod]

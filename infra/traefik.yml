@@ -23,11 +23,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-acme:/acme
       - ./certs:/certs:ro    # for custom certs later
-    networks: [tnet]
+    networks: [tnet-stage, tnet-prod]
 
 volumes:
   traefik-acme:
 
-networks:
-  tnet:
+etworks:
+  tnet-stage:
+    external: true
+  tnet-prod:
     external: true

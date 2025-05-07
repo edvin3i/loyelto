@@ -1,14 +1,14 @@
 STACK ?= dev
 DOCKER_COMPOSE := docker compose
 COMPOSE_FILES := \
-	-f docker-compose.yml \
+	-p loyelto-$(STACK) \
 	-f infra/base.yml \
 	-f infra/$(STACK).yml \
 	$(if $(filter $(STACK),stage prod),-f infra/traefik.yml)
 
 create-network:
-	@docker network inspect tnet >/dev/null 2>&1 || \
-		( echo ">>> Creating external network 'tnet'..."; docker network create tnet )
+	@docker network inspect tnet-$(STACK) >/dev/null 2>&1 || \
+		( echo ">>> Creating external network 'tnet'..."; docker network create tnet-$(STACK) )
 
 build:
 	@echo "Building images for $(STACK)..."

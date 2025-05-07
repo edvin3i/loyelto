@@ -1,6 +1,11 @@
 networks: {tnet: {external: true}}
 
 services:
+  postgres:
+    volumes:
+      - /mnt/HC_Volume_102520323/loylvolume/pgdata:/var/lib/postgresql/data
+    networks: [tnet-prod]
+    depends_on: [redis]
   landing:
     image: edvin3i/loyelto-landing:latest
     labels:
@@ -8,7 +13,7 @@ services:
       - traefik.http.routers.landing.rule=Host(`loyel.to`)
       - traefik.http.routers.landing.entrypoints=websecure
       - traefik.http.routers.landing.tls.certresolver=le
-    networks: [tnet]
+    networks: [tnet-prod]
 
   fastapi:
     image: edvin3i/loyelto-fastapi:latest
@@ -20,4 +25,4 @@ services:
       - traefik.http.routers.fastapi.tls.certresolver=le
       - traefik.http.services.fastapi.loadbalancer.server.port=8000
     depends_on: [postgres, redis]
-    networks: [tnet]
+    networks: [tnet-prod]
