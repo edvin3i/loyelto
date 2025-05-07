@@ -64,7 +64,7 @@ export default function MainSection() {
                     borderRadius: 7,
                     overflow: 'hidden' // Ensures the image is cropped if it overflows
                 }}>
-                <Image src='/ecran_julien_nobg.png'
+                <Image src='/assets/ecran_julien_nobg.png'
                     sx={{
                         width: { xs: '85%', sm: '50%' },
                         marginTop: { xs: 4, sm: 7 },
