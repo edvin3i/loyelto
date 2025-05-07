@@ -12,7 +12,7 @@ services:
       - --certificatesResolvers.le.acme.email=${ACME_EMAIL}
       - --certificatesResolvers.le.acme.storage=/acme/acme.json
       - --certificatesResolvers.le.acme.httpChallenge.entryPoint=web
-      - --entryPoints.websecure.http.tls.certificates:
+    # - --entryPoints.websecure.http.tls.certificates:
     # - certFile: "/certs/loyel.to.crt"
     #   keyFile:  "/certs/loyel.to.key"
     ports:
