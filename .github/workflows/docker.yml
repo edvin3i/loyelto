@@ -26,6 +26,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Set image tag
+        run: |
+          if [ "${{ github.ref_name }}" = "master" ]; then
+            echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+          else
+            echo "IMAGE_TAG=stage" >> $GITHUB_ENV
+          fi
+      
       - name: Build & push
         uses: docker/build-push-action@v5
         with:
@@ -33,13 +41,24 @@ jobs:
           file: ${{ matrix.dir }}
           push: true
           tags: |
-            ${{ matrix.image }}:${{ github.event_name == 'master' && 'latest' || 'staging' }}
+            ${{ matrix.image }}:${{ env.IMAGE_TAG }}
             ${{ matrix.image }}:${{ github.sha }}
+
   deploy:
     needs: build
     if: github.event_name == 'master' || github.ref_name == 'stage'
     runs-on: ubuntu-latest
     steps:
+      - name: Set image tag
+        run: |
+          if [ "${{ github.ref_name }}" = "master" ]; then
+            echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+            echo "STACK=prod" >> $GITHUB_ENV
+          else
+            echo "IMAGE_TAG=stage" >> $GITHUB_ENV
+            echo "STACK=stage" >> $GITHUB_ENV
+          fi
+      
       - name: Start on VPS
         uses: appleboy/ssh-action@v1
         with:
@@ -49,7 +68,8 @@ jobs:
           script: |
             cd /home/loylapp/loyelto
             git pull --ff-only
-            docker pull edvin3i/loyelto-landing:${{ github.ref_name == 'master' && 'latest' || 'stage' }}
-            docker pull edvin3i/loyelto-fastapi:${{ github.ref_name == 'master' && 'latest' || 'stage' }}
-            make up-${{ github.ref_name == 'main' && 'latest' || 'stage' }}
+            docker pull edvin3i/loyelto-landing:${{ env.IMAGE_TAG }}
+            docker pull edvin3i/loyelto-fastapi:${{ env.IMAGE_TAG }}
+            make up-${{ env.STACK }}
             docker image prune -f
+
