@@ -2,7 +2,7 @@ networks: {tnet: {external: true}}
 
 services:
   landing:
-    image: edvin3i/loyelto:landing
+    image: edvin3i/loyelto-landing
     labels:
       - traefik.enable=true
       - traefik.http.routers.landing.rule=Host(`loyel.to`)
@@ -11,7 +11,7 @@ services:
     networks: [tnet]
 
   fastapi:
-    image: edvin3i/loyelto:fastapi
+    image: edvin3i/loyelto-fastapi
     env_file: ./infra/env/prod.env
     labels:
       - traefik.enable=true
