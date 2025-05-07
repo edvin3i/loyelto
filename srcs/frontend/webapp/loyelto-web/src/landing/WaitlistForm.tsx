@@ -2,7 +2,7 @@ import { Box, Typography, TextField, Button, Snackbar, Alert } from "@mui/materi
 import { useState } from "react";
 import emailjs from '@emailjs/browser';
 
-// You'll need to install EmailJS: npm install @emailjs/browser
+// need to install EmailJS: npm install @emailjs/browser
 
 export default function WaitlistForm() {
   const [formData, setFormData] = useState({
