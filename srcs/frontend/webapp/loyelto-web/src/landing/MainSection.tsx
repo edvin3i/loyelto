@@ -37,7 +37,15 @@ export default function MainSection() {
                     Swap & Save: <br /> La Fidélité Nouvelle Génération
                 </Typography>
                 <Box sx={{ marginLeft: {sm: 0}, marginTop: 1, marginX: {xs: 2}}}>
-                    <Button fullWidth size="large" variant="contained"
+                    <Button 
+                        fullWidth 
+                        size="large" 
+                        variant="contained"
+                        onClick={() => {
+                            document.getElementById('join-waitlist')?.scrollIntoView({ 
+                                behavior: 'smooth' 
+                            });
+                        }}
                         sx={{
                             alignSelf: 'center',
                             // margin: 3,
@@ -49,7 +57,7 @@ export default function MainSection() {
                            
                         }}
                     >
-                        Join LoyelTo
+                        Rejoindre LoyelTo
                     </Button>
                 </Box>
             </Box>
