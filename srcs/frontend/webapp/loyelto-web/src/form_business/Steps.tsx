@@ -1,8 +1,16 @@
 import * as React from 'react';
 import { Box, Stepper, Step, StepLabel, Button, Typography } from "@mui/material";
 import FormText from './FormText';
+import FormEmail from './FormEmail';
+import BusinessTypeForm from './BusinessTypeForm';
 
-const steps = ['Nom et prénom,', 'Email', "Nom d l'entreprise", "Logo", "Addresse"];
+const steps = [
+    { name: 'Nom et prénom', component: <FormText h='Votre nom et prénom'/> },
+    { name: 'Email', component: <FormEmail /> },
+    { name: "Nom de l'entreprise8", component: <FormText h="Nom de l'entreprise" /> },
+    { name: 'Type de commerce', component: <BusinessTypeForm /> },
+    { name: 'Addresse', component: <FormText h="Adresse de l'établissement"/> },
+];
 
 export default function Steps() {
     const [activeStep, setActiveStep] = React.useState(0);
@@ -44,7 +52,7 @@ export default function Steps() {
     return (
         <Box sx={{ width: '100%' }}>
             <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => {
+                {steps.map((step, index) => {
                     const stepProps: { completed?: boolean } = {};
                     const labelProps: {
                         optional?: React.ReactNode;
@@ -58,8 +66,8 @@ export default function Steps() {
                         stepProps.completed = false;
                     }
                     return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
+                        <Step key={step.name} {...stepProps}>
+                            <StepLabel {...labelProps}>{step.name}</StepLabel>
                         </Step>
                     );
                 })}
@@ -76,9 +84,7 @@ export default function Steps() {
                 </React.Fragment>
             ) : (
                 <React.Fragment>
-                    //instead of this heading we want the form element
-                    <FormText/>
-                    {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography> */}
+                    {steps[activeStep]?.component}
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Button
                             color="inherit"
