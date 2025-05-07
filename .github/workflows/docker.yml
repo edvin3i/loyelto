@@ -2,9 +2,9 @@ name: Docker CI/CD
 
 on:
   push:
-    branches: [ main ]          # prod
+    branches: [ master ]          # prod
   pull_request:
-    branches: [ main ]          # staging
+    branches: [ master ]          # staging
 
 jobs:
   build:
