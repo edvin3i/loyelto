@@ -26,7 +26,7 @@ up-stage: create-networks
 up-prod: create-networks
 	@$(MAKE) STACK=prod up-run
 
-up-run: create-network
+up-run:
 	@echo ">>> Starting '$(STACK)' stack..."
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d
 
