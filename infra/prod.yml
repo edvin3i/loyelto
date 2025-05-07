@@ -1,12 +1,12 @@
 services:
   postgres:
-    env_file: ./infra/env/prod.env
+    env_file: infra/env/prod.env
     volumes:
       - /mnt/HC_Volume_102520323/loylvolume/pgdata-prod:/var/lib/postgresql/data
     networks: [tnet-prod]
     depends_on: [redis]
   redis:
-    env_file: ./infra/env/prod.env
+    env_file: infra/env/prod.env
     networks: [tnet-prod] 
   landing:
     image: edvin3i/loyelto-landing:latest
@@ -19,7 +19,7 @@ services:
 
   fastapi:
     image: edvin3i/loyelto-fastapi:latest
-    env_file: ./infra/env/prod.env
+    env_file: infra/env/prod.env
     labels:
       - traefik.enable=true
       - traefik.http.routers.fastapi.rule=Host(`api.loyel.to`)

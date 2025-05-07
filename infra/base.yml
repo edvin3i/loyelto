@@ -8,10 +8,7 @@ services:
   postgres:
     image: postgres:17.4
     restart: always
-    # env_file: ./infra/env/${STACK:-prod}.env   # env
-    # networks: [tnet-stage, tnet-prod]
 
   redis:
     image: redis:8-alpine
     restart: always
-    # networks: [tnet-stage, tnet-prod]

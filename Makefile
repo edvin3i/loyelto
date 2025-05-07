@@ -6,9 +6,9 @@ COMPOSE_FILES := \
 	-f infra/$(STACK).yml \
 	$(if $(filter $(STACK),stage prod),-f infra/traefik.yml)
 
-create-network:
-	@docker network inspect tnet-$(STACK) >/dev/null 2>&1 || \
-		( echo ">>> Creating external network 'tnet'..."; docker network create tnet-$(STACK) )
+create-networks:
+	@docker network inspect tnet-stage >/dev/null 2>&1 || docker network create tnet-stage
+	@docker network inspect tnet-prod  >/dev/null 2>&1 || docker network create tnet-prod
 
 build:
 	@echo "Building images for $(STACK)..."
@@ -20,10 +20,10 @@ up:
 up-dev:
 	@$(MAKE) STACK=dev up-run
 
-up-stage:
+up-stage: create-networks
 	@$(MAKE) STACK=stage up-run
 
-up-prod:
+up-prod: create-networks
 	@$(MAKE) STACK=prod up-run
 
 up-run: create-network

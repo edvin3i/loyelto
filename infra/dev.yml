@@ -8,19 +8,19 @@ networks:
 
 services:
   postgres:
-    env_file: ./infra/env/dev.env
+    # env_file: ./infra/env/dev.env
     volumes:
     - pgdata_dev:/var/lib/postgresql/data
     ports: ["5432:5432"]
     networks: [tnet-dev]
 
   redis:
-    env_file: ./infra/env/dev.env
+    # env_file: ./infra/env/dev.env
     ports: ["6379:6379"]
     networks: [tnet-dev]
 
   fastapi:
-    env_file: ./infra/env/dev.env
+    # env_file: ./infra/env/dev.env
     build:
       context: .
       dockerfile: containers/fastapi/Dockerfile
