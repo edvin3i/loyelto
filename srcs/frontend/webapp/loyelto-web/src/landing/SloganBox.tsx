@@ -13,8 +13,10 @@ export default function SloganBox({ slogan, comment, bgcolor }: SloganBoxProps) 
             bgcolor: bgcolor,
             padding: 2,
             borderRadius: 2,
+            minHeight: 150,
             width: '100%',    // Full width within its container
             display: 'flex',
+            justifyContent: 'center',  
             flexDirection: 'column'
           }}
         >
