@@ -4,9 +4,9 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.landing.rule=Host(`stage.loyel.to`)
-  api:
-    image: loyelto/api:staging
-    env_file: infra/env/stage.env
+  fastapi:
+    image: loyelto/fastapi:staging
+    env_file: ./infra/env/stage.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.api.rule=Host(`api.stage.loyel.to`)
+      - traefik.http.routers.fastapi.rule=Host(`api.stage.loyel.to`)

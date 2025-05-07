@@ -1,11 +1,13 @@
-FROM nginx:1.27
+FROM node:24-alpine AS builder
+WORKDIR /app
+COPY srcs/frontend/webapp/loyelto-web/ ./
+RUN npm ci
+COPY . .
+RUN npm run build
 
-COPY containers/nginx/config/loyel.to.conf /etc/nginx/sites-available/
-
-RUN rm -rf /etc/nginx/http.d/default.conf && \
-    ln -s /etc/nginx/sites-available/loyel.to.conf /etc/nginx/http.d/
-    
-
+FROM nginx:1.28
+RUN rm /etc/nginx/conf.d/default.conf
+COPY containers/landing/config/loyel.to.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist/ /usr/share/nginx/html/
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,70 +1,61 @@
-DOCKER_COMPOSE	=	docker compose
-DCOMPOSE_CONFG	=	docker-compose.yml
-DATA_DIR		=	$(PWD)/data
-# DATA_DIR		=	./data
-RM				=	rm -rf
+STACK ?= dev
+DOCKER_COMPOSE := docker compose
+COMPOSE_FILES := \
+	-f docker-compose.yml \
+	-f infra/base.yml \
+	-f infra/$(STACK).yml \
+	$(if $(filter $(STACK),stage prod),-f infra/traefik.yml)
 
+create-network:
+	@docker network inspect tnet >/dev/null 2>&1 || \
+		( echo ">>> Creating external network 'tnet'..."; docker network create tnet )
 
-create_dirs:
-	@echo "\e[36mCreating the volumes (dirs) at $(DATA_DIR)\e[0m"
-	@mkdir -p $(DATA_DIR)/djstatic
-	@mkdir -p $(DATA_DIR)/djmedia
-# @mkdir -p $(DATA_DIR)/frontend
-
-build: create_dirs
-	$(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) build
+build:
+	@echo "Building images for $(STACK)..."
+	$(DOCKER_COMPOSE) $(COMPOSE_FILES) build
 
 up:
-	@echo "Usage: make up [dev|stage|prod]"
+	@echo "Usage: make up-[dev|stage|prod]"
 
-up-dev: create_dirs
-	@echo "Starting developer mode..."
-	@DJANGO_MODE=dev $(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) up -d
+up-dev:
+	@$(MAKE) STACK=dev up-run
 
-up-stage: create_dirs
-	@echo "Starting staging mode..."
-	@DJANGO_MODE=stage $(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) up -d
+up-stage:
+	@$(MAKE) STACK=stage up-run
 
-up-prod: create_dirs
-	@echo "Starting producrion mode..."
-	@DJANGO_MODE=prod $(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) up -d
+up-prod:
+	@$(MAKE) STACK=prod up-run
+
+up-run: create-network
+	@echo ">>> Starting '$(STACK)' stack..."
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d
 
 down:
-	$(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) down
+	@echo ">>> Stopping '$(STACK)' stack..."
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down
 
 start:
-	$(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) start
+	$(DOCKER_COMPOSE) $(COMPOSE_FILES) start
 
 stop:
-	$(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) stop
+	$(DOCKER_COMPOSE) $(COMPOSE_FILES) stop
 
 re:
-	$(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) stop
-	$(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) down --rmi all --volumes --remove-orphans
-	docker system prune -f
-	docker volume prune -f
-	docker network prune -f
-	$(RM) $(DATA_DIR)
-	$(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) up -d
-
-	
+	@echo ">>> Recreate '$(STACK)' stack from scratch..."
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down --rmi all --volumes --remove-orphans
+	@docker system prune -f
+	@docker volume prune -f
+	@docker network prune -f
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d
 
 list:
 	docker ps
 
-clean: down
-		docker system prune -a
+clean:
+	@echo ">>> Clean '$(STACK)' stack and prune docker..."
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down --rmi all --volumes --remove-orphans
+	@docker system prune -f
+	@docker volume prune -f
+	@docker network prune -f
 
-fclean:
-		$(DOCKER_COMPOSE) -f $(DCOMPOSE_CONFG) down --rmi all --volumes --remove-orphans
-		docker system prune -f
-		docker volume prune -f
-		docker network prune -f
-		$(RM) $(DATA_DIR)
-
-.PHONY: create_dirs build up down start stop list clean fclean
-
-# sudo echo "127.0.0.1        gbreana.42.fr" >> /etc/hosts
-# sudo echo "127.0.0.1        db.gbreana.42.fr" >> /etc/hosts
-# sudo echo "127.0.0.1        baikal.gbreana.42.fr" >> /etc/hosts
-# sudo echo "127.0.0.1        chat.gbreana.42.fr" >> /etc/hosts
+.PHONY: build up up-dev up-stage up-prod up-run down start stop re list clean

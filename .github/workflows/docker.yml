@@ -15,7 +15,7 @@ jobs:
           - dir: containers/landing/Dockerfile
             image: loyelto/landing
           - dir: containers/fastapi/Dockerfile
-            image: loyelto/api
+            image: loyelto/fastapi
 
     steps:
       - uses: actions/checkout@v4
@@ -52,5 +52,5 @@ jobs:
             git pull --ff-only
             docker pull loyelto/landing:latest
             docker pull loyelto/api:latest
-            STACK=prod make up
+            make up-prod
             docker image prune -f

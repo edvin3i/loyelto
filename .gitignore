@@ -203,7 +203,7 @@ cython_debug/
 *.out
 *.app
 
-.env
+*.env
 *.sqlite3
 data/
 

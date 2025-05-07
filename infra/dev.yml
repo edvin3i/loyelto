@@ -1,0 +1,26 @@
+volumes:
+  pgdata_dev:
+
+
+services:
+  postgres:
+    volumes:
+    - pgdata_dev:/var/lib/postgresql/data
+    ports: ["5432:5432"]
+
+  redis:
+    ports: ["6379:6379"]
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: containers/fastapi/Dockerfile
+    ports: ["8000:8000"]
+    networks: [tnet]
+  
+  landing:
+    build:
+      context: .
+      dockerfile: containers/landing/Dockerfile
+    ports: ["80:80"]
+    networks: [tnet]
