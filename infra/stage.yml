@@ -1,11 +1,11 @@
 services:
   landing:
-    image: loyelto/landing:staging
+    image: edvin3i/loyelto:landing
     labels:
       - traefik.enable=true
       - traefik.http.routers.landing.rule=Host(`stage.loyel.to`)
   fastapi:
-    image: loyelto/fastapi:staging
+    image: edvin3i/loyelto:fastapi
     env_file: ./infra/env/stage.env
     labels:
       - traefik.enable=true
