@@ -4,7 +4,7 @@ COMPOSE_FILES := \
 	-p loyelto-$(STACK) \
 	-f infra/base.yml \
 	-f infra/$(STACK).yml \
-	$(if $(filter $(STACK),stage prod),-f infra/traefik.yml)
+	$(if $(filter $(STACK), prod),-f infra/traefik.yml)
 
 create-networks:
 	@docker network inspect tnet-stage >/dev/null 2>&1 || docker network create tnet-stage
