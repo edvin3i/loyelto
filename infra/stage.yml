@@ -12,13 +12,13 @@ services:
     image: edvin3i/loyelto-landing:stage
     labels:
       - traefik.enable=true
-      - traefik.http.routers.landing.rule=Host(`stage.loyel.to`)
+      - traefik.http.routers.landing-stage.rule=Host(`stage.loyel.to`)
     networks: [tnet-stage]
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
     env_file: env/stage.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.fastapi.rule=Host(`api.stage.loyel.to`)
+      - traefik.http.routers.fastapi-stage.rule=Host(`api.stage.loyel.to`)
     depends_on: [postgres, redis]
     networks: [tnet-stage]

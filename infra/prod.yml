@@ -12,9 +12,9 @@ services:
     image: edvin3i/loyelto-landing:latest
     labels:
       - traefik.enable=true
-      - traefik.http.routers.landing.rule=Host(`loyel.to`)
-      - traefik.http.routers.landing.entrypoints=websecure
-      - traefik.http.routers.landing.tls.certresolver=le
+      - traefik.http.routers.landing-prod.rule=Host(`loyel.to`)
+      - traefik.http.routers.landing-prod.entrypoints=websecure
+      - traefik.http.routers.landing-prod.tls.certresolver=le
     networks: [tnet-prod]
 
   fastapi:
@@ -22,9 +22,9 @@ services:
     env_file: env/prod.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.fastapi.rule=Host(`api.loyel.to`)
-      - traefik.http.routers.fastapi.entrypoints=websecure
-      - traefik.http.routers.fastapi.tls.certresolver=le
-      - traefik.http.services.fastapi.loadbalancer.server.port=8000
+      - traefik.http.routers.fastapi-prod.rule=Host(`api.loyel.to`)
+      - traefik.http.routers.fastapi-prod.entrypoints=websecure
+      - traefik.http.routers.fastapi-prod.tls.certresolver=le
+      - traefik.http.services.fastapi-prod.loadbalancer.server.port=8000
     depends_on: [postgres, redis]
     networks: [tnet-prod]
