@@ -1,11 +1,13 @@
-networks: {tnet: {external: true}}
-
 services:
   postgres:
+    env_file: ./infra/env/prod.env
     volumes:
       - /mnt/HC_Volume_102520323/loylvolume/pgdata:/var/lib/postgresql/data
     networks: [tnet-prod]
     depends_on: [redis]
+  redis:
+    env_file: ./infra/env/${STACK:-prod}.env
+    networks: [tnet-prod] 
   landing:
     image: edvin3i/loyelto-landing:latest
     labels:

@@ -28,7 +28,7 @@ services:
 volumes:
   traefik-acme:
 
-etworks:
+networks:
   tnet-stage:
     external: true
   tnet-prod:
