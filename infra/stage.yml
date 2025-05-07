@@ -13,6 +13,9 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.landing-stage.rule=Host(`stage.loyel.to`)
+      - traefik.http.routers.landing-stage.entrypoints=websecure
+      - traefik.http.routers.landing-stage.tls.certresolver=le
+      - traefik.http.services.landing-stage.loadbalancer.server.port=80
     networks: [tnet-stage]
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
@@ -20,5 +23,8 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.fastapi-stage.rule=Host(`api.stage.loyel.to`)
+      - traefik.http.routers.fastapi-stage.entrypoints=websecure
+      - traefik.http.routers.fastapi-stage.tls.certresolver=le
+      - traefik.http.services.fastapi-stage.loadbalancer.server.port=8000
     depends_on: [postgres, redis]
     networks: [tnet-stage]
