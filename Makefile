@@ -4,7 +4,7 @@ COMPOSE_FILES := \
 	-p loyelto-$(STACK) \
 	-f infra/base.yml \
 	-f infra/$(STACK).yml \
-	$(if $(filter $(STACK), prod),-f infra/traefik.yml)
+	$(if $(filter $(STACK), prod))
 
 create-networks:
 	@docker network inspect tnet-stage >/dev/null 2>&1 || docker network create tnet-stage
@@ -13,6 +13,13 @@ create-networks:
 build:
 	@echo "Building images for $(STACK)..."
 	$(DOCKER_COMPOSE) $(COMPOSE_FILES) build
+
+up-router:
+	$(DOCKER_COMPOSE) -p loyelto-router -f infra/traefik.yml up -d
+
+down-router:
+	$(DOCKER_COMPOSE) -p loyelto-router -f infra/traefik.yml down
+
 
 up:
 	@echo "Usage: make up-[dev|stage|prod]"
