@@ -48,21 +48,19 @@ export default function ShopsList() {
 
   const renderShopItem = ({ item: store }: { item: Shop }) => (
     <TouchableOpacity 
-      style={styles_shops_list.shopItemContainer}
+      style={[styles_shops_list.shopItemContainer, { backgroundColor: 'white' }]}
       onPress={() => router.push(`../business/${store.id}`)}
     >
-      <View style={[styles_shops_list.shopItem, { backgroundColor: store.backgroundColor }]}>
+      <View style={[styles_shops_list.shopItem, { backgroundColor: 'white' }]}>
         <IconSymbol size={24} name={store.icon} color="black" />
         <Text style={styles_shops_list.shopName}>{store.name}</Text>
       </View>
       
       <View style={styles_shops_list.couponContainer}>
-        <View style={styles_shops_list.couponBadge}>
-          <Text style={styles_shops_list.couponText}>{store.coupons} coupons</Text>
-        </View>
         <View style={styles_shops_list.ratingContainer}>
           <IconSymbol size={16} name="star.fill" color="black" />
-          <Text style={styles_shops_list.ratingText}>{store.rating}</Text>
+          <Text style={[styles_shops_list.ratingText, { marginLeft: 5}]}>{store.rating}</Text>
+          <Text style={[styles_shops_list.couponText, { marginLeft: 20 }]}>{store.coupons} coupons</Text>
         </View>
       </View>
       
@@ -86,9 +84,9 @@ export default function ShopsList() {
   );
 
   return (
-    <View style={[styles_shops_list.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
+    <View style={[styles_shops_list.container, { backgroundColor: '#EDF7FF' }]}>
       {/* Balance Section */}
-      <View style={styles_shops_list.balanceContainer}>
+      <View style={[styles_shops_list.balanceContainer, { backgroundColor: 'white' }]}>
         <IconSymbol size={24} name="person.fill" color="#F6A623" />
         <Text style={styles_shops_list.balanceTitle}>My balance</Text>
         <View style={styles_shops_list.pointsSection}>
