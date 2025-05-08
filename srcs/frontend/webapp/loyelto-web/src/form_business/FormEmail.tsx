@@ -25,7 +25,7 @@ export default function FormEmail({ handleSubmit }: FormEmailProps) {
                
             }}
         >
-            <Typography variant="h3" color="initial" gutterBottom>Dites-nous votre email</Typography>
+            <Typography variant="h3" color="initial" gutterBottom sx={{marginBottom: 5}}>Dites-nous votre email</Typography>
             <Input
                 required
                 id="emailInput"
@@ -41,4 +41,4 @@ export default function FormEmail({ handleSubmit }: FormEmailProps) {
             />
         </Box>
     );
-}</Box></InputAdornment></IconButton>
+}

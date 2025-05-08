@@ -14,8 +14,9 @@ export default function FormText({ h, handleSubmit }: FormTextProps) {
     return (
         <Box
             component="form"
-            noValidate
+            
             autoComplete="off"
+        
             sx={{
                 display: 'flex',
                 flexDirection: 'column',

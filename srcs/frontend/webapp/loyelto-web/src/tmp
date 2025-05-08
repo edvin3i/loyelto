@@ -1,0 +1,65 @@
+const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Make sure to use the correct public key format
+    emailjs.init("50jVmxtdntqkpgv22");
+    
+    // Make sure these parameter names EXACTLY match your EmailJS template variables
+    const templateParams = {
+      enterprise_name: formData.enterprise,
+      phone_number: formData.phone,
+      email: formData.email, // Try using 'email' instead of 'from_email'
+      message: `New waitlist signup from enterprise ${formData.enterprise}. Phone ${formData.phone}. Email: ${formData.email}`, // Add a message field
+      // Include any other fields your template might be expecting
+    };
+    
+    console.log("Sending with params:", templateParams); // Debug log
+    
+    emailjs.send(
+      'service_kq8lk8e',
+      'template_0qgzw6y',
+      templateParams
+    )
+    .then((response) => {
+      console.log('Email sent successfully:', response);
+      setSnackbar({
+        open: true,
+        message: 'Formulaire envoyé avec succès!',
+        severity: 'success'
+      });
+      // Reset form after successful submission
+      setFormData({ enterprise: "", phone: "", email: "" });
+    })
+    .catch((error) => {
+      console.error('Email sending failed:', error);
+      setSnackbar({
+        open: true,
+        message: 'Échec de l\'envoi du formulaire. Veuillez réessayer.',
+        severity: 'error'
+      });
+    });
+  };
+
+  emailjs.send(
+    'service_kq8lk8e',
+    'template_0qgzw6y',
+    templateParams
+  )
+  .then((response) => {
+    console.log('Email sent successfully:', response);
+    setSnackbar({
+      open: true,
+      message: 'Formulaire envoyé avec succès!',
+      severity: 'success'
+    });
+    // Reset form after successful submission
+    setFormData({ enterprise: "", phone: "", email: "" });
+  })
+  .catch((error) => {
+    console.error('Email sending failed:', error);
+    setSnackbar({
+      open: true,
+      message: 'Échec de l\'envoi du formulaire. Veuillez réessayer.',
+      severity: 'error'
+    });
+  });

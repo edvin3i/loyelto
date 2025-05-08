@@ -28,7 +28,7 @@ export default function LandingPage() {
               
             }}> 
                 <MainSection />
-                <SlogansSection forWhom='Pour les BUSINESSES' bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
+                <SlogansSection forWhom='Pour les ENTREPRISES' bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
                 <SlogansSection forWhom='Pour les CLIENTS' bgcolor={theme.palette.neutral.main} slogans={consumerSlogans} />
                 
                 {/* Add Waitlist Form */}
