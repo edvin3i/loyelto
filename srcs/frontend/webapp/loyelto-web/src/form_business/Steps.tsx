@@ -3,68 +3,87 @@ import { Box, Stepper, Step, StepLabel, Button, Typography } from "@mui/material
 import FormText from './FormText';
 import FormEmail from './FormEmail';
 import BusinessTypeForm from './BusinessTypeForm';
+import UploadLogo from './UploadLogo';
+import Merci from './Merci';
 
-const steps = [
-    { name: 'Nom et prénom', component: <FormText h='Votre nom et prénom'/> },
-    { name: 'Email', component: <FormEmail /> },
-    { name: "Nom de l'entreprise8", component: <FormText h="Nom de l'entreprise" /> },
-    { name: 'Type de commerce', component: <BusinessTypeForm /> },
-    { name: 'Addresse', component: <FormText h="Adresse de l'établissement"/> },
-];
+
 
 export default function Steps() {
+
+    
     const [activeStep, setActiveStep] = React.useState(0);
-    const [skipped, setSkipped] = React.useState(new Set<number>());
+    const [businessData, setBusinessData] = React.useState<{
+        name: string | null;
+        email: string | null;
+        company: string | null;
+        logo: string | null;
+    }>({ name: null, email: null, company: null, logo: null });
+    // const [skipped, setSkipped] = React.useState(new Set<number>());
 
-    const isStepOptional = (step: number) => {
-        return step === 3;
-    };
+    // const isStepOptional = (step: number) => {
+    //     return step === 3;
+    // };
 
-    const isStepSkipped = (step: number) => {
-        return skipped.has(step);
-    };
+    // const isStepSkipped = (step: number) => {
+    //     return skipped.has(step);
+    // };
 
-    const handleNext = () => {
-        let newSkipped = skipped;
-        if (isStepSkipped(activeStep)) {
-            newSkipped = new Set(newSkipped.values());
-            newSkipped.delete(activeStep);
-        }
+    const handleNext = (value: string) => {
+        // let newSkipped = skipped;
+        // if (isStepSkipped(activeStep)) {
+        //     newSkipped = new Set(newSkipped.values());
+        //     newSkipped.delete(activeStep);
+        // }
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped(newSkipped);
+        console.log(`printing from handleNext: ${value}`)
+        setBusinessData((prevData) => ({
+            ...prevData,
+            [steps[activeStep].name]: value,
+        }));
+        // setSkipped(newSkipped);
     };
 
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
+    const steps = [
+        { name: 'Nom et prénom', component: <FormText h='Votre nom et prénom'  handleSubmit={handleNext}/> },
+        { name: 'Email', component: <FormEmail  handleSubmit={handleNext}/>},
+        { name: "Nom de l'entreprise/", component: <FormText h="Nom de l'entreprise" handleSubmit={handleNext} /> },
+        // { name: 'Type de commerce', component: <BusinessTypeForm /> },
+        // { name: 'Addresse', component: <FormText h="Adresse de l'établissement"/> },
+        // { name: 'Logo', component: <UploadLogo/>}
+    ];
 
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-            throw new Error("Veuillez remplir ce champ.");
-        }
-    }
+    // const handleBack = () => {
+    //     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    // };
 
-    const handleReset = () => {
-        setActiveStep(0);
-    };
+    // const handleSkip = () => {
+    //     if (!isStepOptional(activeStep)) {
+    //         throw new Error("Veuillez remplir ce champ.");
+    //     }
+    // }
+
+    // const handleReset = () => {
+    //     setActiveStep(0);
+    // };
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '60%' }}>
+            {steps[activeStep]?.component}
             <Stepper activeStep={activeStep}>
                 {steps.map((step, index) => {
                     const stepProps: { completed?: boolean } = {};
                     const labelProps: {
                         optional?: React.ReactNode;
                     } = {};
-                    if (isStepOptional(index)) {
-                        labelProps.optional = (
-                            <Typography variant="caption">Optional</Typography>
-                        );
-                    }
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
+                    // if (isStepOptional(index)) {
+                    //     labelProps.optional = (
+                    //         <Typography variant="caption">Optional</Typography>
+                    //     );
+                    // }
+                    // if (isStepSkipped(index)) {
+                    //     stepProps.completed = false;
+                    // }
                     return (
                         <Step key={step.name} {...stepProps}>
                             <StepLabel {...labelProps}>{step.name}</StepLabel>
@@ -72,17 +91,19 @@ export default function Steps() {
                     );
                 })}
             </Stepper>
-            {activeStep === steps.length ? (
+            
+             {activeStep === steps.length && (
                 <React.Fragment>
                     <Typography sx={{ mt: 2, mb: 1 }}>
                         All steps completed - you&apos;re finished
                     </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={handleReset}>Reset</Button>
+                        {/* <Button onClick={handleReset}>Reset</Button> */}
                     </Box>
                 </React.Fragment>
-            ) : (
+            ) } 
+                {/*(
                 <React.Fragment>
                     {steps[activeStep]?.component}
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
@@ -105,7 +126,7 @@ export default function Steps() {
                         </Button>
                     </Box>
                 </React.Fragment>
-            )}
+            )} */}
         </Box>
     )
 }
