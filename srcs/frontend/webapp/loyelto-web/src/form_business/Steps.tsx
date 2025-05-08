@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Box, Stepper, Step, StepLabel, Button, Typography } from "@mui/material";
 import FormText from './FormText';
 import FormEmail from './FormEmail';
+import emailjs from '@emailjs/browser'
 import BusinessTypeForm from './BusinessTypeForm';
 import UploadLogo from './UploadLogo';
 import Merci from './Merci';
@@ -16,8 +17,8 @@ export default function Steps() {
         name: string | null;
         email: string | null;
         company: string | null;
-        logo: string | null;
-    }>({ name: null, email: null, company: null, logo: null });
+        // logo: string | null;
+    }>({ name: null, email: null, company: null });
     // const [skipped, setSkipped] = React.useState(new Set<number>());
 
     // const isStepOptional = (step: number) => {
@@ -28,6 +29,43 @@ export default function Steps() {
     //     return skipped.has(step);
     // };
 
+    const sendEmail = () => {
+        emailjs.init('0MSYJSYKK43wKxqnU');
+
+        const templateParams = {
+            enterprise_name: businessData.name,
+            email: businessData.email,
+            company: businessData.company, // Try using 'email' instead of 'from_email'
+            message: `New waitlist signup from enterprise: ${businessData.name}; Email: ${businessData.email}; Company: ${businessData.company}`, // Add a message field
+            // Include any other fields your template might be expecting
+        };
+        console.log("Sending with params:", templateParams); // Debug log
+        emailjs.send(
+            'service_vf5seeb',
+            'template_mpdnwfa',
+            templateParams
+          )
+          .then((response) => {
+            console.log('Email sent successfully:', response);
+            setBusinessData({ name: null, email: null, company: null })
+            // setSnackbar({
+            //   open: true,
+            //   message: 'Formulaire envoyé avec succès!',
+            //   severity: 'success'
+            // });
+            // Reset form after successful submission
+            // setFormData({ enterprise: "", phone: "", email: "" });
+          })
+          .catch((error) => {
+            console.error('Email sending failed:', error);
+            // setSnackbar({
+            //   open: true,
+            //   message: 'Échec de l\'envoi du formulaire. Veuillez réessayer.',
+            //   severity: 'error'
+            // });
+          });
+    }
+
     const handleNext = (value: string) => {
         // let newSkipped = skipped;
         // if (isStepSkipped(activeStep)) {
@@ -36,18 +74,19 @@ export default function Steps() {
         // }
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        console.log(`printing from handleNext: ${value}`)
+        console.log(`printing from handleNext: ${value}. Active step is: ${activeStep}`)
         setBusinessData((prevData) => ({
             ...prevData,
             [steps[activeStep].name]: value,
         }));
+        // if (activeStep === 2) sendEmail()
         // setSkipped(newSkipped);
     };
 
     const steps = [
-        { name: 'Nom et prénom', component: <FormText h='Votre nom et prénom'  handleSubmit={handleNext}/> },
-        { name: 'Email', component: <FormEmail  handleSubmit={handleNext}/>},
-        { name: "Nom de l'entreprise/", component: <FormText h="Nom de l'entreprise" handleSubmit={handleNext} /> },
+        { name: 'name', component: <FormText h='Votre nom et prénom'  handleSubmit={handleNext}/> },
+        { name: 'email', component: <FormEmail  handleSubmit={handleNext}/>},
+        { name: "company", component: <FormText h="Nom de l'entreprise" handleSubmit={handleNext} /> },
         // { name: 'Type de commerce', component: <BusinessTypeForm /> },
         // { name: 'Addresse', component: <FormText h="Adresse de l'établissement"/> },
         // { name: 'Logo', component: <UploadLogo/>}
@@ -93,15 +132,18 @@ export default function Steps() {
             </Stepper>
             
              {activeStep === steps.length && (
+                <>
+                { businessData.name && sendEmail() }
+                {/* {setActiveStep(0)} */}
                 <React.Fragment>
                     <Typography sx={{ mt: 2, mb: 1 }}>
                         All steps completed - you&apos;re finished
                     </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Box sx={{ flex: '1 1 auto' }} />
-                        {/* <Button onClick={handleReset}>Reset</Button> */}
                     </Box>
                 </React.Fragment>
+                </>
             ) } 
                 {/*(
                 <React.Fragment>
