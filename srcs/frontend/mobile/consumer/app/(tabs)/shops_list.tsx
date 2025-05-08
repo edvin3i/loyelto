@@ -56,18 +56,18 @@ export default function ShopsList() {
         <Text style={styles_shops_list.shopName}>{store.name}</Text>
       </View>
       
-      <View style={styles_shops_list.couponContainer}>
-        <View style={styles_shops_list.ratingContainer}>
-          <IconSymbol size={16} name="star.fill" color="black" />
+      <View style={[styles_shops_list.couponContainer, { flexDirection: 'column' }]}>
+        <View style={[styles_shops_list.ratingContainer, { alignSelf: 'flex-start', justifyContent: 'flex-start' }]}>
+          <View style={{ marginLeft: 15 }}>
+            <IconSymbol size={16} name="star.fill" color="gray" />
+          </View>
           <Text style={[styles_shops_list.ratingText, { marginLeft: 5}]}>{store.rating}</Text>
-          <Text style={[styles_shops_list.couponText, { marginLeft: 20 }]}>{store.coupons} coupons</Text>
+          <Text style={[styles_shops_list.couponText, { marginLeft: 20 }]}>{store.coupons} coupon</Text>
+        </View>
+        <View style={[styles_shops_list.promotionsContainer, { marginTop: 8, alignSelf: 'flex-start', justifyContent: 'flex-start' }]}>
+          <Text style={[styles_shops_list.promotionText, { marginLeft: 15 }]}>{store.promotions} Promotions available</Text>
         </View>
       </View>
-      
-      <TouchableOpacity style={styles_shops_list.promotionButton}>
-        <Text style={styles_shops_list.promotionText}>{store.promotions} Promotions available</Text>
-        <IconSymbol size={16} name="chevron.right" color="#007AFF" />
-      </TouchableOpacity>
     </TouchableOpacity>
   );
 

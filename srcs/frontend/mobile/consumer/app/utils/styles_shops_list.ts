@@ -13,6 +13,8 @@ const styles_shops_list = StyleSheet.create({
       marginBottom: 16,
       padding: 16,
       borderRadius: 12,
+      borderWidth: 2,
+      borderColor: '#E1F5FE',
     },
     balanceTitle: {
       fontSize: 18,
@@ -75,7 +77,9 @@ const styles_shops_list = StyleSheet.create({
       padding: 16,
     },
     shopItemContainer: {
-      marginBottom: 20,
+      marginBottom: 8,
+      borderRadius: 12,
+      overflow: 'hidden',
     },
     shopItem: {
       flexDirection: 'row',
@@ -94,6 +98,11 @@ const styles_shops_list = StyleSheet.create({
       alignItems: 'center',
       marginBottom: 8,
     },
+    promotionsContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
     couponBadge: {
       backgroundColor: '#CCFFCC',
       paddingHorizontal: 10,
@@ -104,6 +113,7 @@ const styles_shops_list = StyleSheet.create({
     couponText: {
       fontSize: 14,
       fontWeight: '500',
+      color: 'gray',
     },
     ratingContainer: {
       flexDirection: 'row',
@@ -112,18 +122,11 @@ const styles_shops_list = StyleSheet.create({
     ratingText: {
       fontSize: 14,
       marginLeft: 5,
-    },
-    promotionButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      backgroundColor: '#CCE5FF',
-      padding: 12,
-      borderRadius: 8,
+      color: 'gray',
     },
     promotionText: {
       fontSize: 14,
-      color: '#007AFF',
+      color: 'black',
     },
   });
 
