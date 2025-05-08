@@ -3,6 +3,7 @@ import { Box, Stepper, Step, StepLabel, Button, Typography } from "@mui/material
 import FormText from './FormText';
 import FormEmail from './FormEmail';
 import emailjs from '@emailjs/browser'
+import SignupCompleted from './SignupCompleted';
 import BusinessTypeForm from './BusinessTypeForm';
 import UploadLogo from './UploadLogo';
 import Merci from './Merci';
@@ -11,7 +12,7 @@ import Merci from './Merci';
 
 export default function Steps() {
 
-    
+
     const [activeStep, setActiveStep] = React.useState(0);
     const [businessData, setBusinessData] = React.useState<{
         name: string | null;
@@ -44,26 +45,13 @@ export default function Steps() {
             'service_vf5seeb',
             'template_mpdnwfa',
             templateParams
-          )
-          .then((response) => {
-            console.log('Email sent successfully:', response);
-            setBusinessData({ name: null, email: null, company: null })
-            // setSnackbar({
-            //   open: true,
-            //   message: 'Formulaire envoyé avec succès!',
-            //   severity: 'success'
-            // });
-            // Reset form after successful submission
-            // setFormData({ enterprise: "", phone: "", email: "" });
-          })
-          .catch((error) => {
-            console.error('Email sending failed:', error);
-            // setSnackbar({
-            //   open: true,
-            //   message: 'Échec de l\'envoi du formulaire. Veuillez réessayer.',
-            //   severity: 'error'
-            // });
-          });
+        )
+            .then((response) => {
+                console.log('Email sent successfully:', response);
+            })
+            .catch((error) => {
+                console.error('Email sending failed:', error);
+            });
     }
 
     const handleNext = (value: string) => {
@@ -84,8 +72,8 @@ export default function Steps() {
     };
 
     const steps = [
-        { name: 'name', component: <FormText h='Votre nom et prénom'  handleSubmit={handleNext}/> },
-        { name: 'email', component: <FormEmail  handleSubmit={handleNext}/>},
+        { name: 'name', component: <FormText h='Votre nom et prénom' handleSubmit={handleNext} /> },
+        { name: 'email', component: <FormEmail handleSubmit={handleNext} /> },
         { name: "company", component: <FormText h="Nom de l'entreprise" handleSubmit={handleNext} /> },
         // { name: 'Type de commerce', component: <BusinessTypeForm /> },
         // { name: 'Addresse', component: <FormText h="Adresse de l'établissement"/> },
@@ -130,22 +118,21 @@ export default function Steps() {
                     );
                 })}
             </Stepper>
-            
-             {activeStep === steps.length && (
-                <>
-                { businessData.name && sendEmail() }
+
+            {activeStep === steps.length && <SignupCompleted businessData={businessData} />}
+            {/* <>
+                
                 {/* {setActiveStep(0)} */}
-                <React.Fragment>
+            {/* <React.Fragment>
                     <Typography sx={{ mt: 2, mb: 1 }}>
                         All steps completed - you&apos;re finished
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    </Typography> */}
+            {/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Box sx={{ flex: '1 1 auto' }} />
-                    </Box>
-                </React.Fragment>
-                </>
-            ) } 
-                {/*(
+                    </Box> */}
+            {/* </React.Fragment> */}
+
+            {/*(
                 <React.Fragment>
                     {steps[activeStep]?.component}
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
