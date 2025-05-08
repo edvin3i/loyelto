@@ -1,19 +1,26 @@
-import { Box } from "@mui/material"
+import { Box, Toolbar } from "@mui/material"
 import { useState } from "react"
 import Steps from "./Steps"
+import LoyelToBar from "../landing/LoyelToBar";
 
 
 
-export default function FormAndSteps(){
-    const [formData, setFormData] = useState<{
-        name: string | null;
-        email: string | null;
-        company: string | null;
-        logo: string | null;
-    }>({ name: null, email: null, company: null, logo: null });
-    return(
-        <Box component="section">
-            <Steps/>
-        </Box>
+export default function FormAndSteps() {
+    
+    return (
+        <>
+        <LoyelToBar/>
+        <Toolbar/>
+            <Box component="section"
+            sx={{
+                marginTop: 20,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center', 
+                alignItems: 'center'
+            }}>
+                <Steps />
+            </Box>
+        </>
     )
 }

@@ -1,5 +1,6 @@
 import { Box, Typography, InputLabel, Select, SelectChangeEvent, MenuItem } from '@mui/material'
 import { useState } from 'react';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 
 export default function BusinessTypeForm() {
     const [businessType, setBusinessType] = useState('');
