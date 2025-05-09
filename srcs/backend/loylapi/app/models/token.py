@@ -40,6 +40,8 @@ class Token(Base):
         Boolean, default=False
     )  # flag for LOYL
 
+    rate_loyl: Mapped[Decimal] = mapped_column(Numeric(18, 6), nullable=False)
+
     # need to check later
     min_rate: Mapped[Decimal | None] = mapped_column(
         Numeric(18, 6),
