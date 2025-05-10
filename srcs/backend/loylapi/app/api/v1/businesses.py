@@ -11,6 +11,6 @@ router = APIRouter(prefix="/businesses", tags=["businesses"])
 
 @router.post("/", response_model=BusinessOut)
 async def create_business(
-        payload: BusinessCreate,
-        db: Annotated[AsyncSession, Depends(get_db)]):
+    payload: BusinessCreate, db: Annotated[AsyncSession, Depends(get_db)]
+):
     return await business_service.create(db, payload)

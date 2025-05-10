@@ -54,7 +54,7 @@ class Token(Base):
         BigInteger,
         nullable=False,
         default=0,
-        comment="Current totalSupply (base-units)"
+        comment="Current totalSupply (base-units)",
     )
 
     business: Mapped["Business"] = relationship(
@@ -63,4 +63,4 @@ class Token(Base):
 
     @property
     def base_units(self) -> int:
-        return 10 ** self.decimals
+        return 10**self.decimals

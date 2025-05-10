@@ -8,6 +8,7 @@ M = TypeVar("M")
 C = TypeVar("C", bound=BaseModel)
 U = TypeVar("U", bound=BaseModel)
 
+
 class BaseService(Generic[M, C, U]):
     def __init__(self, crud: CRUDBase[M, C, U]):
         self.crud = crud
@@ -19,7 +20,7 @@ class BaseService(Generic[M, C, U]):
         return await self.crud.read(db, id)
 
     async def read_many(
-            self, db: AsyncSession, *, start: int = 0, limit: int = 10, filters=None
+        self, db: AsyncSession, *, start: int = 0, limit: int = 10, filters=None
     ) -> list[M]:
         return await self.crud.read_many(db, start=start, limit=limit, filters=filters)
 

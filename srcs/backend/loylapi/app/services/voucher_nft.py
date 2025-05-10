@@ -5,7 +5,9 @@ from app.schemas.voucher import VoucherNFTCreate, VoucherNFTUpdate
 
 crud_voucher_nft = CRUDBase[VoucherNFT, VoucherNFTCreate, VoucherNFTUpdate](VoucherNFT)
 
+
 class VoucherNFTService(BaseService[VoucherNFT, VoucherNFTCreate, VoucherNFTUpdate]):
     pass
+
 
 voucher_nft_service = VoucherNFTService(crud_voucher_nft)

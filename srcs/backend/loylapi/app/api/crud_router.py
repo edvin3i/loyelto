@@ -1,7 +1,7 @@
 from uuid import UUID
 from pydantic import BaseModel
-from fastapi import (APIRouter, Depends, HTTPException, Query, status)
-from typing import (Annotated, Type, TypeVar, Union, List)
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from typing import Annotated, Type, TypeVar, Union, List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db
@@ -44,9 +44,9 @@ def create_crud_router(
 
     @router.get("/", response_model=List[out_schema])
     async def read_items(
-            db: Annotated[AsyncSession, Depends(get_db)],
-            start: int = Query(0, ge=0),
-            limit: int = Query(10, ge=1, le=100)
+        db: Annotated[AsyncSession, Depends(get_db)],
+        start: int = Query(0, ge=0),
+        limit: int = Query(10, ge=1, le=100),
     ) -> List[OutSchemaType]:
         return await crud.read_many(db, start=start, limit=limit)
 

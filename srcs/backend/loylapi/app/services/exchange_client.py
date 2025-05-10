@@ -7,22 +7,14 @@ from spl.token.constants import TOKEN_PROGRAM_ID
 from pathlib import Path
 from app.core.settings import settings
 
-import json
-from solders.keypair import Keypair
-
-raw = settings.TREASURY_KEYPAIR
-nums = json.loads(raw)               # list of 64-bit ints
-key_bytes = bytes(nums)              # bytes len 64
-treasury_kp = Keypair.from_bytes(key_bytes)
-
 
 class ExchangeClient:
     def __init__(
-            self,
-            rpc_url: str,
-            payer_keypair: Keypair,  #  treasury
-            program_id: str,
-            idl_path: Path,
+        self,
+        rpc_url: str,
+        payer_keypair: Keypair,  #  treasury
+        program_id: Pubkey,
+        idl_path: Path,
     ):
         self.treasury_kp = payer_keypair  # save for later calls
         client = AsyncClient(rpc_url)
@@ -31,11 +23,11 @@ class ExchangeClient:
         self.program = Program(idl, program_id, provider)
 
     async def init_pool(
-            self,
-            loyalty_mint: str,  # string of mint-addr SPL-token of business
-            deposit_token: int,
-            deposit_loyl: int,
-            business_signer: Keypair,  # business owner keypair
+        self,
+        loyalty_mint: str,  # string of mint-addr SPL-token of business
+        deposit_token: int,
+        deposit_loyl: int,
+        business_signer: Keypair,  # business owner keypair
     ) -> str:
         # converting str to Pubkey
         mint_pubkey = Pubkey.from_string(loyalty_mint)
@@ -67,13 +59,13 @@ class ExchangeClient:
         return tx_sig
 
     async def swap(
-            self,
-            pool: Pubkey,
-            user_source_ata: Pubkey,
-            user_dest_ata: Pubkey,
-            amount_in: int,
-            min_amount_out: int,
-            user_signer: Keypair,
+        self,
+        pool: Pubkey,
+        user_source_ata: Pubkey,
+        user_dest_ata: Pubkey,
+        amount_in: int,
+        min_amount_out: int,
+        user_signer: Keypair,
     ) -> str:
         tx_sig = await self.program.rpc["swap"](
             amount_in,

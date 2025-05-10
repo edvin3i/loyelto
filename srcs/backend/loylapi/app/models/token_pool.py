@@ -22,8 +22,9 @@ class TokenPool(Base):
     __tablename__ = "token_pools"
     __table_args__ = (
         UniqueConstraint("token_id", name="uq_token_pool"),
-        CheckConstraint('balance_token >= 0 AND balance_loyl >= 0',
-                        name='check_pool_nonnegative')
+        CheckConstraint(
+            "balance_token >= 0 AND balance_loyl >= 0", name="check_pool_nonnegative"
+        ),
     )
 
     id: Mapped[uuid.UUID] = uuid_pk()
@@ -37,7 +38,7 @@ class TokenPool(Base):
     init_tx: Mapped[str] = mapped_column(
         String(88),  # len for Solana tx signature
         nullable=False,
-        comment="Signature of the on-chain tx that initialized this pool"
+        comment="Signature of the on-chain tx that initialized this pool",
     )
 
     balance_token: Mapped[int] = mapped_column(BigInteger)
