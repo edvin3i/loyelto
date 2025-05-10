@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     DB_USER: str | None = Field(default=None)
     DB_PASSWORD: str | None = Field(default=None)
 
+    TREASURY_KEYPAIR: str = Field(..., env="TREASURY_KEYPAIR")
+
     @property
     def database_url(self) -> str:
         if self.ENV == "dev":

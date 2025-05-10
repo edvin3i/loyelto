@@ -7,7 +7,7 @@ from app.utils import uuid_pk
 from decimal import Decimal
 from sqlalchemy import (
     CheckConstraint,
-    UniqueConstraint,
+    BigInteger,
     ForeignKey,
     Boolean,
     Numeric,
@@ -50,6 +50,17 @@ class Token(Base):
         Numeric(18, 6),
     )
 
+    total_supply: Mapped[int] = mapped_column(
+        BigInteger,
+        nullable=False,
+        default=0,
+        comment="Current totalSupply (base-units)"
+    )
+
     business: Mapped["Business"] = relationship(
         back_populates="loyalty_token", lazy="selectin"
     )
+
+    @property
+    def base_units(self) -> int:
+        return 10 ** self.decimals

@@ -36,6 +36,7 @@ class Business(Base):
     city: Mapped[str] = mapped_column(String(128))
     address: Mapped[str] = mapped_column(String(128))
     zip_code: Mapped[str] = mapped_column(String(12))
+    owner_privkey: Mapped[str] = mapped_column(String(88))
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
