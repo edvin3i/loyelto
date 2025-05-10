@@ -203,6 +203,8 @@ cython_debug/
 *.out
 *.app
 
+
+# Others
 *.env
 *.sqlite3
 data/
@@ -211,3 +213,5 @@ migrations/
 
 .DS_Store
 *.db
+print_all.sh
+all.txt
