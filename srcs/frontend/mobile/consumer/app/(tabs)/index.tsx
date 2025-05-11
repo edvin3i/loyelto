@@ -105,7 +105,7 @@ export default function HomeScreen() {
                   {store.coupons > 0 ? (
                     <View style={styles.couponBadge}>
                       <ThemedText style={styles.couponDigit}>{store.coupons}</ThemedText>
-                      <ThemedText style={styles.couponLabel}> coupons</ThemedText>
+                      <ThemedText style={styles.couponLabel}> vouchers</ThemedText>
                     </View>
                   ) : null}
                 </View>

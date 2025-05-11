@@ -23,7 +23,7 @@ const styles_shops_list = StyleSheet.create({
       flex: 1,
     },
     pointsSection: {
-      alignItems: 'flex-end',
+      alignItems: 'center',
     },
     pointsValue: {
       fontSize: 20,
@@ -31,6 +31,7 @@ const styles_shops_list = StyleSheet.create({
     },
     pointsLabel: {
       fontSize: 14,
+      textAlign: 'center',
       color: '#666',
     },
     filtersContainer: {
@@ -78,20 +79,20 @@ const styles_shops_list = StyleSheet.create({
     },
     shopItemContainer: {
       marginBottom: 8,
-      borderRadius: 12,
+      borderRadius: 10,
       overflow: 'hidden',
     },
     shopItem: {
       flexDirection: 'row',
       alignItems: 'center',
-      padding: 16,
-      borderRadius: 12,
+      padding: 12,
+      borderRadius: 10,
       marginBottom: 8,
     },
     shopName: {
       fontSize: 18,
       fontWeight: '600',
-      marginLeft: 10,
+      marginLeft: 18,
     },
     couponContainer: {
       flexDirection: 'row',
@@ -111,9 +112,22 @@ const styles_shops_list = StyleSheet.create({
       marginRight: 10,
     },
     couponText: {
-      fontSize: 14,
+      fontSize: 16,
       fontWeight: '500',
       color: 'gray',
+    },
+    couponTextContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    ticketContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    ticketText: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: 'black',
     },
     ratingContainer: {
       flexDirection: 'row',
@@ -124,8 +138,24 @@ const styles_shops_list = StyleSheet.create({
       marginLeft: 5,
       color: 'gray',
     },
+    promotionCount: {
+      fontSize: 16,
+      fontWeight: '600',
+      width: 24,           // Fixed width
+      height: 24,          // Same as width to create a circle
+      borderRadius: 12,    // Half of width/height
+      backgroundColor: '#ABE7B2',
+      textAlign: 'center', // Center text horizontally
+      lineHeight: 24,      // Match height to center vertically
+      overflow: 'hidden',  // Ensure content stays within the circle
+    },
+    coinIcon: {
+      width: 24,
+      height: 24,
+      marginLeft: 4,
+    },
     promotionText: {
-      fontSize: 14,
+      fontSize: 16,
       color: 'black',
     },
   });
