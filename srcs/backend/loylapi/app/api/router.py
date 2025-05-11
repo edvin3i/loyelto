@@ -6,16 +6,14 @@ from app.api.v1 import (
 
 
 router = APIRouter()
-router.include_router(auth.router)
-router.include_router(users.router)
-router.include_router(businesses.router)
-router.include_router(tokens.router)
-router.include_router(wallets.router)
-router.include_router(balances.router)
-router.include_router(point_txs.router)
-router.include_router(swap_txs.router)
-router.include_router(voucher_templates.router)
-router.include_router(voucher_nfts.router)
-router.include_router(tasks.router)
-
-
+router.include_router(auth)
+router.include_router(users)
+router.include_router(businesses)
+router.include_router(tokens)
+router.include_router(wallets)
+router.include_router(balances)
+router.include_router(point_txs)
+router.include_router(swap_txs)
+router.include_router(voucher_templates)
+router.include_router(voucher_nfts)
+router.include_router(tasks)

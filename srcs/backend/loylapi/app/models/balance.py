@@ -1,5 +1,6 @@
 from __future__ import annotations
-import uuid, datetime
+import uuid
+from datetime import datetime
 from app.db.base import Base
 from app.models import Wallet
 from app.models import Token
@@ -25,12 +26,12 @@ class Balance(Base):
     )
     amount: Mapped[int] = mapped_column(BigInteger)
 
-    created_at: Mapped[datetime.datetime] = mapped_column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
     )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
+    updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now(),
