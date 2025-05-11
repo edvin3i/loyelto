@@ -1,4 +1,3 @@
-# app/api/v1/users.py
 from typing import Annotated, List, Union
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status

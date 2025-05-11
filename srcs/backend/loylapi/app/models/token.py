@@ -13,6 +13,8 @@ from sqlalchemy import (
     Numeric,
     Integer,
     String,
+    Index,
+    text,
 )
 from sqlalchemy.orm import (
     Mapped,
@@ -26,7 +28,14 @@ class Token(Base):
     __table_args__ = (
         CheckConstraint("min_rate <= max_rate", name="check_min_le_max_rate"),
         CheckConstraint("decimals BETWEEN 0 AND 9", name="check_decimals_range"),
+        Index(
+            "uq_single_loyl",
+            "settlement_token",
+            unique=True,
+            postgresql_where=text("settlement_token IS TRUE"),
+        ),
     )
+
 
     id: Mapped[uuid.UUID] = uuid_pk()
     mint: Mapped[str] = mapped_column(String(64), unique=True, index=True)

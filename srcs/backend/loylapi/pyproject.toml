@@ -16,6 +16,7 @@ dependencies = [
     "anchorpy>=0.21.0",
     "base58>=2.1.1",
     "celery>=5.5.2",
+    "python-dotenv>=1.1.0",
 ]
 
 [dependency-groups]
