@@ -1,16 +1,36 @@
-import functools, httpx
+import functools, httpx, time
 from jose import jwt
 from jose.utils import base64url_decode
+from typing import List, Dict
 from pydantic import BaseModel
 from app.core.settings import settings
 
 PRIVY_JWKS = "https://auth.privy.io/.well-known/jwks.json"
 ALGS = ["ES256"]
+_JWKS_CACHE: tuple[float, List[Dict]] = (0.0, [])
 
 
 @functools.lru_cache(maxsize=1)
-def _jwks():
-    return httpx.get(PRIVY_JWKS, timeout=10).json()["keys"]
+def _jwks() -> List[Dict]:
+    """
+    Fetch JWKS with 10-minute TTL cache.
+    """
+    now = time.time()
+    ts, keys = _JWKS_CACHE
+    if now - ts < 600 and keys:
+        return keys
+
+    r = httpx.get(PRIVY_JWKS, timeout=10)
+    r.raise_for_status()
+    data = r.json()
+    # garantee that keys will be list[dict]
+    new_keys = data.get("keys") or []
+    if not isinstance(new_keys, list):
+        new_keys = []
+    # cache update
+    global _JWKS_CACHE
+    _JWKS_CACHE = (now, new_keys)
+    return new_keys
 
 
 class TokenClaims(BaseModel):
@@ -25,7 +45,7 @@ def _get_signing_key(token: str) -> dict:
     headers = jwt.get_unverified_header(token)
     kid = headers["kid"]
     for key in _jwks():
-        if key["kid"] == kid:
+        if key.get("kid") == kid:
             return key
     raise ValueError("No matching JWK")
 
