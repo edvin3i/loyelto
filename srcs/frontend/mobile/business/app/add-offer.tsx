@@ -1,20 +1,44 @@
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
+import { createVoucherTemplate, VoucherTemplateCreate } from '@/services/voucher';
 
 export default function AddOfferScreen() {
   const [offerName, setOfferName] = useState('');
   const [offerDescription, setOfferDescription] = useState('');
   const [pointsCost, setPointsCost] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [expiryDays, setExpiryDays] = useState('30');
+  const [loading, setLoading] = useState(false);
   
-  const handleCreateOffer = () => {
-    // Here you would typically save the offer to your database
-    // For demo purposes, we'll just navigate back to the home screen
-    router.back();
+  const handleCreateOffer = async () => {
+    // Validate inputs
+    if (!offerName || !offerDescription || !pointsCost || !expiryDays) {
+      Alert.alert('Missing Information', 'Please fill in all required fields');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      const offerData: VoucherTemplateCreate = {
+        title: offerName,
+        description: offerDescription,
+        points_required: parseInt(pointsCost, 10),
+        expiry_days: parseInt(expiryDays, 10),
+        is_active: true
+      };
+      
+      await createVoucherTemplate(offerData);
+      router.back();
+    } catch (error) {
+      console.error('Error creating offer:', error);
+      Alert.alert('Error', 'Failed to create offer. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,12 +89,12 @@ export default function AddOfferScreen() {
             </ThemedView>
 
             <ThemedView style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
-              <ThemedText style={styles.label}>Quantity</ThemedText>
+              <ThemedText style={styles.label}>Expiry (days)</ThemedText>
               <TextInput
                 style={styles.input}
-                value={quantity}
-                onChangeText={setQuantity}
-                placeholder="300"
+                value={expiryDays}
+                onChangeText={setExpiryDays}
+                placeholder="30"
                 keyboardType="numeric"
               />
             </ThemedView>
@@ -85,10 +109,15 @@ export default function AddOfferScreen() {
           </ThemedView>
 
           <TouchableOpacity 
-            style={styles.createButton}
+            style={[styles.createButton, loading && styles.disabledButton]}
             onPress={handleCreateOffer}
+            disabled={loading}
           >
-            <ThemedText style={styles.createButtonText}>Create Offer</ThemedText>
+            {loading ? (
+              <ActivityIndicator color="#fff" size="small" />
+            ) : (
+              <ThemedText style={styles.createButtonText}>Create Offer</ThemedText>
+            )}
           </TouchableOpacity>
         </ThemedView>
       </ScrollView>
@@ -161,6 +190,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 24,
+  },
+  disabledButton: {
+    backgroundColor: '#A5D6A7',
   },
   createButtonText: {
     color: '#fff',

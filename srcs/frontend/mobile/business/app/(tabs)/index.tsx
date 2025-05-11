@@ -1,17 +1,63 @@
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getBusinessProfile, Business } from '@/services/business';
+import { getVoucherTemplates, VoucherTemplate, deleteVoucherTemplate } from '@/services/voucher';
 
 export default function HomeScreen() {
   const [coinImageError, setCoinImageError] = useState(false);
   const [pizzaImageError, setPizzaImageError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [vouchers, setVouchers] = useState<VoucherTemplate[]>([]);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [businessData, vouchersData] = await Promise.all([
+        getBusinessProfile(),
+        getVoucherTemplates()
+      ]);
+      setBusiness(businessData);
+      setVouchers(vouchersData);
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const navigateToAddOffer = () => {
     router.push('/add-offer');
   };
+
+  const handleStopPromo = async (id: string) => {
+    try {
+      await deleteVoucherTemplate(id);
+      // Refresh vouchers list after deletion
+      setVouchers(vouchers.filter(v => v.id !== id));
+    } catch (error) {
+      console.error('Failed to delete voucher template:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+      </ThemedView>
+    );
+  }
+
+  // Format balance with proper spacing for thousands
+  const formattedBalance = '536 679'; // This would come from the business data in a real implementation
 
   return (
     <ThemedView style={styles.container}>
@@ -19,7 +65,7 @@ export default function HomeScreen() {
       <ThemedView style={styles.balanceHeader}>
         <ThemedText type="title" style={styles.headerLabel}>My balance</ThemedText>
         <View style={styles.balanceContainer}>
-          <ThemedText style={styles.balanceText}>536 679</ThemedText>
+          <ThemedText style={styles.balanceText}>{formattedBalance}</ThemedText>
           <View style={styles.coinIcon}>
             <FontAwesome name="circle" size={24} color="#FFD700" />
           </View>
@@ -68,7 +114,7 @@ export default function HomeScreen() {
           <View style={styles.sectionHeader}>
             <ThemedText type="subtitle">My active offers:</ThemedText>
             <View style={styles.smallPillContainer}>
-              <ThemedText style={styles.smallPillText}>5</ThemedText>
+              <ThemedText style={styles.smallPillText}>{vouchers.length}</ThemedText>
             </View>
           </View>
           <TouchableOpacity 
@@ -80,32 +126,58 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Offer Card */}
-        <ThemedView style={styles.offerCard}>
-          <View style={styles.offerContent}>
-            <View>
-              <ThemedText type="subtitle">Free Pizza Margarita</ThemedText>
-              <ThemedText style={styles.offerDescription}>
-                Classic pizza with tomato sauce, mozzarella, and fresh basil
-              </ThemedText>
-              <ThemedText style={styles.offerStatus}>
-                <ThemedText style={styles.greenText}>150</ThemedText>/300 left
-              </ThemedText>
-            </View>
-            <View style={styles.pizzaIcon}>
-              <FontAwesome name="cutlery" size={32} color="#C62828" />
-            </View>
-          </View>
-          <View style={styles.offerFooter}>
-            <TouchableOpacity style={styles.stopButton}>
-              <ThemedText style={styles.stopButtonText}>Stop promo</ThemedText>
+        {vouchers.length === 0 ? (
+          <ThemedView style={styles.emptyState}>
+            <ThemedText style={styles.emptyStateText}>No active offers</ThemedText>
+            <TouchableOpacity 
+              style={styles.emptyStateButton}
+              onPress={navigateToAddOffer}
+            >
+              <ThemedText style={styles.emptyStateButtonText}>Create your first offer</ThemedText>
             </TouchableOpacity>
-            <View style={styles.pointsContainer}>
-              <ThemedText style={styles.pointsValue}>15</ThemedText>
-              <ThemedText style={styles.smallPointsLabel}>points</ThemedText>
-            </View>
-          </View>
-        </ThemedView>
+          </ThemedView>
+        ) : (
+          <FlatList
+            data={vouchers}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <ThemedView style={styles.offerCard}>
+                <View style={styles.offerContent}>
+                  <View>
+                    <ThemedText type="subtitle">{item.title}</ThemedText>
+                    <ThemedText style={styles.offerDescription}>
+                      {item.description}
+                    </ThemedText>
+                    <ThemedText style={styles.offerStatus}>
+                      Expires after: <ThemedText style={styles.greenText}>{item.expiry_days} days</ThemedText>
+                    </ThemedText>
+                  </View>
+                  <View style={styles.pizzaIcon}>
+                    <FontAwesome 
+                      name={item.title.toLowerCase().includes('pizza') ? "cutlery" : "gift"} 
+                      size={32} 
+                      color="#C62828" 
+                    />
+                  </View>
+                </View>
+                <View style={styles.offerFooter}>
+                  <TouchableOpacity 
+                    style={styles.stopButton}
+                    onPress={() => handleStopPromo(item.id)}
+                  >
+                    <ThemedText style={styles.stopButtonText}>Stop promo</ThemedText>
+                  </TouchableOpacity>
+                  <View style={styles.pointsContainer}>
+                    <ThemedText style={styles.pointsValue}>{item.points_required}</ThemedText>
+                    <ThemedText style={styles.smallPointsLabel}>points</ThemedText>
+                  </View>
+                </View>
+              </ThemedView>
+            )}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.offersList}
+          />
+        )}
       </ThemedView>
     </ThemedView>
   );
@@ -115,6 +187,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   balanceHeader: {
     alignItems: 'center',
@@ -235,6 +312,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    marginBottom: 12,
   },
   offerContent: {
     flexDirection: 'row',
@@ -283,5 +361,29 @@ const styles = StyleSheet.create({
   smallPointsLabel: {
     fontSize: 10,
     color: '#666',
+  },
+  offersList: {
+    paddingBottom: 16,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+  },
+  emptyStateText: {
+    color: '#666',
+    marginBottom: 16,
+  },
+  emptyStateButton: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  emptyStateButtonText: {
+    color: '#fff',
+    fontWeight: '600',
   },
 });

@@ -1,12 +1,45 @@
-import { StyleSheet, ScrollView, TouchableOpacity, View, Switch } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, View, Switch, ActivityIndicator } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import { getBusinessProfile, Business } from '@/services/business';
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [business, setBusiness] = useState<Business | null>(null);
+
+  useEffect(() => {
+    loadBusinessProfile();
+  }, []);
+
+  const loadBusinessProfile = async () => {
+    try {
+      setLoading(true);
+      const data = await getBusinessProfile();
+      setBusiness(data);
+    } catch (error) {
+      console.error('Failed to load business profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const navigateToBusinessInfo = () => {
+    router.push('/business-information');
+  };
+
+  if (loading) {
+    return (
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+      </ThemedView>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -24,10 +57,10 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
         <ThemedText style={styles.businessName}>
-          Pizza Palace
+          {business?.name || 'Your Business'}
         </ThemedText>
         <ThemedText style={styles.businessEmail}>
-          manager@pizzapalace.com
+          {business?.owner_email || 'email@example.com'}
         </ThemedText>
       </ThemedView>
 
@@ -36,7 +69,10 @@ export default function ProfileScreen() {
           Business Settings
         </ThemedText>
 
-        <TouchableOpacity style={styles.settingItem}>
+        <TouchableOpacity 
+          style={styles.settingItem}
+          onPress={navigateToBusinessInfo}
+        >
           <View style={styles.settingItemLeft}>
             <FontAwesome name="building" size={20} color="#4CAF50" style={styles.settingIcon} />
             <ThemedText>Business Information</ThemedText>
@@ -128,6 +164,11 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     padding: 16,
