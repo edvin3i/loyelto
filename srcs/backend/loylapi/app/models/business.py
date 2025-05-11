@@ -11,7 +11,8 @@ from sqlalchemy.sql import func
 from sqlalchemy import (
     CheckConstraint,
     String,
-    DateTime, Numeric,
+    DateTime,
+    Numeric,
 )
 from sqlalchemy.orm import (
     Mapped,
@@ -39,8 +40,8 @@ class Business(Base):
     owner_privkey: Mapped[str] = mapped_column(String(88))
     rate_loyl: Mapped[Decimal] = mapped_column(
         Numeric(18, 6),
-        nullable = False,
-        comment = "Rate branded token to LOYL",
+        nullable=False,
+        comment="Rate branded token to LOYL",
     )
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),

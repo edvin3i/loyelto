@@ -7,6 +7,7 @@ class PrivyUser(BaseModel):
     wallet_address: str  # EVM, only on front
     embedded_wallet: str  # SPL pubkey (will come from Privy Solana extension)
 
+
 class PrivyClient:
     def __init__(self, app_id: str, api_key: str):
         self.app_id = app_id
@@ -46,10 +47,10 @@ class PrivyClient:
         return data["wallets"]["solana"][0]["address"]
 
     async def sign_transaction(
-            self,
-            wallet_address: str,
-            transaction_b64: str,
-            encoding: str = "base64",
+        self,
+        wallet_address: str,
+        transaction_b64: str,
+        encoding: str = "base64",
     ) -> str:
         """
         Sign a Base64-encoded transaction via Privy embedded wallet.
@@ -74,8 +75,6 @@ class PrivyClient:
         data = resp.json()
         # Privy returns `"result": {"signature": "..."}`
         return data["result"]["signature"]
-
-
 
 
 # class PrivyClient:

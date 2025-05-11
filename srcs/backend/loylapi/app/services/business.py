@@ -12,6 +12,7 @@ class BusinessService(BaseService[Business, BusinessCreate, BusinessUpdate]):
         biz = await super().create(db, payload)
         # enqueue mint & pool bootstrap
         from app.tasks.business import mint_token_task
+
         mint_token_task.delay(str(biz.id))
         return biz
 

@@ -17,7 +17,9 @@ class TokenClaims(BaseModel):
     did: str
     sid: str
 
+
 # kid-aware JWKS validation; prevents key-mix-attacks
+
 
 def _get_signing_key(token: str) -> dict:
     headers = jwt.get_unverified_header(token)

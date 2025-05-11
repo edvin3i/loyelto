@@ -56,7 +56,6 @@ async def run_migrations_online() -> None:
                 render_as_batch=True,
                 # compare_type=True,
                 compare_type=(sync_conn.dialect.name != "sqlite"),
-
             )
         )
         async with connection.begin():

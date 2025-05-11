@@ -1,5 +1,6 @@
 from app.celery_app import celery
 
+
 @celery.task(name="onchain.swap", bind=True, max_retries=3)
 def swap_task(self, swap_tx_id: str):
     """

@@ -22,6 +22,7 @@ def confirm_tx():
     Iterate unconfirmed txs, call getSignatureStatuses,
     mark SUCCESS / FAILED in CeleryTaskLog.
     """
+
     async def _confirm():
         client = AsyncClient(settings.SOLANA_RPC_URL)
         async with AsyncSessionLocal() as session:
