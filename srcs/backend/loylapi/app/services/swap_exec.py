@@ -2,9 +2,8 @@ import asyncio
 from base64 import b64encode, b64decode
 from solders.pubkey import Pubkey as PublicKey
 from solders.transaction import Transaction
+from solders.signature import Signature
 from solana.rpc.types import TxOpts
-from solana.rpc.commitment import Confirmed
-from solana.rpc.async_api import AsyncClient
 from solana.rpc.commitment import Confirmed
 from spl.token.instructions import get_associated_token_address
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,8 +17,9 @@ from app.db.session import AsyncSessionLocal
 from app.services.exchange_client import ExchangeClient
 from spl.token.constants import TOKEN_PROGRAM_ID
 
+
 async def _perform_swap(swap_tx_id: str):
-    # 1) load SwapTx + related data from db
+    # 1) load swap_tx, from_token, wallet and to_token in one session
     async with AsyncSessionLocal() as session:  # type: AsyncSession
         result = await session.execute(
             select(SwapTx, Token, Wallet)
@@ -27,32 +27,29 @@ async def _perform_swap(swap_tx_id: str):
             .join(Wallet, Wallet.user_id == SwapTx.user_id)
             .where(SwapTx.id == swap_tx_id)
         )
-        swap_tx, token, wallet = result.first()
+        swap_tx, from_token, wallet = result.first()
+        to_token = await session.get(Token, swap_tx.to_token_id)
 
     user_pubkey = PublicKey(wallet.pubkey)
-    from_mint = PublicKey(token.mint)
-    # здесь нужно получить `to_mint` аналогично; для упрощения допустим swap на LOYL
-    result2 = await AsyncSessionLocal().execute(
-        select(Token).where(Token.id == swap_tx.to_token_id)
-    )
-    to_token = result2.scalar_one()
+    from_mint = PublicKey(from_token.mint)
     to_mint = PublicKey(to_token.mint)
 
-    # 2) calculating PDA for pool
-    client = AsyncClient(settings.SOLANA_RPC_URL)
-    program = ExchangeClient(
+    # 2) initialize Anchor client once
+    anchor = ExchangeClient(
         rpc_url=settings.SOLANA_RPC_URL,
         payer_keypair=settings.treasury_kp,
         program_id=settings.exchange_program_pk,
-        idl_path=ExchangeClient.__init__.__defaults__[3]  # idl_path
-    ).program
+        idl_path=settings.root / "anchor/target/idl/exchange.json",
+    )
+    program = anchor.program
+    client = program.provider.connection
 
+    # 3) derive pool PDA
     pool_pda, _ = PublicKey.find_program_address(
-        seeds=[b"pool", bytes(from_mint)],
-        program_id=program.program_id,
+        [b"pool", bytes(from_mint)], program.program_id
     )
 
-    # 3) building transaction
+    # 4) build transaction
     tx = Transaction()
     tx.add(
         program.instruction.swap(
@@ -70,26 +67,33 @@ async def _perform_swap(swap_tx_id: str):
         )
     )
     tx.fee_payer = user_pubkey
-    # getting recent blockhash
-    rb = await client.get_recent_blockhash(Confirmed)
-    tx.recent_blockhash = rb.value.blockhash
 
-    # 4) lets code msg wo signs
-    raw_msg = tx.serialize_message()
-    b64_msg = b64encode(raw_msg).decode("utf-8")
+    # set recent blockhash
+    latest = await client.get_latest_blockhash()
+    tx.recent_blockhash = latest.value.blockhash
 
-    # 5) asking sign from Privy
+    # 5) sign via Privy and embed signature
+    raw_msg = bytes(tx.message)
+    msg_b64 = b64encode(raw_msg).decode("utf-8")
     privy = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
-    signed_b64 = await privy.sign_transaction(wallet.pubkey, b64_msg)
+    sig_bytes = b64decode(await privy.sign_transaction(wallet.pubkey, msg_b64))
+    sig = Signature.from_bytes(sig_bytes)
 
-    # 6) decode signed tx and send to Devnet
-    signed_bytes = b64decode(signed_b64)
-    opts = TxOpts(
-        skip_preflight=False,  # do not skip preflight checks
-        preflight_commitment=Confirmed # require at least 'confirmed' commitment
+    # replace placeholder signature for userAuthority
+    sigs = list(tx.signatures)  # signatures → tuple
+    if len(sigs) < len(tx.message.account_keys):
+        # pad with default sigs if anchor didn't pre-fill (edge-case)
+        sigs += [Signature.default()] * (len(tx.message.account_keys) - len(sigs))
+    idx = tx.message.account_keys.index(user_pubkey)
+    sigs[idx] = sig
+    tx = tx.replace_signatures(sigs)
+
+    # 6) send signed transaction
+    resp = await client.send_raw_transaction(
+        bytes(tx),
+        opts=TxOpts(skip_preflight=False, preflight_commitment=Confirmed),
     )
-    send_resp = await client.send_raw_transaction(signed_bytes, opts=opts)
-    tx_sig = send_resp.value  # transaction signature
+    tx_sig = resp.value
 
     # 7) store sol_sig to DB
     async with AsyncSessionLocal() as session:
@@ -97,6 +101,7 @@ async def _perform_swap(swap_tx_id: str):
         rec.sol_sig = tx_sig
         await session.commit()
 
+    # optional: free RPC resources
     await client.close()
 
 

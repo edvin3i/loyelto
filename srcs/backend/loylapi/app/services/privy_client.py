@@ -72,8 +72,8 @@ class PrivyClient:
             resp = await client.post(url, json=payload, headers=headers)
         resp.raise_for_status()
         data = resp.json()
-        # assume signed tx comes in data['result']
-        return data["result"]
+        # Privy returns `"result": {"signature": "..."}`
+        return data["result"]["signature"]
 
 
 

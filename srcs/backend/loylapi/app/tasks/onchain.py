@@ -12,4 +12,4 @@ def swap_task(self, swap_tx_id: str):
         perform_swap(swap_tx_id)
     except Exception as exc:
         # retry in 10 seconds if fail
-        raise self.retry(exc=exc, countdown=10)
+        raise self.retry(exc=exc, countdown=10, queue="onchain")
