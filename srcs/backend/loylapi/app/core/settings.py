@@ -18,6 +18,8 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    ROOT: Path = Path(__file__).resolve().parent.parent.parent
+    print(f"============= {ROOT} =============")
     ENV: str = Field("dev")
     SQLITE_PATH: str = Field(default="sqlite+aiosqlite:///./dev.db")
 
@@ -37,6 +39,10 @@ class Settings(BaseSettings):
 
     CELERY_BROKER: str = Field(...)
     CELERY_BACKEND: str = Field(...)
+
+    @property
+    def root(self) -> Path:
+        return self.ROOT
 
     @property
     def database_url(self) -> str:

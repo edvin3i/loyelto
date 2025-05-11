@@ -17,9 +17,9 @@ auth_scheme = HTTPBearer(auto_error=False)
 privy_rest = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
 
 
-@router.post("/handshake", status_code=204)
+@router.post("/handshake", status_code=204, dependencies=[])
 async def privy_handshake(
-    creds: HTTPAuthorizationCredentials | None = Depends(auth_scheme),
+    creds: HTTPAuthorizationCredentials = Depends(auth_scheme),
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -40,10 +40,14 @@ async def privy_handshake(
     # embeddedWallet created on frontend; just save pubkey,
     # but if wallet absent - creating on the server
     if not user.wallets:
-        w = await privy_rest.create_wallet(
-            chain="solana"
-        )  # :contentReference[oaicite:2]{index=2}
-        await wallet_service.add_if_missing(db, user, w["address"])
+        address = await privy_rest.create_wallets(claims.did)
+        await wallet_service.add_if_missing(db, user, address)
+
+    # if not user.wallets:
+    #     w = await privy_rest.create_wallet(
+    #         chain="solana"
+    #     )  # :contentReference[oaicite:2]{index=2}
+    #     await wallet_service.add_if_missing(db, user, w["address"])
 
     return  # 204
 
