@@ -1,13 +1,16 @@
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { Image } from 'expo-image';
 import { FontAwesome } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useState } from 'react';
 
 export default function HomeScreen() {
+  const [coinImageError, setCoinImageError] = useState(false);
+  const [pizzaImageError, setPizzaImageError] = useState(false);
+
   const navigateToAddOffer = () => {
-    router.push('/(tabs)/add-offer');
+    router.push('/add-offer');
   };
 
   return (
@@ -16,15 +19,13 @@ export default function HomeScreen() {
       <ThemedView style={styles.balanceHeader}>
         <ThemedText type="title" style={styles.headerLabel}>My balance</ThemedText>
         <View style={styles.balanceContainer}>
-          <ThemedText type="title" style={styles.balanceText}>536 679</ThemedText>
-          <Image 
-            source={require('@/assets/images/coin.png')} 
-            style={styles.coinIcon}
-            contentFit="contain"
-          />
+          <ThemedText style={styles.balanceText}>536 679</ThemedText>
+          <View style={styles.coinIcon}>
+            <FontAwesome name="circle" size={24} color="#FFD700" />
+          </View>
         </View>
         <ThemedText style={styles.balanceCaption}>
-          points that you've distributed to the consumers
+          points that you've distributed to the customers
         </ThemedText>
       </ThemedView>
 
@@ -91,11 +92,9 @@ export default function HomeScreen() {
                 <ThemedText style={styles.greenText}>150</ThemedText>/300 left
               </ThemedText>
             </View>
-            <Image 
-              source={require('@/assets/images/pizza-margarita.png')} 
-              style={styles.offerImage}
-              contentFit="cover"
-            />
+            <View style={styles.pizzaIcon}>
+              <FontAwesome name="cutlery" size={32} color="#C62828" />
+            </View>
           </View>
           <View style={styles.offerFooter}>
             <TouchableOpacity style={styles.stopButton}>
@@ -120,29 +119,38 @@ const styles = StyleSheet.create({
   balanceHeader: {
     alignItems: 'center',
     marginBottom: 24,
+    marginTop: 8,
   },
   headerLabel: {
     fontSize: 18,
     textAlign: 'center',
+    marginBottom: 4,
   },
   balanceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 8,
+    height: 60,
   },
   balanceText: {
-    fontSize: 42,
+    fontSize: 38,
     fontWeight: 'bold',
     marginRight: 8,
+    lineHeight: 48,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
   coinIcon: {
     width: 32,
     height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   balanceCaption: {
     textAlign: 'center',
     color: '#666',
     fontSize: 14,
+    marginTop: 4,
   },
   statsRow: {
     flexDirection: 'row',
@@ -246,10 +254,13 @@ const styles = StyleSheet.create({
     color: '#66BB6A',
     fontWeight: '600',
   },
-  offerImage: {
+  pizzaIcon: {
     width: 80,
     height: 80,
     borderRadius: 8,
+    backgroundColor: '#FFCDD2',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   offerFooter: {
     flexDirection: 'row',

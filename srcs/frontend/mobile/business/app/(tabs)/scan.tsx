@@ -3,10 +3,10 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 export default function ScanScreen() {
   const [isScanning, setIsScanning] = useState(false);
-  const [lastScan, setLastScan] = useState(null);
 
   const handleStartScan = () => {
     setIsScanning(true);
@@ -17,18 +17,18 @@ export default function ScanScreen() {
       const mockScanData = {
         customerId: 'CUST-12345',
         name: 'Julien',
-        points: 256,
-        timestamp: new Date().toISOString()
+        points: '256',
       };
       
-      setLastScan(mockScanData);
+      // Navigate to scan result page with the scan data
+      router.push({
+        pathname: '/scan-result',
+        params: mockScanData
+      });
+      
+      // Reset scanning state
       setIsScanning(false);
     }, 2000);
-  };
-
-  const handleAddPoints = () => {
-    // In a real app, this would open a points-adding dialog
-    alert('Points would be added to the customer account');
   };
 
   return (
@@ -58,33 +58,6 @@ export default function ScanScreen() {
           </TouchableOpacity>
         )}
       </ThemedView>
-
-      {lastScan && (
-        <ThemedView style={styles.resultContainer}>
-          <ThemedView style={styles.resultHeader}>
-            <ThemedText type="subtitle">Last Scan Result</ThemedText>
-          </ThemedView>
-          
-          <ThemedView style={styles.customerCard}>
-            <View style={styles.customerInfo}>
-              <ThemedText style={styles.customerName}>{lastScan.name}</ThemedText>
-              <ThemedText style={styles.customerId}>ID: {lastScan.customerId}</ThemedText>
-              <View style={styles.pointsContainer}>
-                <ThemedText style={styles.pointsValue}>{lastScan.points}</ThemedText>
-                <ThemedText style={styles.pointsLabel}>points</ThemedText>
-              </View>
-            </View>
-            
-            <TouchableOpacity 
-              style={styles.addPointsButton}
-              onPress={handleAddPoints}
-            >
-              <ThemedText style={styles.addPointsText}>Add Points</ThemedText>
-              <FontAwesome name="plus" size={12} color="#fff" />
-            </TouchableOpacity>
-          </ThemedView>
-        </ThemedView>
-      )}
     </ThemedView>
   );
 }
@@ -170,61 +143,5 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderBottomRightRadius: 8,
-  },
-  resultContainer: {
-    padding: 16,
-    marginBottom: 20,
-  },
-  resultHeader: {
-    marginBottom: 8,
-  },
-  customerCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  customerInfo: {
-    marginBottom: 16,
-  },
-  customerName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  customerId: {
-    color: '#666',
-    fontSize: 12,
-    marginBottom: 8,
-  },
-  pointsContainer: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  pointsValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginRight: 4,
-  },
-  pointsLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  addPointsButton: {
-    backgroundColor: '#4CAF50',
-    padding: 12,
-    borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addPointsText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginRight: 8,
   },
 }); 

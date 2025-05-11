@@ -3,7 +3,6 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Image } from 'expo-image';
 
 export default function ProfileScreen() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -17,11 +16,9 @@ export default function ProfileScreen() {
 
       <ThemedView style={styles.profileSection}>
         <View style={styles.profileImageContainer}>
-          <Image
-            source={require('@/assets/images/profile-placeholder.png')}
-            style={styles.profileImage}
-            contentFit="cover"
-          />
+          <View style={styles.profileImagePlaceholder}>
+            <FontAwesome name="user" size={40} color="#4CAF50" />
+          </View>
           <TouchableOpacity style={styles.editImageButton}>
             <FontAwesome name="camera" size={16} color="#fff" />
           </TouchableOpacity>
@@ -147,11 +144,13 @@ const styles = StyleSheet.create({
     position: 'relative',
     marginBottom: 16,
   },
-  profileImage: {
+  profileImagePlaceholder: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#E8F5E9',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   editImageButton: {
     position: 'absolute',
