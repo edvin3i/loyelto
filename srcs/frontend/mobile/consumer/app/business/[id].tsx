@@ -143,13 +143,31 @@ export default function BusinessProfileScreen() {
   // In a real app, you would fetch this data from an API
   const business = getMockBusinessData(id as string);
   
+  // Define renderOfferItem BEFORE using it
   const renderOfferItem = ({ item }: { item: BusinessOffer }) => (
     <View style={business_profile_styles.offerItem}>
-      <Text style={business_profile_styles.offerName}>{item.name}</Text>
-      <Text style={business_profile_styles.offerDescription}>{item.description}</Text>
-      <View style={business_profile_styles.priceContainer}>
-        <Text style={business_profile_styles.offerPrice}>{item.price}</Text>
-        <Text style={business_profile_styles.pointsType}>{item.pointsType}</Text>
+      {/* Left Container */}
+      <View style={business_profile_styles.offerLeftContainer}>
+        <View>
+          <Text style={business_profile_styles.offerName}>{item.name}</Text>
+          <Text style={business_profile_styles.offerDescription}>{item.description}</Text>
+        </View>
+        <TouchableOpacity style={business_profile_styles.buyButton}>
+          <Text style={business_profile_styles.buyButtonText}>Buy</Text>
+        </TouchableOpacity>
+      </View>
+      
+      {/* Right Container */}
+      <View style={business_profile_styles.offerRightContainer}>
+        <Image 
+          source={{ uri: 'https://recipesblob.oetker.in/assets/d8a4b00c292a43adbb9f96798e028f01/1272x764/pizza-pollo-arrostojpg.webp' }} // Replace with actual image
+          style={business_profile_styles.offerImage}
+          resizeMode="cover"
+        />
+        <View style={business_profile_styles.priceContainer}>
+          <Text style={business_profile_styles.offerPrice}>{item.price}</Text>
+          <Text style={business_profile_styles.pointsType}>points</Text>
+        </View>
       </View>
     </View>
   );
@@ -203,7 +221,13 @@ export default function BusinessProfileScreen() {
         
         {/* Offers List */}
         <View style={business_profile_styles.offersSection}>
-          <Text style={business_profile_styles.offersSectionTitle}>Available Offers</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={business_profile_styles.offersSectionTitle}>Available offers</Text>
+            <View style={business_profile_styles.offerCountBadge}>
+              <Text style={business_profile_styles.offerCountText}>{business.offers.length}</Text>
+            </View>
+          </View>
+          
           <FlatList
             data={business.offers}
             renderItem={renderOfferItem}
