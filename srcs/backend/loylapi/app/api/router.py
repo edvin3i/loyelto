@@ -1,7 +1,16 @@
 from fastapi import APIRouter
 from app.api.v1 import (
-    auth, users, businesses, tokens, balances, wallets,
-    point_txs, swap_txs, voucher_templates, voucher_nfts, tasks
+    auth,
+    users,
+    businesses,
+    tokens,
+    balances,
+    wallets,
+    point_txs,
+    swap_txs,
+    voucher_templates,
+    voucher_nfts,
+    tasks,
 )
 
 

@@ -2,13 +2,50 @@ from fastapi import APIRouter, Depends, Request, HTTPException, status
 from starlette.responses import RedirectResponse
 from app.core.settings import settings
 from app.services.privy_client import PrivyClient, verify_sig
-from app.services.wallet import wallet_service
-from app.services.user import user_service
-from app.db.session import get_db
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.session import get_db
+from app.services.user import user_service
+from app.services.wallet import wallet_service
+from app.core.security import verify_privy_token
+
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 privy = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
+
+auth_scheme = HTTPBearer(auto_error=False)
+privy_rest = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
+
+
+@router.post("/handshake", status_code=204)
+async def privy_handshake(
+    creds: HTTPAuthorizationCredentials | None = Depends(auth_scheme),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    1) Checking access-token.
+    2) If user is absent — creating and minting embedded-wallet.
+    """
+    if not creds:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    claims = verify_privy_token(creds.credentials)  # → did, sid
+    user = await user_service.create_or_get(
+        db,
+        privy_id=claims.did,
+        email="",  # maybe webhook (BUT WEBHOOK IN PRO SUBSCRIPTION)
+        phone="",
+    )
+
+    # embeddedWallet created on frontend; just save pubkey,
+    # but if wallet absent - creating on the server
+    if not user.wallets:
+        w = await privy_rest.create_wallet(
+            chain="solana"
+        )  # :contentReference[oaicite:2]{index=2}
+        await wallet_service.add_if_missing(db, user, w["address"])
+
+    return  # 204
 
 
 @router.get("/callback")

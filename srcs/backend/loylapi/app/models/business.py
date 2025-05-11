@@ -1,7 +1,7 @@
 from __future__ import annotations
 import uuid
 import datetime
-
+from decimal import Decimal
 
 from app.db.base import Base
 
@@ -11,7 +11,7 @@ from sqlalchemy.sql import func
 from sqlalchemy import (
     CheckConstraint,
     String,
-    DateTime,
+    DateTime, Numeric,
 )
 from sqlalchemy.orm import (
     Mapped,
@@ -37,6 +37,11 @@ class Business(Base):
     address: Mapped[str] = mapped_column(String(128))
     zip_code: Mapped[str] = mapped_column(String(12))
     owner_privkey: Mapped[str] = mapped_column(String(88))
+    rate_loyl: Mapped[Decimal] = mapped_column(
+        Numeric(18, 6),
+        nullable = False,
+        comment = "Rate branded token to LOYL",
+    )
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

@@ -1,6 +1,10 @@
 from app.api.crud_router import create_crud_router
 from app.services.voucher_template import voucher_template_service
-from app.schemas.voucher import VoucherTemplateCreate, VoucherTemplateUpdate, VoucherTemplateOut
+from app.schemas.voucher import (
+    VoucherTemplateCreate,
+    VoucherTemplateUpdate,
+    VoucherTemplateOut,
+)
 
 router = create_crud_router(
     crud=voucher_template_service.crud,

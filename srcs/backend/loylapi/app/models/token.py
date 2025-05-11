@@ -36,7 +36,6 @@ class Token(Base):
         ),
     )
 
-
     id: Mapped[uuid.UUID] = uuid_pk()
     mint: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     symbol: Mapped[str] = mapped_column(String(6), unique=True)

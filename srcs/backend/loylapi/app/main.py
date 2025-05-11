@@ -1,12 +1,23 @@
 from typing import Union
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.security import HTTPBearer
 from app.core.settings import settings
+from app.core.security import verify_privy_token
 from app.services.exchange_client import ExchangeClient
 from app.api.router import router as api_router
 
-app = FastAPI()
 
+bearer = HTTPBearer(auto_error=False)
+
+
+def current_user(creds=Depends(bearer)):
+    if not creds:
+        raise HTTPException(status_code=401)
+    return verify_privy_token(creds.credentials)
+
+
+app = FastAPI(dependencies=[Depends(current_user)], **settings.fastapi_kwargs)
 app.include_router(api_router)
 
 root = Path(__file__).parent.parent.parent

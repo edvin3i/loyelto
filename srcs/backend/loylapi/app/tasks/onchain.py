@@ -1,5 +1,6 @@
 from app.celery_app import celery
 
+
 @celery.task(name="onchain.swap")
 def swap_task(token_id: str, user_id: str):
     # just log rn

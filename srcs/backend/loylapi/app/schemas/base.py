@@ -9,6 +9,7 @@ class BaseSchema(BaseModel):
         "arbitrary_types_allowed": True,
     }
 
+
 class BaseDBSchema(BaseSchema):
     id: UUID
     created_at: datetime

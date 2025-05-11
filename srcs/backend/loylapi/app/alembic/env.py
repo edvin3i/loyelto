@@ -17,7 +17,6 @@ from app.db.base import Base
 import app.models
 
 
-
 config = context.config
 fileConfig(config.config_file_name)
 
@@ -54,7 +53,10 @@ async def run_migrations_online() -> None:
             lambda sync_conn: context.configure(
                 connection=sync_conn,
                 target_metadata=target_metadata,
-                compare_type=True,
+                render_as_batch=True,
+                # compare_type=True,
+                compare_type=(sync_conn.dialect.name != "sqlite"),
+
             )
         )
         async with connection.begin():
