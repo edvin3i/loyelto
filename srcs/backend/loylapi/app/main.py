@@ -1,12 +1,12 @@
 from typing import Union
 from pathlib import Path
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer
 from app.core.settings import settings
 from app.core.security import verify_privy_token
+from app.api.v1.auth import router as auth_router
+from app.api.router import router as v1_router
 from app.services.exchange_client import ExchangeClient
-from app.api.router import router as api_router
-
 
 bearer = HTTPBearer(auto_error=False)
 
@@ -17,9 +17,21 @@ def current_user(creds=Depends(bearer)):
     return verify_privy_token(creds.credentials)
 
 
-app = FastAPI(dependencies=[Depends(current_user)], **settings.fastapi_kwargs)
-app.include_router(api_router)
+app = FastAPI(**settings.fastapi_kwargs)
 
+# 1) public endpoints ver 1
+public_v1 = APIRouter(prefix="/api/v1")
+public_v1.include_router(auth_router)  # только /auth
+app.include_router(public_v1)
+
+
+# 2) protected endpoints ver 1
+protected_v1 = APIRouter(prefix="/api/v1", dependencies=[Depends(current_user)])
+protected_v1.include_router(v1_router)  # users, businesses, tokens и т.д.
+app.include_router(protected_v1)
+
+
+# initializationn of Anchor client
 root = Path(__file__).parent.parent.parent
 idl_path = root / "anchor" / "target" / "idl" / "exchange.json"
 
