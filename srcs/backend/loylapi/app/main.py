@@ -9,12 +9,16 @@ app = FastAPI()
 
 app.include_router(api_router)
 
+root = Path(__file__).parent.parent.parent
+idl_path = root / "anchor" / "target" / "idl" / "exchange.json"
+
+print(idl_path.exists(), idl_path.read_text()[:200])
 
 exchange_client = ExchangeClient(
     rpc_url=settings.SOLANA_RPC_URL,
     payer_keypair=settings.treasury_kp,
     program_id=settings.exchange_program_pk,
-    idl_path=Path("anchor/exchange/target/idl/exchange.json"),
+    idl_path=idl_path,
 )
 
 

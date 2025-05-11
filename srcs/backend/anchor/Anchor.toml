@@ -3,16 +3,23 @@ package_manager = "yarn"
 
 [features]
 resolution = true
-skip-lint = false
+idl-build = ["anchor-spl/idl-build"]
+skip-lint   = false
 
 [programs.localnet]
-exchange = "2dwQT4Npc3MtRzYYrr8TmGMUsaGxTgCTKWPrHfMxSPAK"
+exchange = "F9JP31siPUtWkS5GKEZPt4dvgqbZGZ6Uukyk5NMZ9kAz"
+
+[programs.devnet]
+exchange = "F9JP31siPUtWkS5GKEZPt4dvgqbZGZ6Uukyk5NMZ9kAz"
 
 [registry]
 url = "https://api.apr.dev"
 
+[workspace]
+members = ["programs/exchange"]
+
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
