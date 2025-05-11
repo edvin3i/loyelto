@@ -31,7 +31,6 @@ export default function MainSection() {
                         fontWeight: '600',
                         textAlign: {xs:'center', sm:'left'},
                         marginTop: 2
-
                     }}
                 >
                     Swap & Save: <br /> La Fidélité Nouvelle Génération

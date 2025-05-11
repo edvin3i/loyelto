@@ -145,9 +145,11 @@ export default function WaitlistForm() {
           fullWidth
           variant="contained"
           sx={{
-            mt: 2,
+            mt: 5,
             py: 1.5,
             borderRadius: 3,
+            fontWeight: 'bold',
+            textTransform: 'none',
            // bgcolor: "#a6d4fa", // Light blue button color
             // color: "black",
             "&:hover": {
