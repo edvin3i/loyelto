@@ -1,50 +1,77 @@
-# Welcome to your Expo app 👋
+# Loyalty Exchange Business Application
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile application built with Expo for businesses to manage their loyalty program. This app allows businesses to track customer points, create and manage reward offers, and analyze customer engagement.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Dashboard**: View total points distributed and new customer metrics
+- **Loyalty Program Management**: Configure point rewards based on spending thresholds
+- **Offers Management**: Create, edit and track reward offers for customers
+- **QR Code Scanner**: Scan customer loyalty codes to add points or redeem offers
+- **Analytics**: Track customer engagement and offer popularity
 
-   ```bash
-   npm install
-   ```
+## Getting Started
 
-2. Start the app
+### Prerequisites
 
-   ```bash
-   npx expo start
-   ```
+- Node.js (v18 or later)
+- npm or yarn
+- Expo CLI
 
-In the output, you'll find options to open the app in a
+### Installation
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+1. Clone the repository
+2. Navigate to the project directory:
 ```bash
-npm run reset-project
+cd srcs/frontend/mobile/business
+```
+3. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+4. Start the development server:
+```bash
+npm start
+# or
+yarn start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+5. Use the Expo Go app on your mobile device to scan the QR code and run the app, or use an emulator.
 
-## Learn more
+## Project Structure
 
-To learn more about developing your project with Expo, look at the following resources:
+- `app/` - Contains all the screens organized by navigation structure
+  - `(tabs)/` - Bottom tab navigator screens
+  - `_layout.tsx` - Navigation layout configuration
+- `assets/` - Images, fonts, and other static resources
+- `components/` - Reusable UI components
+- `constants/` - Application constants and theme settings
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Key Screens
 
-## Join the community
+- **Home**: Main dashboard with customer stats and offer management
+- **Analytics**: Charts and data about customer engagement
+- **Scan**: QR code scanner for customer interactions
+- **Profile**: Business account settings and configuration
 
-Join our community of developers creating universal apps.
+## Technologies Used
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- React Native
+- Expo Router for navigation
+- Expo components and APIs
+- React hooks for state management
+
+## License
+
+This project is proprietary and confidential.
+
+## Author
+
+loyelto
+
+## Acknowledgments
+
+- Expo Team for the excellent development platform
+- React Native community for the robust ecosystem

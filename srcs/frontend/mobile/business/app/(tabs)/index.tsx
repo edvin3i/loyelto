@@ -3,8 +3,13 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Image } from 'expo-image';
 import { FontAwesome } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 export default function HomeScreen() {
+  const navigateToAddOffer = () => {
+    router.push('/(tabs)/add-offer');
+  };
+
   return (
     <ThemedView style={styles.container}>
       {/* Balance Header */}
@@ -65,7 +70,10 @@ export default function HomeScreen() {
               <ThemedText style={styles.smallPillText}>5</ThemedText>
             </View>
           </View>
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity 
+            style={styles.addButton}
+            onPress={navigateToAddOffer}
+          >
             <ThemedText style={styles.addButtonText}>Add</ThemedText>
             <FontAwesome name="plus" size={16} color="#000" />
           </TouchableOpacity>
