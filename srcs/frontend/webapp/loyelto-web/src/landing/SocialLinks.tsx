@@ -1,15 +1,24 @@
 import { Box, Typography, Link } from "@mui/material";
+import SocialsLink from "./SocialsLink";
+import { socialLinks } from "./links";
 
 export default function SocialLinks() {
   return (
-    <Box sx={{ textAlign: "center", my: 3, pb: 4 }}>
+    <Box sx={{my: 3, pb: 4 }}>
       <Typography variant="body1">
         Follow us on{" "}
-        <Link 
+        {socialLinks.map((l, index) => (
+          <span key={l.social}>
+            <SocialsLink url={l.url} social={l.social} />
+            {index < socialLinks.length - 1 && ", "}
+          </span>
+        ))}
+        {/* <Link 
           href="https://linkedin.com/company/loyelto" 
           target="_blank" 
           rel="noopener noreferrer"
-          sx={{ fontWeight: "bold", textDecoration: "none" }}
+          color="inherit"
+          sx={{ fontWeight: "bold"}}
         >
           LinkedIn
         </Link>
@@ -18,10 +27,11 @@ export default function SocialLinks() {
           href="https://t.me/loyelto" 
           target="_blank" 
           rel="noopener noreferrer"
-          sx={{ fontWeight: "bold", textDecoration: "none" }}
+          color="inherit"
+          sx={{ fontWeight: "bold"}}
         >
           Telegram
-        </Link>
+        </Link> */}
       </Typography>
     </Box>
   );

@@ -4,10 +4,7 @@ interface Slogan {
 }
 
 const businessSlogans: Slogan[] = [
-    // {
-    //     slogan: "Géstion fluide, résultats concrets",
-    //     comment: "Une solution élégante, une croissance mésurable",
-    // },
+   
     {
         slogan: "Un programme, un clic, un impact",
         comment: "Démarrage rapide, effets durables",

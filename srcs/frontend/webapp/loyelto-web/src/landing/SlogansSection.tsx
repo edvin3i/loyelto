@@ -15,7 +15,7 @@ interface SlogansProps{
 export default function SlogansSection({ forWhom, bgcolor, slogans }: SlogansProps) {
     // const theme = useTheme<Theme>();
     return (
-        <div>
+        <Box sx={{marginBottom: 2}}>
             <Typography variant="h3" 
             color="initial" 
             sx={{
@@ -27,9 +27,8 @@ export default function SlogansSection({ forWhom, bgcolor, slogans }: SlogansPro
                 }}>
                 {forWhom}
             </Typography>
-            <SlogansStack bgcolor={bgcolor} slogans={slogans}></SlogansStack>
-            
-        </div>
+            <SlogansStack bgcolor={bgcolor} slogans={slogans}></SlogansStack> 
+        </Box>
 
     )
 }
