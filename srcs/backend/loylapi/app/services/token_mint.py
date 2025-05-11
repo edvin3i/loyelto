@@ -1,5 +1,4 @@
 import asyncio, base58, decimal
-from decimal import Decimal
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from solana.rpc.async_api import AsyncClient
 from spl.token.async_client import AsyncToken
@@ -21,21 +20,20 @@ _DEC_CTX.prec = 28  # enough for 18-digit fixed point
 
 async def _mint_and_record_async(business_id: str):
     async with SessionMaker() as db:  # type: AsyncSession
-        biz: Business = await db.get(Business, business_id)
+        biz: Business | None = await db.get(Business, business_id)
         if not biz:
             raise ValueError("Business not found")
 
         owner_kp = Keypair.from_bytes(base58.b58decode(biz.owner_privkey))
         decimals = 2  # loyalty points default
 
-        # 1. Create SPL-2022 mint (devnet/testnet)
+        # 1. create mint AND initial supply to owner's ATA
         token = await AsyncToken.create_mint(
             sol_client,
             payer=owner_kp,
-            mint_authority=owner_kp.public_key,
+            mint_authority=owner_kp.pubkey(),
             decimals=decimals,
-            program_id=TOKEN_PROGRAM_ID,
-            skip_confirmation=False,
+            program_id=TOKEN_PROGRAM_ID
         )
         mint_addr = str(token.pubkey)
 

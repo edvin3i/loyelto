@@ -1,6 +1,6 @@
 import base58
 from decimal import Decimal, ROUND_DOWN
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from solders.keypair import Keypair
 from app.services.exchange_client import ExchangeClient
 from app.models.token import Token
@@ -9,7 +9,11 @@ from app.core.settings import settings
 
 
 class PoolService:
-    def __init__(self, db: Session, anchor: ExchangeClient):
+    def __init__(self, db: AsyncSession, anchor: ExchangeClient):
+        """
+           db: AsyncSession
+           anchor: ExchangeClient
+        """
         self.db, self.anchor = db, anchor
 
     async def bootstrap_pool(self, token: Token, percent: Decimal = Decimal("0.25")):
@@ -44,6 +48,6 @@ class PoolService:
             init_tx=tx_sig,
         )
         self.db.add(pool)
-        self.db.flush()  # ← id needs for Celery-task for confirmation
+        await self.db.flush()  # ← id needs for Celery-task for confirmation
 
         return pool
