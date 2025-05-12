@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
@@ -60,7 +60,7 @@ export default function HomeScreen() {
   const formattedBalance = '536 679'; // This would come from the business data in a real implementation
 
   return (
-    <ThemedView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Balance Header */}
       <ThemedView style={styles.balanceHeader}>
         <ThemedText type="title" style={styles.headerLabel}>My balance</ThemedText>
@@ -137,11 +137,9 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </ThemedView>
         ) : (
-          <FlatList
-            data={vouchers}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <ThemedView style={styles.offerCard}>
+          <View style={styles.offersList}>
+            {vouchers.map((item) => (
+              <ThemedView key={item.id} style={styles.offerCard}>
                 <View style={styles.offerContent}>
                   <View>
                     <ThemedText type="subtitle">{item.title}</ThemedText>
@@ -173,20 +171,18 @@ export default function HomeScreen() {
                   </View>
                 </View>
               </ThemedView>
-            )}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.offersList}
-          />
+            ))}
+          </View>
         )}
       </ThemedView>
-    </ThemedView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 16,
   },
   loadingContainer: {
     flex: 1,
@@ -197,6 +193,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
     marginTop: 8,
+    paddingTop: 16,
   },
   headerLabel: {
     fontSize: 18,
