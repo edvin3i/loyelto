@@ -12,12 +12,12 @@ export default function SloganBox({ slogan, comment, bgcolor }: SloganBoxProps) 
           sx={{ 
             bgcolor: bgcolor,
             padding: 2,
-            borderRadius: 2,
-            minHeight: 130,
+            borderRadius: 3,
+            // minHeight: 130,
             width: '100%',    // Full width within its container
-            display: 'flex',
-            justifyContent: 'center',  
-            flexDirection: 'column'
+            // display: 'flex',
+            // justifyContent: 'center',  
+            // flexDirection: 'column'
           }}
         >
             <Typography variant="h5" color="initial"

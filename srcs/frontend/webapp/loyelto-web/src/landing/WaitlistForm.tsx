@@ -1,10 +1,12 @@
 import { Box, Typography, TextField, Button, Snackbar, Alert } from "@mui/material";
 import { useState } from "react";
 import emailjs from '@emailjs/browser';
+import { useTheme, Theme } from '@mui/material/styles'
 
 // need to install EmailJS: npm install @emailjs/browser
 
 export default function WaitlistForm() {
+  const theme = useTheme<Theme>();
   const [formData, setFormData] = useState({
     enterprise: "",
     phone: "",
@@ -75,15 +77,15 @@ export default function WaitlistForm() {
     <Box
       id="join-waitlist"
       sx={{
-        bgcolor: "#e6ffcc", // Light green background similar to your screenshot
+        bgcolor: theme.palette.secondary.main, // Light green background similar to your screenshot
         padding: 4,
-        borderRadius: 2,
+        borderRadius: 6,
         width: '100%', // Full width
         my: 4,
         textAlign: "center"
       }}
     >
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{fontWeight: 'bold'}}>
         Rejoindre la liste d'attente
       </Typography>
       
@@ -97,7 +99,7 @@ export default function WaitlistForm() {
         }}
       >
         <Box sx={{ mb: 2, textAlign: "left" }}>
-          <Typography variant="body1" sx={{ mb: 1 }}>
+          <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
             Nom de l'entreprise:
           </Typography>
           <TextField
@@ -111,7 +113,7 @@ export default function WaitlistForm() {
         </Box>
         
         <Box sx={{ mb: 2, textAlign: "left" }}>
-          <Typography variant="body1" sx={{ mb: 1 }}>
+          <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
             Numéro de téléphone:
           </Typography>
           <TextField
@@ -125,7 +127,7 @@ export default function WaitlistForm() {
         </Box>
         
         <Box sx={{ mb: 3, textAlign: "left" }}>
-          <Typography variant="body1" sx={{ mb: 1 }}>
+          <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
             E-mail:
           </Typography>
           <TextField
@@ -143,10 +145,13 @@ export default function WaitlistForm() {
           fullWidth
           variant="contained"
           sx={{
-            mt: 2,
+            mt: 5,
             py: 1.5,
-            bgcolor: "#a6d4fa", // Light blue button color
-            color: "black",
+            borderRadius: 3,
+            fontWeight: 'bold',
+            textTransform: 'none',
+           // bgcolor: "#a6d4fa", // Light blue button color
+            // color: "black",
             "&:hover": {
               bgcolor: "#7ac0fa"
             }
