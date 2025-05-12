@@ -6,3 +6,5 @@ from .balance import Balance
 from .transactions import TxType, PointTx, SwapTx
 from .voucher import VoucherStatus, VoucherTemplate, VoucherNFT
 from .tasks import TaskStatus, CeleryTaskLog
+from .token_pool import TokenPool
+from .promotion import PromotionCampaign

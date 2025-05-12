@@ -1,6 +1,7 @@
 from __future__ import annotations
 import uuid, enum, datetime
 from app.db.base import Base
+from app.models import Wallet, Token, User
 from app.utils import uuid_pk
 from sqlalchemy import (
     CheckConstraint,
@@ -64,6 +65,7 @@ class SwapTx(Base):
     to_amount: Mapped[int] = mapped_column(BigInteger)
     fee_bps: Mapped[int]
     sol_sig: Mapped[str | None] = mapped_column(String(128))
+    sol_sig_redeem: Mapped[str | None] = mapped_column(String(128))
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

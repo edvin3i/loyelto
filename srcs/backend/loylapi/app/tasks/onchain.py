@@ -1,22 +1,19 @@
-# app/tasks/onchain.py
-
 from __future__ import annotations
-
 import asyncio
 import base58
 from typing import Optional
-
 from app.celery_app import celery
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.db.session import AsyncSessionLocal
 from app.models.transactions import SwapTx
 from app.models.wallet import Wallet
 from app.models.token import Token
 from app.services.transfer_exec import redeem_token, earn_token
 from app.core.settings import settings
+from logging import getLogger
 
+logger = getLogger(__name__)
 
 @celery.task(name="onchain.swap", bind=True, max_retries=3)
 def swap_task(self, swap_tx_id: str) -> None:

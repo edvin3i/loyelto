@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from solana.rpc.api import Client
 from solana.rpc.async_api import AsyncClient
 from app.core.settings import settings
-from app.models.tasks import CeleryTaskLog, TaskStatus
+from app.models import CeleryTaskLog, TaskStatus
 from app.db.session import AsyncSessionLocal
 from app.db.base import Base
 import logging
