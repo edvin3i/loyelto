@@ -25,6 +25,11 @@ class TxType(str, enum.Enum):
     SWAP_IN = "swap_in"
     SWAP_OUT = "swap_out"
 
+class TxStatus(str, enum.Enum):
+    PENDING = "pending"
+    SUCCESS = "success"
+    FAILED = "failed"
+
 
 class PointTx(Base):
     __tablename__ = "point_txs"
@@ -66,6 +71,7 @@ class SwapTx(Base):
     fee_bps: Mapped[int]
     sol_sig: Mapped[str | None] = mapped_column(String(128))
     sol_sig_redeem: Mapped[str | None] = mapped_column(String(128))
+    status: Mapped[TxStatus] = mapped_column(PgEnum(TxStatus, name="tx_status_enum"))
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

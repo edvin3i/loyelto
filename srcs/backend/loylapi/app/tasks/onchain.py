@@ -1,18 +1,17 @@
 from __future__ import annotations
-import asyncio
-import base58
-from app.celery_app import celery
+import asyncio, base58
+from typing import cast
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.celery_app import celery
 from app.db.session import AsyncSessionLocal
-from app.models.transactions import SwapTx
-from app.models.wallet import Wallet
-from app.models.token import Token
+from app.models import SwapTx, TxStatus, Wallet, Token
 from app.services.transfer_exec import redeem_token, earn_token
 from app.core.settings import settings
 from logging import getLogger
 
 logger = getLogger(__name__)
+
 
 @celery.task(name="onchain.swap", bind=True, max_retries=3)
 def swap_task(self, swap_tx_id: str) -> None:
@@ -26,78 +25,69 @@ def swap_task(self, swap_tx_id: str) -> None:
     Retries up to 3 times on failure, with 10s backoff.
     """
 
-    async def _run():
+    async def _run_swap() -> None:
         async with AsyncSessionLocal() as session:  # type: AsyncSession
             # 1) Load SwapTx
-            swap: SwapTx | None = await session.get(SwapTx, swap_tx_id)
-
-            if swap.sol_sig:
-                logger.warning(f"Swap {swap_tx_id} already processed")
-                return
-            if not swap.from_amount or not swap.to_amount:
-                raise ValueError(
-                    f"Invalid swap amounts: {swap.from_amount}, {swap.to_amount}")
-
-            logger.info(f"Processing swap: {swap_tx_id}")
+            swap = await session.get(SwapTx, swap_tx_id)
             if swap is None:
                 raise ValueError(f"SwapTx {swap_tx_id} not found")
+            if swap.sol_sig is not None:
+                logger.warning(f"Swap {swap_tx_id} already processed")
+                return
 
-            # 2) Fetch user wallet
-            result = await session.execute(
+            # 2) Validate amounts and cast to int
+            from_amt = cast(int, swap.from_amount)
+            to_amt = cast(int, swap.to_amount)
+            if from_amt <= 0 or to_amt <= 0:
+                raise ValueError(f"Invalid swap amounts: {from_amt}, {to_amt}")
+            logger.info(f"Processing swap {swap_tx_id}: {from_amt}→{to_amt}")
+
+            # 3) Fetch user wallet
+            q = await session.execute(
                 select(Wallet).where(Wallet.user_id == swap.user_id)
             )
-            wallet = result.scalar_one_or_none()
-            logger.info(f"User wallet: {wallet.pubkey}")
+            wallet = q.scalar_one_or_none()
             if wallet is None:
                 raise ValueError(f"Wallet for user {swap.user_id} not found")
+            logger.info(f"User wallet: {wallet.pubkey}")
 
-            # 3) Fetch tokens
+            # 4) Load token records
             from_token = await session.get(Token, swap.from_token_id)
             to_token = await session.get(Token, swap.to_token_id)
             if from_token is None or to_token is None:
                 raise ValueError("Token(s) for swap not found")
 
-            # 4) Step 1: user → platform for Token A
-            #    Platform pubkey = treasury keypair's pubkey
+            # 5) Step 1: user → platform for Token A
             platform_pubkey = str(settings.treasury_kp.pubkey())
+            sig_redeem = redeem_token(
+                mint=str(from_token.mint),
+                user_pubkey=wallet.pubkey,
+                business_pubkey=platform_pubkey,
+                amount=from_amt,
+            )
+            logger.info(f"Redeem signature: {sig_redeem}")
 
-            try:
-                sig1 = redeem_token(
-                    user_pubkey=wallet.pubkey,
-                    mint=str(from_token.mint),
-                    business_pubkey=platform_pubkey,
-                    amount=int(swap.from_amount),
-                )
-            except Exception as e:
-                logger.error(f"redeem_token failed: {e}")
-                raise self.retry(exc=exc, countdown=10, queue="onchain")
-            logger.info(f"Redeem sig: {sig1}")
-
-            # 5) Step 2: platform → user for Token B
-            #    Need business_kp in Base58 format for earn_transfer
-            #    Here we assume platform uses same treasury for all earn
+            # 6) Step 2: platform → user for Token B
             treasury_bytes = settings.treasury_kp.to_bytes()
             treasury_b58 = base58.b58encode(treasury_bytes).decode("utf-8")
-            try:
-                sig2 = earn_token(
-                    mint=str(to_token.mint),
-                    user_pubkey=wallet.pubkey,
-                    business_kp_b58=treasury_b58,
-                    amount=int(swap.to_amount),
-                )
-            except Exception as e:
-                logger.error(f"earn_token failed: {e}")
-                raise self.retry(exc=exc, countdown=10, queue="onchain")
-            logger.info(f"Earn sig: {sig2}")
+            sig_earn = earn_token(
+                mint=str(to_token.mint),
+                user_pubkey=wallet.pubkey,
+                business_kp_b58=treasury_b58,
+                amount=to_amt,
+            )
+            logger.info(f"Earn signature: {sig_earn}")
 
-            # 6) Persist the signature of the final transfer
-            swap.sol_sig = sig2
-            swap.sol_sig_redeem = sig1
+            # 7) Persist signatures and status
+            swap.sol_sig = sig_earn
+            swap.sol_sig_redeem = sig_redeem
+            swap.status = TxStatus.SUCCESS
             session.add(swap)
             await session.commit()
+            logger.info(f"Swap {swap_tx_id} completed successfully.")
 
     try:
-        asyncio.run(_run())
+        asyncio.run(_run_swap())
     except Exception as exc:
-        # retry in 10 seconds on failure
+        logger.error(f"Swap {swap_tx_id} failed: {exc}", exc_info=True)
         raise self.retry(exc=exc, countdown=10, queue="onchain")
