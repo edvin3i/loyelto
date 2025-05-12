@@ -24,6 +24,7 @@ class PromotionCampaign(Base):
     """
     Promotion campaign bound to a business loyalty token.
     """
+
     __tablename__ = "promotion_campaigns"
     __table_args__ = (
         UniqueConstraint("business_id", "name", name="uq_campaign_name_biz"),
@@ -44,7 +45,9 @@ class PromotionCampaign(Base):
         Numeric(5, 2),
         comment="Percent discount applied to purchase amount",
     )
-    active_from: Mapped[datetime.datetime | None] = mapped_column(DateTime(timezone=True))
+    active_from: Mapped[datetime.datetime | None] = mapped_column(
+        DateTime(timezone=True)
+    )
     active_to: Mapped[datetime.datetime | None] = mapped_column(DateTime(timezone=True))
 
     business: Mapped["Business"] = relationship(lazy="noload")

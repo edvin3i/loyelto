@@ -3,6 +3,7 @@ from celery import Task
 from app.models.tasks import CeleryTaskLog, TaskStatus
 from app.db.session import AsyncSessionLocal
 
+
 def log_task(fn):
     @wraps(fn)
     def _inner(self: Task, *a, **kw):
@@ -26,4 +27,5 @@ def log_task(fn):
             )
             session.commit()
             session.close()
+
     return _inner

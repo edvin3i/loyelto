@@ -52,7 +52,7 @@ async def _mint_and_record_async(business_id: str):
         )
 
         # 5) Mint initial supply to owner's ATA
-        initial_supply = 1_000_000 * (10 ** decimals)
+        initial_supply = 1_000_000 * (10**decimals)
         await token_client.mint_to(
             owner_ata,
             owner_kp,

@@ -11,8 +11,8 @@ from app.core.settings import settings
 class PoolService:
     def __init__(self, db: AsyncSession, anchor: ExchangeClient):
         """
-           db: AsyncSession
-           anchor: ExchangeClient
+        db: AsyncSession
+        anchor: ExchangeClient
         """
         self.db, self.anchor = db, anchor
 
