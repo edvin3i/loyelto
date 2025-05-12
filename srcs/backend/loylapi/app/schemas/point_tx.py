@@ -6,6 +6,7 @@ from app.schemas.types import TxTypeEnum, GeZero, FeeBpsInt, SolSigStr
 class PointTxCreate(BaseSchema):
     wallet_id: UUID
     tx_type: TxTypeEnum
+    token_id: UUID
     amount: GeZero
     fee_bps: FeeBpsInt | None
     sol_sig: SolSigStr | None
@@ -14,6 +15,7 @@ class PointTxCreate(BaseSchema):
 class PointTxOut(BaseDBSchema):
     wallet_id: UUID
     tx_type: TxTypeEnum
+    token_id: UUID
     amount: GeZero
     fee_bps: FeeBpsInt | None
     sol_sig: SolSigStr | None
