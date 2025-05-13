@@ -1,8 +1,8 @@
 from __future__ import annotations
-import json, asyncio, aioredis
+import json, asyncio
 from typing import Dict, Set
 from fastapi import WebSocket
-from app.core.settings import settings
+from .redis import redis_conn
 
 
 class WSManager:
@@ -22,9 +22,7 @@ class WSManager:
     # --------------------------------------------------------------------- #
     def _init(self) -> None:
         self._clients: Dict[str, Set[WebSocket]] = {}
-        self._redis = aioredis.from_url(
-            settings.CELERY_BROKER, encoding="utf-8", decode_responses=True
-        )
+        self._redis = redis_conn()
         self._loop_task = asyncio.create_task(self._redis_listener())
 
     async def _redis_listener(self) -> None:
