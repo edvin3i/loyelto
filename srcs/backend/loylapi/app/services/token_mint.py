@@ -3,7 +3,7 @@ from decimal import Decimal
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from solana.rpc.async_api import AsyncClient
 from spl.token.async_client import AsyncToken
-from spl.token.constants import TOKEN_PROGRAM_ID
+from spl.token.constants import TOKEN_2022_PROGRAM_ID
 from solders.keypair import Keypair
 from app.core.settings import settings
 from app.models.business import Business
@@ -42,7 +42,7 @@ async def _mint_and_record_async(business_id: str):
             payer=owner_kp,
             mint_authority=owner_kp.pubkey(),
             decimals=decimals,
-            program_id=TOKEN_PROGRAM_ID,
+            program_id=TOKEN_2022_PROGRAM_ID,
         )
         mint_addr = str(token_client.pubkey)
 

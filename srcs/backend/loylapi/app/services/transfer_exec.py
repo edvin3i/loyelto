@@ -13,7 +13,7 @@ from solders.transaction import Transaction
 from solana.rpc.async_api import AsyncClient
 from solana.rpc.types import TxOpts
 from solana.rpc.commitment import Confirmed
-from spl.token.constants import TOKEN_PROGRAM_ID
+from spl.token.constants import TOKEN_2022_PROGRAM_ID
 from spl.token.instructions import get_associated_token_address
 
 from app.services.privy_client import PrivyClient
@@ -34,7 +34,7 @@ def build_transfer_ix(
         AccountMeta(dst_ata, is_signer=False, is_writable=True),
         AccountMeta(src_owner, is_signer=True, is_writable=False),
     ]
-    return Instruction(TOKEN_PROGRAM_ID, accounts, data)
+    return Instruction(TOKEN_2022_PROGRAM_ID, accounts, data)
 
 
 # Core async helper                                                     #

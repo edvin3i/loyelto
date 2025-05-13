@@ -15,7 +15,7 @@ from app.models.token import Token
 from app.models.wallet import Wallet
 from app.db.session import AsyncSessionLocal
 from app.services.exchange_client import ExchangeClient
-from spl.token.constants import TOKEN_PROGRAM_ID
+from spl.token.constants import TOKEN_2022_PROGRAM_ID
 
 
 async def _perform_swap(swap_tx_id: str):
@@ -61,7 +61,7 @@ async def _perform_swap(swap_tx_id: str):
                     "userSource": get_associated_token_address(from_mint, user_pubkey),
                     "userDest": get_associated_token_address(to_mint, user_pubkey),
                     "userAuthority": user_pubkey,
-                    "tokenProgram": TOKEN_PROGRAM_ID,
+                    "tokenProgram": TOKEN_2022_PROGRAM_ID,
                 }
             },
         )
