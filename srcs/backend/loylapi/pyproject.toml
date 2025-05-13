@@ -22,6 +22,7 @@ dependencies = [
     "autoflake>=2.3.1",
     "genpy>=2022.1",
     "python-jose>=3.4.0",
+    "aioredis>=2.0.1",
 ]
 
 [dependency-groups]
