@@ -6,6 +6,7 @@ from app.core.settings import settings
 from app.core.security import verify_privy_token
 from app.api.v1.auth import router as auth_router
 from app.api.router import router as v1_router
+from app.api.ws import router as ws_router
 from app.services.exchange_client import ExchangeClient
 
 bearer = HTTPBearer(auto_error=False)
@@ -29,6 +30,8 @@ app.include_router(public_v1)
 protected_v1 = APIRouter(prefix="/api/v1", dependencies=[Depends(current_user)])
 protected_v1.include_router(v1_router)  # users, businesses, tokens и т.д.
 app.include_router(protected_v1)
+
+app.include_router(ws_router)
 
 
 # initializationn of Anchor client
