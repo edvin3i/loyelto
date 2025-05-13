@@ -1,5 +1,127 @@
 import { StyleSheet } from 'react-native';
 
+// Business data interfaces
+export interface Business {
+  id: string;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+  owner_email: string;
+  description: string;
+  country: string;
+  city: string;
+  address: string;
+  zip_code: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BusinessUpdate {
+  name?: string;
+  slug?: string;
+  logo_url?: string | null;
+  owner_email?: string;
+  description?: string;
+  country?: string;
+  city?: string;
+  address?: string;
+  zip_code?: string;
+}
+
+export interface VoucherTemplate {
+  id: string;
+  business_id: string;
+  title: string;
+  description: string;
+  points_required: number;
+  expiry_days: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VoucherTemplateCreate {
+  title: string;
+  description: string;
+  points_required: number;
+  expiry_days: number;
+  is_active: boolean;
+}
+
+// Business API functions
+export const getBusinessProfile = async (): Promise<Business> => {
+  // Mock implementation - replace with actual API call
+  return {
+    id: '1',
+    name: 'My Business',
+    slug: 'my-business',
+    logo_url: null,
+    owner_email: 'business@example.com',
+    description: 'A sample business description',
+    country: 'France',
+    city: 'Paris',
+    address: '123 Business St',
+    zip_code: '75001',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+};
+
+export const updateBusinessProfile = async (data: BusinessUpdate): Promise<Business> => {
+  // Mock implementation - replace with actual API call
+  const currentProfile = await getBusinessProfile();
+  return {
+    ...currentProfile,
+    ...data,
+    updated_at: new Date().toISOString(),
+  };
+};
+
+export const getVoucherTemplates = async (): Promise<VoucherTemplate[]> => {
+  // Mock implementation - replace with actual API call
+  return [
+    {
+      id: '1',
+      business_id: '1',
+      title: 'Free Pizza',
+      description: 'Get a free pizza with your purchase',
+      points_required: 500,
+      expiry_days: 30,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: '2',
+      business_id: '1',
+      title: 'Discount Coupon',
+      description: '20% off on your next purchase',
+      points_required: 200,
+      expiry_days: 15,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }
+  ];
+};
+
+export const createVoucherTemplate = async (data: VoucherTemplateCreate): Promise<VoucherTemplate> => {
+  // Mock implementation - replace with actual API call
+  return {
+    id: Math.random().toString(36).substring(7),
+    business_id: '1',
+    ...data,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+};
+
+export const deleteVoucherTemplate = async (id: string): Promise<void> => {
+  // Mock implementation - replace with actual API call
+  console.log(`Deleted voucher template with ID: ${id}`);
+};
+
+// Styles for business profile screens
 const business_profile_styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -81,7 +203,7 @@ const business_profile_styles = StyleSheet.create({
     },
     offerLeftContainer: {
       flex: 3,
-      marginRight: 0, // Changed from 10 to 0
+      marginRight: 0,
       justifyContent: 'space-between',
       borderWidth: 2,
       borderRightWidth: 0.3,
@@ -165,4 +287,4 @@ const business_profile_styles = StyleSheet.create({
     },
 });
 
-  export default business_profile_styles;
+export default business_profile_styles;
