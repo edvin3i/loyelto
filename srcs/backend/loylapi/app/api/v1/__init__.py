@@ -9,3 +9,8 @@ from .swap_txs import router as swap_txs
 from .voucher_templates import router as voucher_templates
 from .voucher_nfts import router as voucher_nfts
 from .tasks import router as tasks
+from .tx_history import router as history
+from .vouchers_my import router as vouchers_my
+from .voucher_mint import router as voucher_mint
+from .business_rate import router as biz_rate
+
