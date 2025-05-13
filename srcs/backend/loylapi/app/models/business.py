@@ -1,14 +1,10 @@
 from __future__ import annotations
-import uuid
-import datetime
+import uuid, datetime
 from decimal import Decimal
-
+from typing import TYPE_CHECKING, List
 from sqlalchemy.ext.hybrid import hybrid_property
-
 from app.db.base import Base
-from app.models import VoucherTemplate, Token
-
-# from app.models import Token
+# from app.models import VoucherTemplate, Token
 from app.utils import uuid_pk
 from sqlalchemy.sql import func
 from sqlalchemy import (
@@ -26,6 +22,10 @@ from sqlalchemy.orm import (
     column_property,
 )
 
+
+if TYPE_CHECKING:
+    from app.models.voucher import VoucherTemplate
+    from app.models.token import Token
 
 class BusinessReview(Base):
     __tablename__ = "business_reviews"
@@ -87,16 +87,18 @@ class Business(Base):
         nullable=False,
     )
     loyalty_token: Mapped["Token"] = relationship(
+        "Token",
         back_populates="business",
         uselist=False,
         lazy="selectin",
     )
-    voucher_templates: Mapped[list["VoucherTemplate"]] = relationship(
+    voucher_templates: Mapped[List["VoucherTemplate"]] = relationship(
+        "VoucherTemplate",
         back_populates="business",
         cascade="all, delete-orphan",
         lazy="selectin",
     )
-    reviews: Mapped[list[BusinessReview]] = relationship(
+    reviews: Mapped[List["BusinessReview"]] = relationship(
         "BusinessReview",
         back_populates="business",
         cascade="all, delete-orphan",
@@ -107,7 +109,7 @@ class Business(Base):
     def rating(self) -> float:
         if not hasattr(self, "reviews") or not self.reviews:
             return 0.0
-        return sum([r.score for r in self.reviews]) / len(self.reviews)
+        return float(sum([r.score for r in self.reviews]) / len(self.reviews))
 
     rating_db = column_property(
         select(func.avg(BusinessReview.score))

@@ -1,4 +1,5 @@
 import os
+import app.models  # noqa: F401
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -14,7 +15,6 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import pool
 from app.core.settings import settings
 from app.db.base import Base
-import app.models
 
 
 config = context.config

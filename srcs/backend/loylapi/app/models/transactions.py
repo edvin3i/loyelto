@@ -22,8 +22,8 @@ from sqlalchemy.sql import func
 class TxType(str, enum.Enum):
     EARN = "earn"
     REDEEM = "redeem"
-    SWAP_IN = "swap_in"
-    SWAP_OUT = "swap_out"
+    SWAP_IN = "swap_in" # user → platform
+    SWAP_OUT = "swap_out" # platform → user
 
 class TxStatus(str, enum.Enum):
     PENDING = "pending"
@@ -69,9 +69,11 @@ class SwapTx(Base):
     from_amount: Mapped[int] = mapped_column(BigInteger)
     to_amount: Mapped[int] = mapped_column(BigInteger)
     fee_bps: Mapped[int]
+    # Signature for platform → user (second leg)
     sol_sig: Mapped[str | None] = mapped_column(String(128))
+    # Signature for user → platform (first leg)
     sol_sig_redeem: Mapped[str | None] = mapped_column(String(128))
-    status: Mapped[TxStatus] = mapped_column(PgEnum(TxStatus, name="tx_status_enum"))
+    status: Mapped[TxStatus] = mapped_column(PgEnum(TxStatus, name="tx_status_enum"), default=TxStatus.PENDING)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
