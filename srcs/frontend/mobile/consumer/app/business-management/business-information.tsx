@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity, View, ActivityIndicator, TextInput } from 'react-native';
+import { ScrollView, TouchableOpacity, View, ActivityIndicator, TextInput } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { getBusinessProfile, updateBusinessProfile, Business, BusinessUpdate } from '../utils/business_profile';
+import styles from './styles/styles_business_information';
 
 export default function BusinessInformationScreen() {
   const router = useRouter();
@@ -95,6 +96,15 @@ export default function BusinessInformationScreen() {
         }}
       />
       <ScrollView style={styles.container}>
+        {/* Dashboard Button */}
+        <TouchableOpacity 
+          style={styles.dashboardButton}
+          onPress={() => router.push('/business-management/business_dashboard')}
+        >
+          <FontAwesome name="dashboard" size={18} color="#fff" />
+          <ThemedText style={styles.dashboardButtonText}>View Dashboard</ThemedText>
+        </TouchableOpacity>
+        
         <ThemedView style={styles.section}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
             General Information
@@ -245,50 +255,3 @@ export default function BusinessInformationScreen() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  section: {
-    marginBottom: 24,
-    padding: 16,
-  },
-  sectionTitle: {
-    marginBottom: 16,
-  },
-  formGroup: {
-    marginBottom: 16,
-  },
-  label: {
-    marginBottom: 8,
-    fontWeight: '600',
-  },
-  value: {
-    fontSize: 16,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#fff',
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  headerButton: {
-    padding: 8,
-  },
-  saveButtonText: {
-    color: '#4CAF50',
-    fontWeight: 'bold',
-  },
-});

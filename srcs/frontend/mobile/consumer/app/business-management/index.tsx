@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { getBusinessProfile, getVoucherTemplates, deleteVoucherTemplate, VoucherTemplate } from '../utils/business_profile';
 import BusinessNavBar from './components/BusinessNavBar';
+import styles from './styles/styles_index';
 
 export default function BusinessHomeScreen() {
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ export default function BusinessHomeScreen() {
   };
 
   const navigateToAddOffer = () => {
-    router.push('./add-offer');
+    router.push('../business-management/add-offer');
   };
 
   const handleStopPromo = async (id: string) => {
@@ -53,7 +54,7 @@ export default function BusinessHomeScreen() {
   const formattedBalance = '536 679';
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Balance Header */}
         <ThemedView style={styles.balanceHeader}>
@@ -103,7 +104,7 @@ export default function BusinessHomeScreen() {
         </ThemedView>
 
         {/* Active Offers */}
-        <ThemedView style={styles.section}>
+        <ThemedView style={styles.sectionMyOffer}>
           <View style={styles.sectionHeaderWithButton}>
             <View style={styles.sectionHeader}>
               <ThemedText type="subtitle">My active offers:</ThemedText>
@@ -174,199 +175,3 @@ export default function BusinessHomeScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  balanceHeader: {
-    alignItems: 'center',
-    marginBottom: 24,
-    marginTop: 8,
-    paddingTop: 16,
-  },
-  headerLabel: {
-    fontSize: 18,
-    textAlign: 'center',
-  },
-  balanceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  balanceText: {
-    fontSize: 42,
-    fontWeight: 'bold',
-  },
-  coinIcon: {
-    marginLeft: 8,
-  },
-  balanceCaption: {
-    fontSize: 14,
-    color: '#666',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  pillContainer: {
-    backgroundColor: '#E8F5E9',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 16,
-    marginHorizontal: 8,
-  },
-  pillText: {
-    color: '#4CAF50',
-    fontWeight: 'bold',
-  },
-  section: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  sectionHeaderWithButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  ruleCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  pointsDisplay: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  pointsValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginRight: 4,
-  },
-  pointsLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
-  smallPillContainer: {
-    backgroundColor: '#E8F5E9',
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  smallPillText: {
-    color: '#4CAF50',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#E8F5E9',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  addButtonText: {
-    color: '#000',
-    marginRight: 4,
-  },
-  emptyState: {
-    alignItems: 'center',
-    padding: 24,
-  },
-  emptyStateText: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 16,
-  },
-  emptyStateButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  emptyStateButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  offersList: {
-    marginTop: 8,
-  },
-  offerCard: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-  },
-  offerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  offerDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-    marginBottom: 8,
-  },
-  offerStatus: {
-    fontSize: 12,
-  },
-  greenText: {
-    color: '#4CAF50',
-    fontWeight: 'bold',
-  },
-  pizzaIcon: {
-    marginLeft: 16,
-  },
-  offerFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-    paddingTop: 12,
-  },
-  stopButton: {
-    backgroundColor: '#FFEBEE',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  stopButtonText: {
-    color: '#C62828',
-  },
-  pointsContainer: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  smallPointsLabel: {
-    fontSize: 12,
-    color: '#666',
-  },
-});

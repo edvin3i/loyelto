@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { FontAwesome } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
+import styles from './styles/styles_business_nav_bar';
 
 export default function BusinessNavBar() {
   const router = useRouter();
@@ -23,14 +24,6 @@ export default function BusinessNavBar() {
       </TouchableOpacity>
 
       <TouchableOpacity 
-        style={[styles.navButton, isActive('business_dashboard') && styles.activeButton]} 
-        onPress={() => router.push('/business-management/business_dashboard')}
-      >
-        <FontAwesome name="dashboard" size={20} color={isActive('business_dashboard') ? "#0082FF" : "#666"} />
-        <ThemedText style={[styles.navText, isActive('business_dashboard') && styles.activeText]}>Dashboard</ThemedText>
-      </TouchableOpacity>
-
-      <TouchableOpacity 
         style={[styles.navButton, isActive('scan_qr') && styles.activeButton]} 
         onPress={() => router.push('/business-management/scan_qr')}
       >
@@ -39,48 +32,12 @@ export default function BusinessNavBar() {
       </TouchableOpacity>
 
       <TouchableOpacity 
-        style={[styles.navButton, isActive('business_offers') && styles.activeButton]} 
-        onPress={() => router.push('/business-management/business_offers')}
+        style={[styles.navButton, isActive('business-information') && styles.activeButton]} 
+        onPress={() => router.push('/business-management/business-information')}
       >
-        <FontAwesome name="gift" size={20} color={isActive('business_offers') ? "#0082FF" : "#666"} />
-        <ThemedText style={[styles.navText, isActive('business_offers') && styles.activeText]}>Offers</ThemedText>
+        <FontAwesome name="user" size={20} color={isActive('business-information') ? "#0082FF" : "#666"} />
+        <ThemedText style={[styles.navText, isActive('business-information') && styles.activeText]}>Profile</ThemedText>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  navButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-  },
-  activeButton: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#0082FF',
-  },
-  navText: {
-    fontSize: 12,
-    marginTop: 4,
-    color: '#666',
-  },
-  activeText: {
-    color: '#0082FF',
-    fontWeight: '500',
-  }
-});
