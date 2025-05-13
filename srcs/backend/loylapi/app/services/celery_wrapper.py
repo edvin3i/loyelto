@@ -1,31 +1,27 @@
 from functools import wraps
 from celery import Task
-from app.models.tasks import CeleryTaskLog, TaskStatus
+from app.models import CeleryTaskLog, TaskStatus
 from app.db.session import AsyncSessionLocal
-
 
 def log_task(fn):
     @wraps(fn)
-    def _inner(self: Task, *a, **kw):
-        session = AsyncSessionLocal()
+    def _inner(self: Task, *args, **kwargs):
+        db = AsyncSessionLocal()
+        status = TaskStatus.PENDING
+        result = None
         try:
-            res = fn(self, *a, **kw)
-            status = TaskStatus.SUCCESS
-            return res
-        except Exception as exc:
-            status = TaskStatus.RETRY if self.request.retries else TaskStatus.FAILED
-            raise
+            result = fn(self, *args, **kwargs)  # may return tx_sig
         finally:
-            session.add(
+            db.add(
                 CeleryTaskLog(
                     task_id=self.request.id,
                     queue=self.request.delivery_info["routing_key"],
                     status=status,
-                    payload={"args": a, "kwargs": kw},
-                    result=str(res)[:32] if status == TaskStatus.SUCCESS else None,
+                    payload={"args": args, "kwargs": kwargs},
+                    result=str(result)[:88] if result else None,
                 )
             )
-            session.commit()
-            session.close()
-
+            db.commit()
+            db.close()
+        return result
     return _inner
