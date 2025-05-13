@@ -15,6 +15,8 @@ from app.api.v1 import (
     vouchers_my,
     voucher_mint,
     biz_rate,
+    reviews,
+    loyalty,
 )
 
 
@@ -34,3 +36,5 @@ router.include_router(history)
 router.include_router(vouchers_my)
 router.include_router(voucher_mint)
 router.include_router(biz_rate)
+router.include_router(reviews)
+router.include_router(loyalty)

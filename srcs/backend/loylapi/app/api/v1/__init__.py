@@ -13,4 +13,5 @@ from .tx_history import router as history
 from .vouchers_my import router as vouchers_my
 from .voucher_mint import router as voucher_mint
 from .business_rate import router as biz_rate
-
+from .reviews import router as reviews
+from .loyalty import router as loyalty
