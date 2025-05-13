@@ -22,7 +22,6 @@ class BusinessCreate(BaseSchema):
     owner_email: EmailStr
     owner_privkey: OwnerPrivKey
     description: TextAreaStr
-    rating: RatingInt | None = None
     country: CountryStr
     city: CityStr
     address: AddressStr
@@ -37,7 +36,6 @@ class BusinessUpdate(BaseSchema):
     owner_email: EmailStr | None = None
     owner_privkey: OwnerPrivKey | None = None
     description: TextAreaStr | None = None
-    rating: RatingInt | None = None
     country: CountryStr | None = None
     city: CityStr | None = None
     address: AddressStr | None = None
