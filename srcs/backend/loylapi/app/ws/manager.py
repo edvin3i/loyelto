@@ -2,7 +2,7 @@ from __future__ import annotations
 import json, asyncio
 from typing import Dict, Set
 from fastapi import WebSocket
-from .redis import redis_conn
+from app.ws.ws_redis import redis_conn
 
 
 class WSManager:
