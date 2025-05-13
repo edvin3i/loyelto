@@ -7,7 +7,8 @@ from solana.rpc.async_api import AsyncClient
 from app.core.settings import settings
 from app.models import CeleryTaskLog, TaskStatus
 from app.db.session import AsyncSessionLocal
-from app.db.base import Base
+from app.services.celery_wrapper import log_task
+
 import logging
 
 engine = create_async_engine(settings.database_url, future=True, echo=False)
@@ -17,6 +18,7 @@ log = logging.getLogger(__name__)
 
 
 @celery.task(name="onchain.confirm_tx")
+@log_task
 def confirm_tx():
     """
     Iterate unconfirmed txs, call getSignatureStatuses,
