@@ -1,15 +1,11 @@
-from __future__ import annotations
-
-import asyncio
-import base58
-from base64 import b64decode, b64encode
-
+import asyncio, base58, base64
+from base64 import b64encode
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
+from solders.transaction import Transaction
 from solders.signature import Signature
 from solders.instruction import Instruction, AccountMeta
 from solders.message import Message
-from solders.transaction import Transaction
 from solana.rpc.async_api import AsyncClient
 from solana.rpc.types import TxOpts
 from solana.rpc.commitment import Confirmed
@@ -20,14 +16,18 @@ from app.services.privy_client import PrivyClient
 from app.core.settings import settings
 
 
-# Instruction builder                                                   #
 def build_transfer_ix(
-    mint: Pubkey, src_owner: Pubkey, dst_owner: Pubkey, amount: int
+    mint: Pubkey,
+    src_owner: Pubkey,
+    dst_owner: Pubkey,
+    amount: int,
 ) -> Instruction:
-    """Return a raw SPL-token Transfer (instruction = 3, amount little-endian)."""
+    """
+    Build a raw SPL-2022 transfer instruction.
+    Instruction code = 3, amount in little-endian U64.
+    """
     src_ata = get_associated_token_address(mint, src_owner)
     dst_ata = get_associated_token_address(mint, dst_owner)
-
     data = bytes([3]) + amount.to_bytes(8, "little")
     accounts = [
         AccountMeta(src_ata, is_signer=False, is_writable=True),
@@ -37,7 +37,6 @@ def build_transfer_ix(
     return Instruction(TOKEN_2022_PROGRAM_ID, accounts, data)
 
 
-# Core async helper                                                     #
 async def _submit_transfer(
     *,
     mint: str,
@@ -47,47 +46,61 @@ async def _submit_transfer(
     sender_kp: Keypair | None,
     sign_with_privy: bool,
 ) -> str:
-    """Create, sign (Privy or KP), send transaction and return signature string."""
+    """
+    Create, sign (either locally or via Privy), send transaction and return tx signature.
+    """
     async with AsyncClient(settings.SOLANA_RPC_URL) as rpc:
+        # fetch latest blockhash
         bh = (await rpc.get_latest_blockhash()).value.blockhash
 
+        # prepare instruction and message
         mint_pk = Pubkey.from_string(mint)
         sender_pk = Pubkey.from_string(sender)
-        recip_pk = Pubkey.from_string(recipient)
+        dest_pk = Pubkey.from_string(recipient)
 
         msg = Message(
-            instructions=[build_transfer_ix(mint_pk, sender_pk, recip_pk, amount)],
+            instructions=[build_transfer_ix(mint_pk, sender_pk, dest_pk, amount)],
             payer=sender_pk,
             recent_blockhash=bh,
         )
 
-        # --- produce Signature ------------------------------------------------
-        if sender_kp and not sign_with_privy:
-            sig = sender_kp.sign_message(bytes(msg))
-        elif sign_with_privy:
+        # --- Privy signing path ---------------------------------------------
+        if sign_with_privy:
+            # request full signed transaction from Privy
             privy = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
-            sig_b64 = await privy.sign_transaction(
-                sender, b64encode(bytes(msg)).decode()
+            tx_b64 = b64encode(bytes(msg)).decode()
+            signed_b64 = await privy.sign_transaction(sender, tx_b64)
+            raw_tx = base64.b64decode(signed_b64)
+            # forward signed tx to RPC
+            resp = await rpc.send_raw_transaction(
+                raw_tx,
+                opts=TxOpts(skip_preflight=False, preflight_commitment=Confirmed),
             )
-            sig = Signature.from_bytes(b64decode(sig_b64))
-        else:
-            raise ValueError("No signing method provided")
+            return str(resp.value)
 
-        # --- build Transaction -------------------------------------------------
-        tx = Transaction.populate(msg)
-        tx.signatures = [sig]  # order must match signer list
+        # --- Local Keypair signing path -------------------------------------
+        if sender_kp:
+            # sign message locally
+            sig = sender_kp.sign_message(bytes(msg))
+            tx = Transaction.populate(msg)
+            tx.signatures = [sig]
+            # send signed transaction
+            resp = await rpc.send_raw_transaction(
+                bytes(tx),
+                opts=TxOpts(skip_preflight=False, preflight_commitment=Confirmed),
+            )
+            return str(resp.value)
 
-        # --- send --------------------------------------------------------------
-        resp = await rpc.send_raw_transaction(
-            bytes(tx),
-            opts=TxOpts(skip_preflight=False, preflight_commitment=Confirmed),
-        )
-        return str(resp.value)
+        # --- Error if no signing method provided ----------------------------
+        raise ValueError("No signing method provided for transfer")
 
 
-# Blocking wrappers (for Celery)                                        #
+# Blocking wrappers for Celery tasks
+
 def earn_token(mint: str, user_pubkey: str, business_kp_b58: str, amount: int) -> str:
-    """Business → User transfer (server Keypair signs)."""
+    """
+    Business → User: local keypair signs and submits.
+    """
     kp = Keypair.from_bytes(base58.b58decode(business_kp_b58))
     return asyncio.run(
         _submit_transfer(
@@ -102,7 +115,9 @@ def earn_token(mint: str, user_pubkey: str, business_kp_b58: str, amount: int) -
 
 
 def redeem_token(mint: str, user_pubkey: str, business_pubkey: str, amount: int) -> str:
-    """User → Business transfer (user signs via Privy)."""
+    """
+    User → Business: transaction signed via Privy.
+    """
     return asyncio.run(
         _submit_transfer(
             mint=mint,
