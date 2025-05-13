@@ -22,6 +22,7 @@ fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
 
+down_revision = None
 
 def run_migrations_offline() -> None:
     """
