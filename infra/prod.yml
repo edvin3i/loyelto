@@ -21,3 +21,42 @@ services:
       - traefik.http.services.fastapi.loadbalancer.server.port=8000
     depends_on: [postgres, redis]
     networks: [tnet]
+
+  anchor:
+    build:
+      context: .
+      dockerfile: containers/anchor/Dockerfile
+    command: >
+      bash -c "
+        avm use && 
+        cd anchor &&
+        anchor build &&
+        anchor deploy --provider.cluster testnet
+      "
+    environment:
+      - ANCHOR_WALLET=/root/.config/solana/id.json
+      - SOLANA_URL=https://api.testnet.solana.com
+    volumes:
+      - ~/.config/solana:/root/.config/solana:ro
+      - ./srcs/backend/anchor:/anchor
+    networks: [tnet]
+
+  worker:
+    build: ./containers/worker
+    depends_on:
+      - redis
+      - fastapi
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/1
+    networks: [tnet]
+
+  beat:
+    build: ./containers/beat
+    depends_on:
+      - redis
+      - fastapi
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/1
+    networks: [tnet]

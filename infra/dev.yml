@@ -18,6 +18,28 @@ services:
     ports: ["8000:8000"]
     networks: [tnet]
   
+  anchor:
+    build:
+      context: .
+      dockerfile: containers/anchor/Dockerfile
+    command: >
+      bash -c "
+        avm use && 
+        cd anchor &&
+        anchor build &&
+        anchor deploy --provider.cluster testnet
+      "
+    environment:
+      - ANCHOR_WALLET=/root/.config/solana/id.json
+      - SOLANA_URL=https://api.testnet.solana.com
+    volumes:
+      - ~/.config/solana:/root/.config/solana:ro
+      - ./anchor:/anchor
+
+
+
+
+
   landing:
     build:
       context: .
