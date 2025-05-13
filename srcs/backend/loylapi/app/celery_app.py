@@ -17,3 +17,9 @@ celery.conf.beat_schedule = {
         "options": {"queue": "onchain"},
     }
 }
+celery.conf.update(
+    task_acks_late=True,
+    worker_prefetch_multiplier=1,
+    task_acks_on_failure_or_timeout=True,
+    task_default_rate_limit="20/s",
+)
