@@ -3,8 +3,9 @@ DOCKER_COMPOSE := docker compose
 COMPOSE_FILES := \
 	-f docker-compose.yml \
 	-f infra/base.yml \
-	-f infra/$(STACK).yml \
-	$(if $(filter $(STACK),stage prod),-f infra/traefik.yml)
+	-f infra/$(STACK).yml
+
+TRAEFIK_SERVICE_NAME := loyelto-router-traefik-1
 
 create-network:
 	@docker network inspect tnet >/dev/null 2>&1 || \
@@ -13,6 +14,15 @@ create-network:
 build:
 	@echo "Building images for $(STACK)..."
 	$(DOCKER_COMPOSE) $(COMPOSE_FILES) build
+
+traefik-up:
+	@echo "Check if Traefik ($(TRAEFIK_SERVICE_NAME)) is already running…"
+	@if [ -z "$$(docker ps --filter name=$(TRAEFIK_SERVICE_NAME) -q)" ] ; then \
+		echo "▶ Traefik not found, starting…"; \
+		$(DOCKER_COMPOSE) -f infra/traefik.yml up -d; \
+	else \
+		echo "✔ Traefik is already running"; \
+	fi
 
 up:
 	@echo "Usage: make up-[dev|stage|prod]"
@@ -29,13 +39,11 @@ up-prod:
 	@$(MAKE) STACK=prod up-anchor
 
 up-anchor:
-	@$(MAKE) STACK=$(STACK) create-network
 	@echo ">>> Pulling & (re)starting 'anchor' service for '$(STACK)'..."
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) pull anchor
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d anchor
 
-
-up-run: create-network
+up-run: create-network traefik-up build
 	@echo ">>> Starting '$(STACK)' stack..."
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d
 
@@ -48,7 +56,7 @@ down-prod:
 	@$(MAKE) STACK=prod down-anchor
 
 down-anchor:
-	@echo ">>> PStopping 'anchor' service for '$(STACK)'..."
+	@echo ">>> Stopping 'anchor' service for '$(STACK)'..."
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down anchor
 
 down:
@@ -79,4 +87,4 @@ clean:
 	@docker volume prune -f
 	@docker network prune -f
 
-.PHONY: build up up-dev up-stage up-prod up-anchor up-run down start stop re list clean
+.PHONY: build traefik-up up up-dev up-stage up-prod up-anchor up-run down start stop re list clean
