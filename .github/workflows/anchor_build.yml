@@ -66,6 +66,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /home/loylapp/loyelto
+            git checkout ${{ github.ref_name }}
             git pull --ff-only
             docker pull ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
             docker compose -f docker-compose.${{ env.STACK }}.yml up -d anchor
