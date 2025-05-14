@@ -4,6 +4,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.landing.rule=Host(`stage.loyel.to`)
+    networks: [tnet]
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
     labels:
@@ -27,6 +28,7 @@ services:
       TREASURY_KEYPAIR: ${TREASURY_KEYPAIR}
       EXCHANGE_PROGRAM_ID: ${EXCHANGE_PROGRAM_ID:-"LoyL111111111111111111111111111111111111111"}
       EXCHANGE_IDL_PATH: ${EXCHANGE_IDL_PATH:-./dummy_idl.json}
+    networks: [tnet]
   anchor:
     image: edvin3i/loyelto-anchor:stage
     command: >
