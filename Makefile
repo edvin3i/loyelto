@@ -1,27 +1,18 @@
-STACK         ?= stage
-ENV_FILE      := infra/env/$(STACK).env
+STACK ?= stage
 DOCKER_COMPOSE := docker compose
 COMPOSE_FILES := \
-	-p loyelto-$(STACK) \
-	--env-file $(ENV_FILE) \
+	-f docker-compose.yml \
 	-f infra/base.yml \
-	-f infra/$(STACK).yml
+	-f infra/$(STACK).yml \
+	$(if $(filter $(STACK),stage prod),-f infra/traefik.yml)
 
-create-networks:
-	@docker network inspect tnet-stage >/dev/null 2>&1 || docker network create tnet-stage
-	@docker network inspect tnet-prod  >/dev/null 2>&1 || docker network create tnet-prod
+create-network:
+	@docker network inspect tnet >/dev/null 2>&1 || \
+		( echo ">>> Creating external network 'tnet'..."; docker network create tnet )
 
 build:
 	@echo "Building images for $(STACK)..."
 	$(DOCKER_COMPOSE) $(COMPOSE_FILES) build
-
-up-router:
-	@echo ">>> Checking Traefik..."
-	@$(DOCKER_COMPOSE) -p loyelto-router --env-file infra/env/$(STACK).env -f infra/traefik.yml ps -q >/dev/null 2>&1 \
-		|| (echo ">>> Starting Traefik..." && $(DOCKER_COMPOSE) -p loyelto-router --env-file infra/env/$(STACK).env -f infra/traefik.yml up -d)
-
-down-router:
-	@docker compose -p loyelto-router -f infra/traefik.yml down
 
 up:
 	@echo "Usage: make up-[dev|stage|prod]"
@@ -29,32 +20,38 @@ up:
 up-dev:
 	@$(MAKE) STACK=dev up-run
 
-up-stage: create-networks
-	@$(MAKE) up-router
+up-stage:
 	@$(MAKE) STACK=stage up-run
+	@$(MAKE) STACK=stage up-anchor
 
-up-prod: create-networks
-	@$(MAKE) up-router
+up-prod:
 	@$(MAKE) STACK=prod up-run
+	@$(MAKE) STACK=prod up-anchor
 
-up-run:
+up-anchor:
+	@$(MAKE) STACK=$(STACK) create-network
+	@echo ">>> Pulling & (re)starting 'anchor' service for '$(STACK)'..."
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) pull anchor
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d anchor
+
+
+up-run: create-network
 	@echo ">>> Starting '$(STACK)' stack..."
-	@test -f $(ENV_FILE) || (echo "env file '$(ENV_FILE)' not found" && exit 1)
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d
 
-down:
-	@echo "Usage: make down-[dev|stage|prod]"
-
-down-dev:
-	@$(MAKE) STACK=dev down-run
-
 down-stage:
-	@$(MAKE) STACK=stage down-run
+	@$(MAKE) STACK=stage down
+	@$(MAKE) STACK=stage down-anchor
 
 down-prod:
-	@$(MAKE) STACK=prod down-run
+	@$(MAKE) STACK=prod down
+	@$(MAKE) STACK=prod down-anchor
 
-down-run:
+down-anchor:
+	@echo ">>> PStopping 'anchor' service for '$(STACK)'..."
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down anchor
+
+down:
 	@echo ">>> Stopping '$(STACK)' stack..."
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down
 
@@ -73,7 +70,7 @@ re:
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d
 
 list:
-	@docker ps
+	docker ps
 
 clean:
 	@echo ">>> Clean '$(STACK)' stack and prune docker..."
@@ -82,7 +79,4 @@ clean:
 	@docker volume prune -f
 	@docker network prune -f
 
-.PHONY: \
-	create-networks build up up-dev up-stage up-prod up-run \
-	down down-dev down-stage down-prod down-run \
-	up-router down-router start stop re list clean
+.PHONY: build up up-dev up-stage up-prod up-anchor up-run down start stop re list clean
