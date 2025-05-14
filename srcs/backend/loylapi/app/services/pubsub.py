@@ -1,5 +1,5 @@
 import json
-import aioredis
+from redis import asyncio as aioredis
 from app.core.settings import settings
 
 async def publish(channel: str, message: dict):
