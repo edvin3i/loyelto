@@ -18,6 +18,24 @@ services:
       - traefik.http.routers.fastapi.entrypoints=websecure
       - traefik.http.routers.fastapi.tls.certresolver=le
       - traefik.http.services.fastapi.loadbalancer.server.port=8000
+    environment:
+      - DOMAIN_NAME: ${DOMAIN_NAME:-stage.loyel.to}
+      - DB_USER: ${DB_USER:-postgres}
+      - DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      - DB_NAME: ${DB_NAME:-loyelto_stage}
+      - DB_HOST: ${DB_HOST:-postgres}
+      - DB_PORT: ${DB_PORT:-5432}
+      - REDIS_HOST: ${REDIS_HOST:-redis}
+      - REDIS_PORT: ${REDIS_PORT:-6379}
+      - REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
+      - CELERY_BROKER: ${CELERY_BROKER}
+      - CELERY_BACKEND: ${CELERY_BACKEND}
+      - PRIVY_APP_ID: ${PRIVY_APP_ID}
+      - PRIVY_API_KEY: ${PRIVY_API_KEY}
+      - PRIVY_API_SECRET: ${PRIVY_API_SECRET}
+      - TREASURY_KEYPAIR: ${TREASURY_KEYPAIR}
+      - EXCHANGE_PROGRAM_ID: ${EXCHANGE_PROGRAM_ID:-"LoyL111111111111111111111111111111111111111"}
+      - EXCHANGE_IDL_PATH: ${EXCHANGE_IDL_PATH:-./dummy_idl.json}
     depends_on: [postgres, redis]
     networks: [tnet]
 
