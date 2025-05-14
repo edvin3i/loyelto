@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:17.4
     restart: never
-    env_file: ./infra/env/${STACK:-prod}.env   # env
+    env_file: ./env/${STACK:-prod}.env   # env
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
