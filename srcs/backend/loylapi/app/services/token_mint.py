@@ -1,151 +1,112 @@
-# app/services/token_mint.py (new)
+from __future__ import annotations
+import asyncio, base58
 from solders.pubkey import Pubkey
 from solders.keypair import Keypair
-from anchorpy import Provider, Wallet, Idl, Program
 from solana.rpc.async_api import AsyncClient
-from pathlib import Path
-import base58
-from app.core.settings import settings
-from app.models import Business, Token
-from app.services.pool import PoolService
+from anchorpy import Provider, Wallet, Idl, Program
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.settings import settings
+from app.db.session import AsyncSessionLocal
+from app.models import Business, Token
+from app.services.exchange_client import ExchangeClient
+from app.services.pool import PoolService
 
+# --- Constants & cached IDL load ----------------------------------------
 
+# The path to the IDL for loyalty_token; read once on import.
 IDL_PATH = settings.root / "anchor/target/idl/loyalty_token.json"
-LOYALTY_PROGRAM_ID = Pubkey.from_string("LOYLoYLRjNhw4ZQH5KThb5YNQJ7Ff085eRKrZLtW1Gh")  # same as declare_id!
+_IDL: Idl
+try:
+    _IDL = Idl.from_json(IDL_PATH.read_text())
+except Exception as e:
+    raise RuntimeError(f"Failed to load IDL at {IDL_PATH}: {e}")
 
-async def _mint_and_record_async(business_id: str):
-    async with SessionMaker() as db:             # type: AsyncSession
-        biz: Business = await db.get(Business, business_id)
-        kp = Keypair.from_bytes(base58.b58decode(biz.owner_privkey))
+LOYALTY_PROGRAM_ID = Pubkey.from_string(
+    "LoyL111111111111111111111111111111111111111"
+)
 
-        # --- Anchor client --------------------------------------------------
-        client  = AsyncClient(settings.SOLANA_RPC_URL)
-        provider = Provider(client, Wallet(kp))
-        idl     = Idl.from_json(IDL_PATH.read_text())
-        program = Program(idl, LOYALTY_PROGRAM_ID, provider)
 
-        decimals = 2
-        initial_supply = 1_000_000 * 10**decimals
-        tx_sig = await program.rpc["createLoyaltyMint"](
-            decimals,
-            int(biz.rate_loyl * 10**6),   # keep 6‑dec fixed‑point
-            initial_supply,
+# --- Core mint & record logic ------------------------------------------
+
+async def _mint_and_record_async(business_id: str) -> None:
+    """
+    1) We remove the business, the owner's key.
+    2) Start the Anchor RPC createLoyaltyMint.
+    3) We derive PDA from mint.
+    4) Saving the Token record.
+    5) We bootstrap liquidity pool via ExchangeClient + PoolService.
+    """
+    # 1) We open a session
+    async with AsyncSessionLocal() as db:  # type: AsyncSession
+        biz: Business | None = await db.get(Business, business_id)
+        if biz is None:
+            raise ValueError(f"Business {business_id} not found")
+
+        # Decoding the owner's key
+        owner_kp = Keypair.from_bytes(base58.b58decode(biz.owner_privkey))
+
+        # 2) Creating a Solana RPC client
+        async with AsyncClient(settings.SOLANA_RPC_URL) as rpc_client:
+            # Setting up AnchorPy Provider + Program
+            provider = Provider(rpc_client, Wallet(owner_kp))
+            program = Program(_IDL, LOYALTY_PROGRAM_ID, provider)
+
+            decimals = 2
+            initial_supply = 1_000_000 * 10**decimals
+
+            # Calling the on-chain method
+            tx_sig = await program.rpc["createLoyaltyMint"](
+                decimals,
+                int(biz.rate_loyl * 10**6),  # fix-point 6 digits
+                initial_supply,
+                ctx={
+                    "accounts": {
+                        "authority": owner_kp.pubkey(),
+                        "systemProgram": program.program.account["System"].program_id,
+                    },
+                    "signers": [owner_kp],
+                },
+            )
+
+            # 3) PDA mint derivation
+            mint_pda, _ = Pubkey.find_program_address(
+                [b"mint", bytes(owner_kp.pubkey())],
+                LOYALTY_PROGRAM_ID,
+            )
+
+        # 4) Saving the Token in the DB
+        db_token = Token(
+            mint=str(mint_pda),
+            symbol=biz.slug.upper()[:6],
+            business_id=biz.id,
+            settlement_token=False,
+            rate_loyl=biz.rate_loyl,
+            decimals=decimals,
+            min_rate=None,
+            max_rate=None,
+            total_supply=initial_supply,
         )
+        db.add(db_token)
+        await db.commit()
+        await db.refresh(db_token)
 
-        # Mint address is emitted in event or can be derived via PDA
-        mint_pda, _ = Pubkey.find_program_address(
-            [b"mint", bytes(kp.pubkey())], LOYALTY_PROGRAM_ID
+        # 5) We initialize the liquidity pool.
+        anchor_client = ExchangeClient(
+            rpc_url=settings.SOLANA_RPC_URL,
+            payer_keypair=settings.treasury_kp,
+            program_id=settings.exchange_program_pk,
+            idl_path=settings.root / "anchor/target/idl/exchange.json",
         )
-
-        # ... same DB logic as before using `mint = str(mint_pda)` ...
-
-
-
+        pool_service = PoolService(db, anchor_client)
+        await pool_service.bootstrap_pool(db_token)
+        await db.commit()
 
 
-
-
-
-
-
-
-
-
-
-
-
-# import asyncio, base58, decimal
-# from decimal import Decimal
-# from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-# from solana.rpc.async_api import AsyncClient
-# from spl.token.async_client import AsyncToken
-# from spl.token.constants import TOKEN_2022_PROGRAM_ID
-# from solders.keypair import Keypair
-# from app.core.settings import settings
-# from app.models.business import Business
-# from app.models.token import Token
-# from app.services.pool import PoolService
-# from app.services.exchange_client import ExchangeClient
-#
-# # Configure decimal precision
-# _DEC_CTX = decimal.getcontext()
-# _DEC_CTX.prec = 28  # enough for 18-digit fixed point
-#
-# # Async engine & session factory
-# engine = create_async_engine(settings.database_url, future=True, echo=False)
-# SessionMaker: async_sessionmaker[AsyncSession] = async_sessionmaker(
-#     engine, expire_on_commit=False
-# )
-#
-# # Solana RPC client
-# sol_client = AsyncClient(settings.SOLANA_RPC_URL)
-#
-#
-# async def _mint_and_record_async(business_id: str):
-#     # 1) Open async DB session
-#     async with SessionMaker() as db:  # type: AsyncSession
-#         biz: Business | None = await db.get(Business, business_id)
-#         if biz is None:
-#             raise ValueError("Business not found")
-#
-#         # 2) Decode business owner keypair
-#         owner_kp = Keypair.from_bytes(base58.b58decode(biz.owner_privkey))
-#         decimals = 2  # loyalty points decimals
-#
-#         # 3) Create SPL-2022 mint
-#         token_client = await AsyncToken.create_mint(
-#             sol_client,
-#             payer=owner_kp,
-#             mint_authority=owner_kp.pubkey(),
-#             decimals=decimals,
-#             program_id=TOKEN_2022_PROGRAM_ID,
-#         )
-#         mint_addr = str(token_client.pubkey)
-#
-#         # 4) Create associated token account for owner
-#         owner_ata = await token_client.create_associated_token_account(
-#             owner_kp.pubkey()
-#         )
-#
-#         # 5) Mint initial supply to owner's ATA
-#         initial_supply = 1_000_000 * (10**decimals)
-#         await token_client.mint_to(
-#             owner_ata,
-#             owner_kp,
-#             initial_supply,
-#         )
-#
-#         # 6) Persist new Token record with actual supply
-#         db_token = Token(
-#             mint=mint_addr,
-#             symbol=biz.slug.upper()[:6],
-#             business_id=biz.id,
-#             settlement_token=False,
-#             rate_loyl=biz.rate_loyl,
-#             decimals=decimals,
-#             min_rate=None,
-#             max_rate=None,
-#             total_supply=initial_supply,  # record actual minted amount
-#         )
-#         db.add(db_token)
-#         await db.commit()
-#         await db.refresh(db_token)
-#
-#         # 7) Bootstrap liquidity pool (25% of supply)
-#         anchor = ExchangeClient(
-#             rpc_url=settings.SOLANA_RPC_URL,
-#             payer_keypair=settings.treasury_kp,
-#             program_id=settings.exchange_program_pk,
-#             idl_path=settings.root / "anchor/target/idl/exchange.json",
-#         )
-#         pool_service = PoolService(db, anchor)
-#         await pool_service.bootstrap_pool(db_token)
-#
-#         # 8) Final commit of pool record
-#         await db.commit()
-#
-#
-# def mint_and_record(business_id: str):
-#     """Blocking wrapper for Celery."""
-#     asyncio.run(_mint_and_record_async(business_id))
+def mint_and_record(business_id: str) -> None:
+    """
+    Synchronous wrapper for Celery: we simply run asyncio.
+    """
+    try:
+        asyncio.run(_mint_and_record_async(business_id))
+    except Exception as err:
+        raise RuntimeError(f"mint_and_record failed for {business_id}: {err}") from err
