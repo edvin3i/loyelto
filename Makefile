@@ -1,82 +1,89 @@
-STACK ?= stage
-DOCKER_COMPOSE := docker compose
-COMPOSE_FILES := \
-	-f docker-compose.yml \
-	-f infra/base.yml \
-	-f infra/$(STACK).yml \
-	$(if $(filter $(STACK),stage prod),-f infra/traefik.yml)
+# ========== CONFIG ==========
+STACK           ?= stage
+PROJECT         := loyelto-$(STACK)
+ENV_FILE        := $(CURDIR)/infra/env/$(STACK).env
+DOCKER_COMPOSE  := docker compose
+COMPOSE_FILES   := -f infra/base.yml -f infra/$(STACK).yml
 
-create-network:
-	@docker network inspect tnet >/dev/null 2>&1 || \
-		( echo ">>> Creating external network 'tnet'..."; docker network create tnet )
+# ========== NETWORKS ==========
+create-networks:
+	@docker network inspect tnet-stage >/dev/null 2>&1 || docker network create tnet-stage
+	@docker network inspect tnet-prod  >/dev/null 2>&1 || docker network create tnet-prod
 
+# ========== BUILD ==========
 build:
-	@echo "Building images for $(STACK)..."
-	$(DOCKER_COMPOSE) $(COMPOSE_FILES) build
+	@echo ">>> Building images for $(STACK)..."
+	@$(DOCKER_COMPOSE) -p $(PROJECT) --env-file $(ENV_FILE) $(COMPOSE_FILES) build
 
+# ========== TRAEFIK ==========
+up-router:
+	@echo ">>> Checking Traefik..."
+	@docker compose -p loyelto-router -f infra/traefik.yml ps -q >/dev/null 2>&1 \
+		|| (echo ">>> Starting Traefik..." && docker compose -p loyelto-router -f infra/traefik.yml up -d)
+
+down-router:
+	@docker compose -p loyelto-router -f infra/traefik.yml down
+
+# ========== UP ==========
 up:
 	@echo "Usage: make up-[dev|stage|prod]"
 
 up-dev:
 	@$(MAKE) STACK=dev up-run
 
-up-stage:
+up-stage: create-networks
+	@$(MAKE) up-router
 	@$(MAKE) STACK=stage up-run
-	@$(MAKE) STACK=stage up-anchor
 
-up-prod:
+up-prod: create-networks
+	@$(MAKE) up-router
 	@$(MAKE) STACK=prod up-run
-	@$(MAKE) STACK=prod up-anchor
 
-up-anchor:
-	@$(MAKE) STACK=$(STACK) create-network
-	@echo ">>> Pulling & (re)starting 'anchor' service for '$(STACK)'..."
-	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) pull anchor
-	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d anchor
-
-
-up-run: create-network
+up-run:
 	@echo ">>> Starting '$(STACK)' stack..."
-	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d
+	@test -f $(ENV_FILE) || (echo "❌ env file '$(ENV_FILE)' not found" && exit 1)
+	@$(DOCKER_COMPOSE) -p $(PROJECT) --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
+
+# ========== DOWN ==========
+down:
+	@echo "Usage: make down-[dev|stage|prod]"
+
+down-dev:
+	@$(MAKE) STACK=dev down-run
 
 down-stage:
-	@$(MAKE) STACK=stage down
-	@$(MAKE) STACK=stage down-anchor
+	@$(MAKE) STACK=stage down-run
 
 down-prod:
-	@$(MAKE) STACK=prod down
-	@$(MAKE) STACK=prod down-anchor
+	@$(MAKE) STACK=prod down-run
 
-down-anchor:
-	@echo ">>> PStopping 'anchor' service for '$(STACK)'..."
-	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down anchor
-
-down:
+down-run:
 	@echo ">>> Stopping '$(STACK)' stack..."
-	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down
+	@$(DOCKER_COMPOSE) -p $(PROJECT) --env-file $(ENV_FILE) $(COMPOSE_FILES) down
 
-start:
-	$(DOCKER_COMPOSE) $(COMPOSE_FILES) start
-
-stop:
-	$(DOCKER_COMPOSE) $(COMPOSE_FILES) stop
-
+# ========== RESTART ==========
 re:
 	@echo ">>> Recreate '$(STACK)' stack from scratch..."
-	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down --rmi all --volumes --remove-orphans
+	@$(DOCKER_COMPOSE) -p $(PROJECT) --env-file $(ENV_FILE) $(COMPOSE_FILES) down --rmi all --volumes --remove-orphans
 	@docker system prune -f
 	@docker volume prune -f
 	@docker network prune -f
-	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d
+	@$(DOCKER_COMPOSE) -p $(PROJECT) --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
 
+# ========== CLEAN ==========
+clean:
+	@echo ">>> Full clean of '$(STACK)'..."
+	@$(DOCKER_COMPOSE) -p $(PROJECT) --env-file $(ENV_FILE) $(COMPOSE_FILES) down --rmi all --volumes --remove-orphans
+	@docker system prune -f
+	@docker volume prune -f
+	@docker network prune -f
+
+# ========== MISC ==========
 list:
 	docker ps
 
-clean:
-	@echo ">>> Clean '$(STACK)' stack and prune docker..."
-	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down --rmi all --volumes --remove-orphans
-	@docker system prune -f
-	@docker volume prune -f
-	@docker network prune -f
-
-.PHONY: build up up-dev up-stage up-prod up-anchor up-run down start stop re list clean
+.PHONY: \
+	create-networks build up-router down-router \
+	up up-dev up-stage up-prod up-run \
+	down down-dev down-stage down-prod down-run \
+	re clean list

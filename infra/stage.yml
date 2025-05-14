@@ -6,7 +6,6 @@ services:
       - traefik.http.routers.landing.rule=Host(`stage.loyel.to`)
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
-    env_file: ./infra/env/stage.env
     labels:
       - traefik.enable=true
       - traefik.http.routers.fastapi.rule=Host(`api.stage.loyel.to`)
@@ -24,11 +23,11 @@ services:
       - SOLANA_URL=https://api.testnet.solana.com
     volumes:
       - ~/.config/solana:/root/.config/solana:ro
-      - ./srcs/backend/anchor:/anchor
+      - ../srcs/backend/anchor:/anchor
     networks: [tnet]
 
   worker:
-    build: ./containers/worker
+    build: ../containers/worker
     depends_on:
       - redis
       - fastapi
@@ -38,7 +37,7 @@ services:
     networks: [tnet]
 
   beat:
-    build: ./containers/beat
+    build: ../containers/beat
     depends_on:
       - redis
       - fastapi

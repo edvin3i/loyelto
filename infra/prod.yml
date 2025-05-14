@@ -12,7 +12,6 @@ services:
 
   fastapi:
     image: edvin3i/loyelto-fastapi:latest
-    env_file: ./infra/env/prod.env
     labels:
       - traefik.enable=true
       - traefik.http.routers.fastapi.rule=Host(`api.loyel.to`)
@@ -23,13 +22,11 @@ services:
     networks: [tnet]
 
   anchor:
-    build:
-      context: .
-      dockerfile: containers/anchor/Dockerfile
+    image: edvin3i/loyelto-anchor:latest
     command: >
       bash -c "
-        avm use && 
-        cd anchor &&
+        avm use 0.29.0 &&
+        cd /anchor &&
         anchor build &&
         anchor deploy --provider.cluster testnet
       "
@@ -38,11 +35,11 @@ services:
       - SOLANA_URL=https://api.testnet.solana.com
     volumes:
       - ~/.config/solana:/root/.config/solana:ro
-      - ./srcs/backend/anchor:/anchor
+      - ../srcs/backend/anchor:/anchor
     networks: [tnet]
 
   worker:
-    build: ./containers/worker
+    build: ../containers/worker
     depends_on:
       - redis
       - fastapi
@@ -52,7 +49,7 @@ services:
     networks: [tnet]
 
   beat:
-    build: ./containers/beat
+    build: ../containers/beat
     depends_on:
       - redis
       - fastapi
