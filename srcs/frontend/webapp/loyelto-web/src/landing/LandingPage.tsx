@@ -6,7 +6,7 @@ import { useTheme, Theme } from '@mui/material/styles'
 import LoyelToBar from './LoyelToBar';
 import MainSection from './MainSection';
 import SlogansSection from './SlogansSection';
-import { businessSlogans, consumerSlogans } from "./slogans";
+import { businessSlogans_fr, businessSlogans_en, consumerSlogans_en, consumerSlogans_fr } from "./slogans";
 import WaitlistForm from './WaitlistForm';
 import SocialLinks from './SocialLinks';
 import { useTranslation } from 'react-i18next'
@@ -15,7 +15,9 @@ import { useTranslation } from 'react-i18next'
 
 export default function LandingPage() {
     const theme = useTheme<Theme>();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const businessSlogans = i18n.language === 'en' ? businessSlogans_en : businessSlogans_fr;
+    const consumerSlogans = i18n.language === 'en' ? consumerSlogans_en : consumerSlogans_fr;
 
     return (
         <div>

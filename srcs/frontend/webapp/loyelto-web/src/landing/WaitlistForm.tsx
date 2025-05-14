@@ -2,8 +2,7 @@ import { Box, Typography, TextField, Button, Snackbar, Alert } from "@mui/materi
 import { useState } from "react";
 import emailjs from '@emailjs/browser';
 import { useTheme, Theme } from '@mui/material/styles'
-
-// You'll need to install EmailJS: npm install @emailjs/browser
+import { useTranslation } from 'react-i18next'
 
 export default function WaitlistForm() {
   const theme = useTheme<Theme>();
@@ -12,6 +11,7 @@ export default function WaitlistForm() {
     phone: "",
     email: ""
   });
+  const {t} = useTranslation();
   
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -86,7 +86,7 @@ export default function WaitlistForm() {
       }}
     >
       <Typography variant="h4" gutterBottom sx={{fontWeight: 'bold'}}>
-        Rejoindre la liste d'attente
+        {t('waitListFormHeading')}
       </Typography>
       
       <Box 
@@ -100,7 +100,7 @@ export default function WaitlistForm() {
       >
         <Box sx={{ mb: 2, textAlign: "left" }}>
           <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
-            Nom de l'entreprise:
+            {t('waitListFormCompany')}:
           </Typography>
           <TextField
             fullWidth
@@ -114,7 +114,7 @@ export default function WaitlistForm() {
         
         <Box sx={{ mb: 2, textAlign: "left" }}>
           <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
-            Numéro de téléphone:
+            {t('waitListFormPhone')}:
           </Typography>
           <TextField
             fullWidth
@@ -128,7 +128,7 @@ export default function WaitlistForm() {
         
         <Box sx={{ mb: 3, textAlign: "left" }}>
           <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
-            E-mail:
+            {t('waitListFormEmail')}:
           </Typography>
           <TextField
             fullWidth
@@ -157,7 +157,7 @@ export default function WaitlistForm() {
             }
           }}
         >
-          Envoyer le formulaire
+          {t('waitListFormButton')}
         </Button>
       </Box>
       
