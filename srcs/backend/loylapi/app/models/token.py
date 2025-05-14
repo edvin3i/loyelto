@@ -7,12 +7,14 @@ from app.utils import uuid_pk
 from decimal import Decimal
 from sqlalchemy import (
     CheckConstraint,
-    UniqueConstraint,
+    BigInteger,
     ForeignKey,
     Boolean,
     Numeric,
     Integer,
     String,
+    Index,
+    text,
 )
 from sqlalchemy.orm import (
     Mapped,
@@ -26,6 +28,12 @@ class Token(Base):
     __table_args__ = (
         CheckConstraint("min_rate <= max_rate", name="check_min_le_max_rate"),
         CheckConstraint("decimals BETWEEN 0 AND 9", name="check_decimals_range"),
+        Index(
+            "uq_single_loyl",
+            "settlement_token",
+            unique=True,
+            postgresql_where=text("settlement_token IS TRUE"),
+        ),
     )
 
     id: Mapped[uuid.UUID] = uuid_pk()
@@ -40,6 +48,8 @@ class Token(Base):
         Boolean, default=False
     )  # flag for LOYL
 
+    rate_loyl: Mapped[Decimal] = mapped_column(Numeric(18, 6), nullable=False)
+
     # need to check later
     min_rate: Mapped[Decimal | None] = mapped_column(
         Numeric(18, 6),
@@ -48,6 +58,17 @@ class Token(Base):
         Numeric(18, 6),
     )
 
+    total_supply: Mapped[int] = mapped_column(
+        BigInteger,
+        nullable=False,
+        default=0,
+        comment="Current totalSupply (base-units)",
+    )
+
     business: Mapped["Business"] = relationship(
         back_populates="loyalty_token", lazy="selectin"
     )
+
+    @property
+    def base_units(self) -> int:
+        return 10**self.decimals

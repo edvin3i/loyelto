@@ -33,3 +33,6 @@ FeeBpsInt = conint(ge=0, le=10_000)
 SolSigStr = LimitedStr(1, 128)
 VouchStatEnum = VoucherStatus
 TaskStatusEnum = TaskStatus
+RatingInt = condecimal(gt=0, le=5, max_digits=3, decimal_places=2)
+OwnerPrivKey = LimitedStr(88, 88)
+PubkeyStr = constr(min_length=44, max_length=44)

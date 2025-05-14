@@ -4,8 +4,10 @@ from pydantic import BaseModel
 
 
 class BaseSchema(BaseModel):
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True,
+        "arbitrary_types_allowed": True,
+    }
 
 
 class BaseDBSchema(BaseSchema):

@@ -20,8 +20,8 @@ class User(Base):
 
     id: Mapped[uuid.UUID] = uuid_pk()
     privy_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
-    email: Mapped[str] = mapped_column(String(320), unique=True)
-    phone: Mapped[str] = mapped_column(String(32), unique=True)
+    email: Mapped[str] = mapped_column(String(320), unique=True, nullable=True)
+    phone: Mapped[str] = mapped_column(String(32), unique=True, nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
         # default=datetime.datetime.now(datetime.UTC)
         DateTime(timezone=True),

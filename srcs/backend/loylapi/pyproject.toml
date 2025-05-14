@@ -9,9 +9,21 @@ dependencies = [
     "asyncpg>=0.30.0",
     "fastapi>=0.115.12",
     "pydantic-settings>=2.9.1",
-    "pydantic>=2.11.3",
+    "pydantic[email]>=2.11.3",
     "sqlalchemy>=2.0.40",
     "uvicorn>=0.34.1",
+    "solana>=0.36.6",
+    "anchorpy>=0.21.0",
+    "base58>=2.1.1",
+    "celery>=5.5.2",
+    "python-dotenv>=1.1.0",
+    "typer[all]>=0.15.3",
+    "ipython>=9.2.0",
+    "autoflake>=2.3.1",
+    "genpy>=2022.1",
+    "python-jose>=3.4.0",
+    "aioredis>=2.0.1",
+    "redis>=6.1.0",
 ]
 
 [dependency-groups]

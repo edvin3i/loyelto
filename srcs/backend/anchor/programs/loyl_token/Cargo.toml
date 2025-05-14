@@ -1,0 +1,25 @@
+[package]
+name = "loyl_token"
+version = "0.1.0"
+description = "Created with Anchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "loyl_token"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = [
+  "anchor-lang/idl-build",
+  "anchor-spl/idl-build",
+]
+
+[dependencies]
+anchor-lang = "0.29.0"
+anchor-spl = "0.29.0"
+#anchor-spl = { version = "0.29.0", features = ["token-2022", "associated-token"] }

@@ -1,0 +1,30 @@
+[toolchain]
+
+[features]
+seeds = false
+skip-lint = false
+
+[programs.devnet]
+business_factory = "FNwqLPqcMp7eoyPw1xpZjG73qdLh3KUjkbEepJFcMqrp"
+exchange = "F9JP31siPUtWkS5GKEZPt4dvgqbZGZ6Uukyk5NMZ9kAz"
+loyl_token = "HYnGyHFiLr1PuG4RwN1aQwMrdNPYcTLM4YkXz7rAu5H3"
+
+[programs.localnet]
+exchange = "F9JP31siPUtWkS5GKEZPt4dvgqbZGZ6Uukyk5NMZ9kAz"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Devnet"
+wallet = "/Users/edvin/.config/solana/id.json"
+
+[workspace]
+members = [
+    "programs/exchange",
+    "programs/business_factory",
+    "programs/loyl_token",
+    ]
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

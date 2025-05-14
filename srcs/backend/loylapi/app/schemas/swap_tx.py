@@ -11,6 +11,7 @@ class SwapTxCreate(BaseSchema):
     to_amount: GeZero
     fee_bps: FeeBpsInt
     sol_sig: SolSigStr
+    sol_sig_redeem: SolSigStr
 
 
 class SwapTxOut(BaseDBSchema):
@@ -21,3 +22,4 @@ class SwapTxOut(BaseDBSchema):
     to_amount: GeZero
     fee_bps: FeeBpsInt
     sol_sig: SolSigStr
+    sol_sig_redeem: SolSigStr
