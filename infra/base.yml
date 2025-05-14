@@ -15,5 +15,7 @@ services:
 
   redis:
     image: redis:8-alpine
+    args:
+        REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
     restart: always
     networks: [tnet]
