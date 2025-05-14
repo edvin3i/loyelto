@@ -1,4 +1,4 @@
-FROM rust:1.86-slim-bullseye
+FROM rust:1.79-slim-bullseye
 
 ARG ANCHOR_VERSION=0.29.0
 

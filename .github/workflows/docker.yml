@@ -15,6 +15,8 @@ jobs:
             image: edvin3i/loyelto-landing
           - dir: containers/fastapi/Dockerfile
             image: edvin3i/loyelto-fastapi
+          - dir: containers/anchor/Dockerfile
+            image: edvin3i/loyelto-anchor
 
     steps:
       - uses: actions/checkout@v4
@@ -70,6 +72,7 @@ jobs:
             git pull --ff-only
             docker pull edvin3i/loyelto-landing:${{ env.IMAGE_TAG }}
             docker pull edvin3i/loyelto-fastapi:${{ env.IMAGE_TAG }}
+            docker pull edvin3i/loyelto-anchor:${{ env.IMAGE_TAG }}
             make up-${{ env.STACK }}
             docker image prune -f
 
