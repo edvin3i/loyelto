@@ -18,6 +18,8 @@ idl-build = [
   "anchor-lang/idl-build",
   "anchor-spl/idl-build",
 ]
+default = ["init-if-needed"]
+init-if-needed = []
 
 [dependencies]
 anchor-lang = "0.29.0"
