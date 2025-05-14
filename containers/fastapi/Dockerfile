@@ -24,5 +24,5 @@ COPY containers/fastapi/entrypoint.sh /tmp/entrypoint.sh
 RUN uv sync --no-cache
 
 ENTRYPOINT ["sh", "/tmp/entrypoint.sh"]
-WORKDIR /app/app
+WORKDIR /app
 CMD ["sh", "/init"]
