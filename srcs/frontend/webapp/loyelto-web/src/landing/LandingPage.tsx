@@ -9,15 +9,13 @@ import SlogansSection from './SlogansSection';
 import { businessSlogans, consumerSlogans } from "./slogans";
 import WaitlistForm from './WaitlistForm';
 import SocialLinks from './SocialLinks';
+import { useTranslation } from 'react-i18next'
 
 
 
 export default function LandingPage() {
     const theme = useTheme<Theme>();
-     // padding: {sm: '20'}, 
-                // width: '98vw', 
-                // marginTop: 70, 
-                // marginBottom: 40 }}>
+    const { t } = useTranslation();
 
     return (
         <div>
@@ -32,38 +30,11 @@ export default function LandingPage() {
               
             }}> 
                 <MainSection />
-                <SlogansSection forWhom='Pour les ENTREPRISES' bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
-                <SlogansSection forWhom='Pour les CLIENTS' bgcolor={theme.palette.neutral.main} slogans={consumerSlogans} />
-                
-                {/* Add Waitlist Form */}
+                <SlogansSection forWhom={t('businessSloganTitle')} bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
+                <SlogansSection forWhom={t('consumerSloganTitle')} bgcolor={theme.palette.neutral.main} slogans={consumerSlogans} />
                 <WaitlistForm />
-                
-                {/* Add Social Links */}
                 <SocialLinks />
-                
-                {/* <Typography variant='h1' sx={{ color: theme.palette.secondary.dark, fontSize: '4rem', textAlign: 'center', mb: 4}}>WELCOME TO LOYELTO
-            </Typography>
-            <Stack direction="row" spacing={2} justifyContent='center'>
-                <Button variant="contained" style={{ backgroundColor: theme.palette.primary.main}}>Sign in</Button>
-                <Button variant="contained" >Join LoyelTo!</Button>
-            </Stack> */}
             </Box>
         </div >
     )
 }
-
-// class LandingPage extends Component {
-//     public render() {
-//         return (
-//             <div>
-//                 <h1>WELCOME TO LOYELTO</h1>
-//                 <Stack direction="row" spacing={2} >
-//                     <Button variant="contained" >Sign in</Button>
-//                     <Button variant="contained" >Join LoyelTo!</Button>
-//                 </Stack>
-//             </div >
-//         )
-//     }
-// }
-
-// export default LandingPage;
