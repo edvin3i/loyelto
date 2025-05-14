@@ -3,7 +3,7 @@ networks: {tnet: {external: true}}
 services:
   postgres:
     image: postgres:17.4
-    restart: never
+    restart: no
     env_file: ./infra/env/${STACK:-prod}.env   # env
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
