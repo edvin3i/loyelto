@@ -58,36 +58,36 @@ export default function AddOfferScreen() {
           headerTitle: 'Create New Offer',
           headerRight: () => (
             <TouchableOpacity 
-              style={styles.headerButton} 
+              style={styles_add_offer.headerButton} 
               onPress={handleCreateOffer}
               disabled={loading}
             >
               {loading ? (
                 <ActivityIndicator size="small" color="#4CAF50" />
               ) : (
-                <ThemedText style={styles.saveButtonText}>Save</ThemedText>
+                <ThemedText style={styles_add_offer.saveButtonText}>Save</ThemedText>
               )}
             </TouchableOpacity>
           ),
         }}
       />
       
-      <ScrollView style={styles.container}>
-        <ThemedView style={styles.formContainer}>
-          <View style={styles.formGroup}>
-            <ThemedText style={styles.label}>Offer Title</ThemedText>
+      <ScrollView style={styles_add_offer.container}>
+        <ThemedView style={styles_add_offer.formContainer}>
+          <View style={styles_add_offer.formGroup}>
+            <ThemedText style={styles_add_offer.label}>Offer Title</ThemedText>
             <TextInput
-              style={styles.input}
+              style={styles_add_offer.input}
               value={formData.title}
               onChangeText={(value) => handleInputChange('title', value)}
               placeholder="e.g. Free Pizza Margarita"
             />
           </View>
           
-          <View style={styles.formGroup}>
-            <ThemedText style={styles.label}>Description</ThemedText>
+          <View style={styles_add_offer.formGroup}>
+            <ThemedText style={styles_add_offer.label}>Description</ThemedText>
             <TextInput
-              style={[styles.input, styles.textArea]}
+              style={[styles_add_offer.input, styles_add_offer.textArea]}
               value={formData.description}
               onChangeText={(value) => handleInputChange('description', value)}
               placeholder="Describe your offer"
@@ -96,10 +96,10 @@ export default function AddOfferScreen() {
             />
           </View>
           
-          <View style={styles.formGroup}>
-            <ThemedText style={styles.label}>Points Required</ThemedText>
+          <View style={styles_add_offer.formGroup}>
+            <ThemedText style={styles_add_offer.label}>Points Required</ThemedText>
             <TextInput
-              style={styles.input}
+              style={styles_add_offer.input}
               value={formData.points_required}
               onChangeText={(value) => handleInputChange('points_required', value.replace(/[^0-9]/g, ''))}
               placeholder="e.g. 250"
@@ -107,10 +107,10 @@ export default function AddOfferScreen() {
             />
           </View>
           
-          <View style={styles.formGroup}>
-            <ThemedText style={styles.label}>Expiry (days)</ThemedText>
+          <View style={styles_add_offer.formGroup}>
+            <ThemedText style={styles_add_offer.label}>Expiry (days)</ThemedText>
             <TextInput
-              style={styles.input}
+              style={styles_add_offer.input}
               value={formData.expiry_days}
               onChangeText={(value) => handleInputChange('expiry_days', value.replace(/[^0-9]/g, ''))}
               placeholder="e.g. 30"
@@ -118,9 +118,9 @@ export default function AddOfferScreen() {
             />
           </View>
           
-          <View style={styles.infoBox}>
-            <FontAwesome name="info-circle" size={18} color="#0082FF" style={styles.infoIcon} />
-            <ThemedText style={styles.infoText}>
+          <View style={styles_add_offer.infoBox}>
+            <FontAwesome name="info-circle" size={18} color="#0082FF" style={styles_add_offer.infoIcon} />
+            <ThemedText style={styles_add_offer.infoText}>
               Customers will be able to redeem this offer once they collect the required number of points.
             </ThemedText>
           </View>

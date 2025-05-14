@@ -35,29 +35,29 @@ export default function ScanQRScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.header}>
+      <ThemedView style={styles_scan_qr.container}>
+        <ThemedView style={styles_scan_qr.header}>
           <ThemedText type="title">Scan Customer Code</ThemedText>
         </ThemedView>
 
-        <ThemedView style={styles.scannerContainer}>
+        <ThemedView style={styles_scan_qr.scannerContainer}>
           {isScanning ? (
-            <View style={styles.scannerActive}>
-              <ThemedText style={styles.scanningText}>Scanning...</ThemedText>
-              <View style={styles.scanCorners}>
-                <View style={[styles.corner, styles.topLeft]} />
-                <View style={[styles.corner, styles.topRight]} />
-                <View style={[styles.corner, styles.bottomLeft]} />
-                <View style={[styles.corner, styles.bottomRight]} />
+            <View style={styles_scan_qr.scannerActive}>
+              <ThemedText style={styles_scan_qr.scanningText}>Scanning...</ThemedText>
+              <View style={styles_scan_qr.scanCorners}>
+                <View style={[styles_scan_qr.corner, styles_scan_qr.topLeft]} />
+                <View style={[styles_scan_qr.corner, styles_scan_qr.topRight]} />
+                <View style={[styles_scan_qr.corner, styles_scan_qr.bottomLeft]} />
+                <View style={[styles_scan_qr.corner, styles_scan_qr.bottomRight]} />
               </View>
             </View>
           ) : (
             <TouchableOpacity 
-              style={styles.scanButton}
+              style={styles_scan_qr.scanButton}
               onPress={handleStartScan}
             >
               <FontAwesome name="qrcode" size={64} color="#0082FF" />
-              <ThemedText style={styles.scanButtonText}>Tap to scan customer code</ThemedText>
+              <ThemedText style={styles_scan_qr.scanButtonText}>Tap to scan customer code</ThemedText>
             </TouchableOpacity>
           )}
         </ThemedView>
@@ -66,5 +66,3 @@ export default function ScanQRScreen() {
     </View>
   );
 }
-
-// Remove the styles constant from here

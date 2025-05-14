@@ -27,56 +27,56 @@ export default function ScanQRResultScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.header}>
-          <TouchableOpacity onPress={handleBackToScan} style={styles.backButton}>
+      <ThemedView style={styles_scan_qr_result.container}>
+        <ThemedView style={styles_scan_qr_result.header}>
+          <TouchableOpacity onPress={handleBackToScan} style={styles_scan_qr_result.backButton}>
             <FontAwesome name="arrow-left" size={20} color="#000" />
           </TouchableOpacity>
           <ThemedText type="title">Scan Result</ThemedText>
           <View style={{ width: 20 }} />
         </ThemedView>
 
-        <ThemedView style={styles.content}>
-          <View style={styles.successIcon}>
+        <ThemedView style={styles_scan_qr_result.content}>
+          <View style={styles_scan_qr_result.successIcon}>
             <FontAwesome name="check-circle" size={64} color="#0082FF" />
           </View>
           
-          <ThemedText style={styles.successText}>Customer identified!</ThemedText>
+          <ThemedText style={styles_scan_qr_result.successText}>Customer identified!</ThemedText>
           
-          <ThemedView style={styles.customerCard}>
-            <View style={styles.customerInfo}>
-              <ThemedText style={styles.customerName}>{name}</ThemedText>
-              <ThemedText style={styles.customerId}>ID: {customerId}</ThemedText>
-              <View style={styles.pointsContainer}>
-                <ThemedText style={styles.pointsValue}>{points}</ThemedText>
-                <ThemedText style={styles.pointsLabel}>points</ThemedText>
+          <ThemedView style={styles_scan_qr_result.customerCard}>
+            <View style={styles_scan_qr_result.customerInfo}>
+              <ThemedText style={styles_scan_qr_result.customerName}>{name}</ThemedText>
+              <ThemedText style={styles_scan_qr_result.customerId}>ID: {customerId}</ThemedText>
+              <View style={styles_scan_qr_result.pointsContainer}>
+                <ThemedText style={styles_scan_qr_result.pointsValue}>{points}</ThemedText>
+                <ThemedText style={styles_scan_qr_result.pointsLabel}>points</ThemedText>
               </View>
             </View>
           </ThemedView>
           
-          <View style={styles.actionsContainer}>
+          <View style={styles_scan_qr_result.actionsContainer}>
             <TouchableOpacity 
-              style={styles.addPointsButton}
+              style={styles_scan_qr_result.addPointsButton}
               onPress={handleAddPoints}
             >
-              <ThemedText style={styles.buttonText}>Add Points</ThemedText>
+              <ThemedText style={styles_scan_qr_result.buttonText}>Add Points</ThemedText>
               <FontAwesome name="plus" size={16} color="#fff" />
             </TouchableOpacity>
             
             <TouchableOpacity 
-              style={styles.redeemButton}
+              style={styles_scan_qr_result.redeemButton}
               onPress={() => alert('Redeem offer feature would open here')}
             >
-              <ThemedText style={styles.buttonText}>Redeem Offer</ThemedText>
+              <ThemedText style={styles_scan_qr_result.buttonText}>Redeem Offer</ThemedText>
               <FontAwesome name="gift" size={16} color="#fff" />
             </TouchableOpacity>
           </View>
           
           <TouchableOpacity
-            style={styles.scanAgainButton}
+            style={styles_scan_qr_result.scanAgainButton}
             onPress={handleBackToScan}
           >
-            <ThemedText style={styles.scanAgainText}>Scan Another Code</ThemedText>
+            <ThemedText style={styles_scan_qr_result.scanAgainText}>Scan Another Code</ThemedText>
           </TouchableOpacity>
         </ThemedView>
         <BusinessNavBar />

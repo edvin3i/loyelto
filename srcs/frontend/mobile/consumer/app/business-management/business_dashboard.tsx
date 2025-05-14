@@ -23,69 +23,69 @@ export default function BusinessDashboard() {
   
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView style={[styles.container, { backgroundColor: '#EDF7FF' }]}>
+      <ScrollView style={[styles_business_dashboard.container, { backgroundColor: '#EDF7FF' }]}>
         {/* Business Stats Overview */}
-        <View style={styles.statsContainer}>
-          <Text style={styles.sectionTitle}>Business Overview</Text>
+        <View style={styles_business_dashboard.statsContainer}>
+          <Text style={styles_business_dashboard.sectionTitle}>Business Overview</Text>
           
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>{businessStats.totalCustomers}</Text>
-              <Text style={styles.statLabel}>Total Customers</Text>
+          <View style={styles_business_dashboard.statsGrid}>
+            <View style={styles_business_dashboard.statCard}>
+              <Text style={styles_business_dashboard.statValue}>{businessStats.totalCustomers}</Text>
+              <Text style={styles_business_dashboard.statLabel}>Total Customers</Text>
             </View>
             
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>{businessStats.pointsIssued}</Text>
-              <Text style={styles.statLabel}>Points Issued</Text>
+            <View style={styles_business_dashboard.statCard}>
+              <Text style={styles_business_dashboard.statValue}>{businessStats.pointsIssued}</Text>
+              <Text style={styles_business_dashboard.statLabel}>Points Issued</Text>
             </View>
             
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>{businessStats.activePromotions}</Text>
-              <Text style={styles.statLabel}>Active Promotions</Text>
+            <View style={styles_business_dashboard.statCard}>
+              <Text style={styles_business_dashboard.statValue}>{businessStats.activePromotions}</Text>
+              <Text style={styles_business_dashboard.statLabel}>Active Promotions</Text>
             </View>
           </View>
         </View>
         
         {/* Recent Transactions */}
-        <View style={styles.transactionsContainer}>
-          <Text style={styles.sectionTitle}>Recent Transactions</Text>
+        <View style={styles_business_dashboard.transactionsContainer}>
+          <Text style={styles_business_dashboard.sectionTitle}>Recent Transactions</Text>
           
           {businessStats.recentTransactions.map(transaction => (
-            <View key={transaction.id} style={styles.transactionItem}>
+            <View key={transaction.id} style={styles_business_dashboard.transactionItem}>
               <View>
-                <Text style={styles.customerName}>{transaction.customer}</Text>
-                <Text style={styles.transactionDate}>{transaction.date}</Text>
+                <Text style={styles_business_dashboard.customerName}>{transaction.customer}</Text>
+                <Text style={styles_business_dashboard.transactionDate}>{transaction.date}</Text>
               </View>
-              <View style={styles.pointsContainer}>
-                <Text style={styles.pointsValue}>{transaction.points}</Text>
-                <Text style={styles.pointsLabel}>points</Text>
+              <View style={styles_business_dashboard.pointsContainer}>
+                <Text style={styles_business_dashboard.pointsValue}>{transaction.points}</Text>
+                <Text style={styles_business_dashboard.pointsLabel}>points</Text>
               </View>
             </View>
           ))}
           
-          <TouchableOpacity style={styles.viewAllButton}>
-            <Text style={styles.viewAllText}>View All Transactions</Text>
+          <TouchableOpacity style={styles_business_dashboard.viewAllButton}>
+            <Text style={styles_business_dashboard.viewAllText}>View All Transactions</Text>
           </TouchableOpacity>
         </View>
         
         {/* Quick Actions */}
-        <View style={styles.actionsContainer}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <View style={styles_business_dashboard.actionsContainer}>
+          <Text style={styles_business_dashboard.sectionTitle}>Quick Actions</Text>
           
-          <View style={styles.actionsGrid}>
-            <TouchableOpacity style={styles.actionButton}>
+          <View style={styles_business_dashboard.actionsGrid}>
+            <TouchableOpacity style={styles_business_dashboard.actionButton}>
               <IconSymbol size={24} name="plus.circle" color="#0082FF" />
-              <Text style={styles.actionText}>New Offer</Text>
+              <Text style={styles_business_dashboard.actionText}>New Offer</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles_business_dashboard.actionButton}>
               <IconSymbol size={24} name="qrcode" color="#0082FF" />
-              <Text style={styles.actionText}>Scan Customer</Text>
+              <Text style={styles_business_dashboard.actionText}>Scan Customer</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity style={styles_business_dashboard.actionButton}>
               <IconSymbol size={24} name="chart.bar" color="#0082FF" />
-              <Text style={styles.actionText}>Analytics</Text>
+              <Text style={styles_business_dashboard.actionText}>Analytics</Text>
             </TouchableOpacity>
           </View>
         </View>
