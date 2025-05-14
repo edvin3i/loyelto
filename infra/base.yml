@@ -16,7 +16,7 @@ services:
   redis:
     image: redis:8-alpine
     environment:
-      - REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:-redis}"]
     restart: always
     networks: [tnet]
