@@ -11,13 +11,11 @@ services:
       - traefik.enable=true
       - traefik.http.routers.fastapi.rule=Host(`api.stage.loyel.to`)
   anchor:
-    build:
-      context: .
-      dockerfile: containers/anchor/Dockerfile
+    image: edvin3i/loyelto-anchor:stage
     command: >
       bash -c "
-        avm use && 
-        cd anchor &&
+        avm use 0.29.0 &&
+        cd /anchor &&
         anchor build &&
         anchor deploy --provider.cluster testnet
       "
