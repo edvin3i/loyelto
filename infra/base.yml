@@ -5,6 +5,11 @@ services:
     image: postgres:17.4
     restart: always
     env_file: ./infra/env/${STACK:-prod}.env   # env
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-postgres}
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - /mnt/HC_Volume_102520323/loylvolume/pgdata:/var/lib/postgresql/data
     networks: [tnet]
