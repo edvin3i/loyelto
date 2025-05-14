@@ -1,4 +1,4 @@
-STACK ?= dev
+STACK ?= stage
 DOCKER_COMPOSE := docker compose
 COMPOSE_FILES := \
 	-f docker-compose.yml \
@@ -34,9 +34,22 @@ up-anchor:
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) pull anchor
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d anchor
 
+
 up-run: create-network
 	@echo ">>> Starting '$(STACK)' stack..."
 	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d
+
+down-stage:
+	@$(MAKE) STACK=stage down
+	@$(MAKE) STACK=stage down-anchor
+
+down-prod:
+	@$(MAKE) STACK=prod down
+	@$(MAKE) STACK=prod down-anchor
+
+down-anchor:
+	@echo ">>> PStopping 'anchor' service for '$(STACK)'..."
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) down anchor
 
 down:
 	@echo ">>> Stopping '$(STACK)' stack..."
