@@ -22,9 +22,17 @@ up-dev:
 
 up-stage:
 	@$(MAKE) STACK=stage up-run
+	@$(MAKE) STACK=stage up-anchor
 
 up-prod:
 	@$(MAKE) STACK=prod up-run
+	@$(MAKE) STACK=prod up-anchor
+
+up-anchor:
+	@$(MAKE) STACK=$(STACK) create-network
+	@echo ">>> Pulling & (re)starting 'anchor' service for '$(STACK)'..."
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) pull anchor
+	@$(DOCKER_COMPOSE) $(COMPOSE_FILES) up -d anchor
 
 up-run: create-network
 	@echo ">>> Starting '$(STACK)' stack..."
@@ -58,4 +66,4 @@ clean:
 	@docker volume prune -f
 	@docker network prune -f
 
-.PHONY: build up up-dev up-stage up-prod up-run down start stop re list clean
+.PHONY: build up up-dev up-stage up-prod up-anchor up-run down start stop re list clean
