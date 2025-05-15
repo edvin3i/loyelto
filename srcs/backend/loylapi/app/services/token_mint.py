@@ -14,7 +14,7 @@ from app.services.pool import PoolService
 # --- Constants & cached IDL load ----------------------------------------
 
 # The path to the IDL for loyalty_token; read once on import.
-IDL_PATH = settings.root / "anchor/target/idl/loyalty_token.json"
+IDL_PATH = settings.root / settings.LOYALTY_IDL_PATH
 _IDL: Idl
 try:
     _IDL = Idl.from_json(IDL_PATH.read_text())
