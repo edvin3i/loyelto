@@ -1,19 +1,16 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program::System;
-
-// token_2022   – contains CPI instructions and Program type
-// token        – provides Account<'info, Mint|TokenAccount> wrappers
 use anchor_spl::{
     associated_token::{self, AssociatedToken},
-    token::{Mint, TokenAccount},             // We take account types from here
+    token::{Mint, TokenAccount},
     token_2022::{
-        self,                                 // CPI helpers + Program
+        self,
         InitializeMint2, MintTo, TransferChecked,
         Token2022,
     },
 };
 
-declare_id!("LoyL111111111111111111111111111111111111111");
+declare_id!("DEwDyoE1cQSEDwEACRygT2Un5sRkSUaF8kXgRXzzyP6x");
 
 #[program]
 pub mod loyalty_token {
@@ -31,7 +28,7 @@ pub mod loyalty_token {
         /* -------------------------------------------------------
          *  1. Derive PDA seeds once
          * -----------------------------------------------------*/
-        let bump   = ctx.bumps.mint_authority;                       // .get() is not available in version 0.29
+        let bump   = ctx.bumps.mint_authority;
         let seeds: &[&[&[u8]]] = &[&[
             b"mint",
             ctx.accounts.business_authority.key.as_ref(),
@@ -40,7 +37,7 @@ pub mod loyalty_token {
 
         /* -------------------------------------------------------
          *  2. Initialise the mint (SPL-Token-2022)
-         *    In 0.29 struct InitializeMint2 { mint } – field rent is not available
+         *    In 0.29 struct InitializeMint2 { mint }
          * -----------------------------------------------------*/
         let init_ctx = CpiContext::new(
             ctx.accounts.token_program.to_account_info(),

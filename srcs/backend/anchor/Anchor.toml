@@ -5,18 +5,25 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-business_factory = "FNwqLPqcMp7eoyPw1xpZjG73qdLh3KUjkbEepJFcMqrp"
-exchange = "F9JP31siPUtWkS5GKEZPt4dvgqbZGZ6Uukyk5NMZ9kAz"
-loyl_token = "HYnGyHFiLr1PuG4RwN1aQwMrdNPYcTLM4YkXz7rAu5H3"
+loyl_token = "DEwDyoE1cQSEDwEACRygT2Un5sRkSUaF8kXgRXzzyP6x"
+business_factory = "TXWo3ecumxrx6DVxKHSjwMKhTf1mLotpgia8m18vTeN"
+exchange = "77xmLbf5RiK9fWUbBoqA1pZWpDxarB3PWwm9i6hLFAqo"
+
+[programs.testnet]
+loyl_token = "DEwDyoE1cQSEDwEACRygT2Un5sRkSUaF8kXgRXzzyP6x"
+business_factory = "TXWo3ecumxrx6DVxKHSjwMKhTf1mLotpgia8m18vTeN"
+exchange = "77xmLbf5RiK9fWUbBoqA1pZWpDxarB3PWwm9i6hLFAqo"
 
 [programs.localnet]
-exchange = "F9JP31siPUtWkS5GKEZPt4dvgqbZGZ6Uukyk5NMZ9kAz"
+loyl_token = "DEwDyoE1cQSEDwEACRygT2Un5sRkSUaF8kXgRXzzyP6x"
+business_factory = "TXWo3ecumxrx6DVxKHSjwMKhTf1mLotpgia8m18vTeN"
+exchange = "77xmLbf5RiK9fWUbBoqA1pZWpDxarB3PWwm9i6hLFAqo"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster =  "https://api.testnet.solana.com"
 wallet = "/Users/edvin/.config/solana/id.json"
 
 [workspace]

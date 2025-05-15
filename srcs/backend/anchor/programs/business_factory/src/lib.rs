@@ -1,12 +1,11 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
-    // Note: Mint/TokenAccount types are taken from the regular token, and CPI functions are taken from token_2022.
     token::{Mint, TokenAccount},
     token_2022::{self as token_2022, Token2022},
 };
 
-declare_id!("BizFctry11111111111111111111111111111111111");
+declare_id!("TXWo3ecumxrx6DVxKHSjwMKhTf1mLotpgia8m18vTeN");
 
 #[program]
 pub mod business_factory {
