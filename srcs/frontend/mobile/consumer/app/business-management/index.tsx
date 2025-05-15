@@ -83,7 +83,7 @@ export default function BusinessHomeScreen() {
         <ThemedView style={styles.section}>
           <View style={styles.sectionHeader}>
             <ThemedText type="subtitle">My loyalty program</ThemedText>
-            <FontAwesome name="info-circle" size={18} color="#999" />
+            <FontAwesome name="info-circle" size={18} color="#999" style={{ marginHorizontal: 4 }} />
           </View>
           
           <ThemedView style={styles.ruleCard}>
@@ -158,7 +158,7 @@ export default function BusinessHomeScreen() {
                       style={styles.stopButton}
                       onPress={() => handleStopPromo(item.id)}
                     >
-                      <ThemedText style={styles.stopButtonText}>Stop promo</ThemedText>
+                      <ThemedText style={styles.stopButtonText}>Edit promo</ThemedText>
                     </TouchableOpacity>
                     <View style={styles.pointsContainer}>
                       <ThemedText style={styles.pointsValue}>{item.points_required}</ThemedText>
