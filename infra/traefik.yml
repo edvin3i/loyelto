@@ -16,7 +16,7 @@ services:
     # - certFile: "/certs/loyel.to.crt"
     #   keyFile:  "/certs/loyel.to.key"
     environment:
-      - ACME_EMAIL=${ACME_EMAIL}
+      - ACME_EMAIL=admin@loyel.to
     ports:
       - "80:80"
       - "443:443"
