@@ -41,7 +41,7 @@ export default function LoyelToBar(props: Props) {
     return (
         <ElevationScroll {...props}>
             <AppBar position='fixed' sx={{ zIndex: 10, backgroundColor: theme.palette.primary.light }}>
-                <Toolbar>
+                <Toolbar  sx={{paddingRight: {xs: 0, sm: '24px'}}}>
                     <Stack direction="row" spacing={4} 
                     sx={{ 
                         marginLeft: {sm:5, xs: 1}, 
@@ -70,12 +70,29 @@ export default function LoyelToBar(props: Props) {
                         </Box>
 
                     </Stack>
-                    <Button color="inherit" size="large" onClick={toggleLanguage}
-                    sx={{
-                        padding: 0,
-                        fontSize: '2rem',
-                        marginRight: 2
-                    }}>{ i18n.language === 'en' ? '🇫🇷' : '🇬🇧'}</Button>
+                    <Box
+                        sx={{
+                            position: { xs: 'absolute', sm: 'static' },
+                            top: { xs: 8, sm: 'auto' },
+                            right: { xs: 8, sm: 'auto' },
+                            zIndex: 20,
+                            display: { xs: 'block', sm: 'flex' },
+                        }}
+                    >
+                        <Button
+                            color="inherit"
+                            size="large"
+                            onClick={toggleLanguage}
+                            sx={{
+                                padding: 0,
+                                fontSize: { xs: '1.5rem', sm: '2rem' },
+                                marginRight: { sm: 4 },
+                                minWidth: 0,
+                            }}
+                        >
+                            {i18n.language === 'en' ? '🇫🇷' : '🇬🇧'}
+                        </Button>
+                    </Box>
                 </Toolbar>
             </AppBar>
         </ElevationScroll>
