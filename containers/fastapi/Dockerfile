@@ -19,8 +19,8 @@ RUN chmod +x /etc/s6-overlay/s6-rc.d/uvicorn/run
 
 WORKDIR /app
 ADD ../../srcs/backend/loylapi /app
-COPY ../../srcs/backend/anchor/target/idl ./anchor/target/idl
-COPY ../../srcs/backend/anchor/target/deploy ./anchor/target/deploy
+COPY ../srcs/backend/anchor/target/idl ./anchor/target/idl
+COPY ../srcs/backend/anchor/target/deploy ./anchor/target/deploy
 
 COPY containers/fastapi/entrypoint.sh /tmp/entrypoint.sh
 RUN chmod +x /tmp/entrypoint.sh
