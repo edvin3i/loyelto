@@ -217,8 +217,8 @@ print_all.sh
 all.txt
 
 # anchor
-target/release/
-target/debug/
-target/sbf-solana-solana
-target/types/
-target/.rustc_info.json
+srcs/backend/anchor/target/release/*
+srcs/backend/anchor/target/debug/*
+srcs/backend/anchor/target/sbf-solana-solana/*
+srcs/backend/anchor/target/types/*
+srcs/backend/anchor/target/.rustc_info.json
