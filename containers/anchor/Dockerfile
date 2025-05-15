@@ -8,7 +8,7 @@ RUN apt-get update \
 
 RUN cargo install \
       --git https://github.com/coral-xyz/anchor \
-      --tag v0.29.0 \
+      --tag v${ANCHOR_VERSION} \
       --locked \
       avm \
  && avm install ${ANCHOR_VERSION} \
@@ -17,10 +17,15 @@ RUN cargo install \
 FROM debian:bullseye-slim AS runtime
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends ca-certificates \
+ && apt-get install -y --no-install-recommends ca-certificates bash \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/cargo/bin/avm /usr/local/bin/avm
+COPY --from=builder /root/.avm /root/.avm
+COPY --from=builder /root/.config/anchor /root/.config/anchor
+
+ENV PATH="/root/.avm/bin:${PATH}"
+ENV ANCHOR_VERSION=0.29.0
 
 WORKDIR /anchor
 COPY ../../srcs/backend/anchor ./anchor
