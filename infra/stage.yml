@@ -1,11 +1,13 @@
 services:
   landing:
     image: edvin3i/loyelto-landing:stage
+    restart: unless-stopped
     labels:
       - traefik.enable=true
       - traefik.http.routers.landing.rule=Host(`stage.loyel.to`)
-      - traefik.http.routers.fastapi.entrypoints=websecure
-      - traefik.http.routers.fastapi.tls.certresolver=le
+      - traefik.http.routers.landing.entrypoints=websecure
+      - traefik.http.routers.landing.tls.certresolver=le
+      - traefik.http.services.landing.loadbalancer.server.port=80
     networks: [tnet]
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
@@ -15,6 +17,7 @@ services:
       - traefik.http.routers.fastapi.rule=Host(`api.stage.loyel.to`)
       - traefik.http.routers.fastapi.entrypoints=websecure
       - traefik.http.routers.fastapi.tls.certresolver=le
+      - traefik.http.services.fastapi.loadbalancer.server.port=8000
     volumes:
       - ./out/idl:/app/anchor/idl
       - ./out/so:/app/anchor/so
