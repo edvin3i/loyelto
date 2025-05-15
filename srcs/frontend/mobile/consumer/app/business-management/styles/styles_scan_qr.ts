@@ -6,7 +6,6 @@ const styles_scan_qr = StyleSheet.create({
   },
   header: {
     padding: 16,
-    paddingTop: 60,
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',

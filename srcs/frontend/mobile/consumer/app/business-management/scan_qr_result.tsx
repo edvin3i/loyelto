@@ -28,13 +28,6 @@ export default function ScanQRResultScreen() {
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <ThemedView style={styles_scan_qr_result.container}>
-        <ThemedView style={styles_scan_qr_result.header}>
-          <TouchableOpacity onPress={handleBackToScan} style={styles_scan_qr_result.backButton}>
-            <FontAwesome name="arrow-left" size={20} color="#000" />
-          </TouchableOpacity>
-          <ThemedText type="title">Scan Result</ThemedText>
-          <View style={{ width: 20 }} />
-        </ThemedView>
 
         <ThemedView style={styles_scan_qr_result.content}>
           <View style={styles_scan_qr_result.successIcon}>
