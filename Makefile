@@ -45,7 +45,7 @@ up-prod: create-networks
 
 up-run:
 	@echo ">>> Starting '$(STACK)' stack..."
-	@test -f $(ENV_FILE) || (echo "❌ env file '$(ENV_FILE)' not found" && exit 1)
+	@test -f $(ENV_FILE) || (echo "ERROR: env file '$(ENV_FILE)' not found" && exit 1)
 	@$(DOCKER_COMPOSE) -p $(PROJECT) --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
 
 # ========== DOWN ==========

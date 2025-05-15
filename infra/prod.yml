@@ -46,23 +46,23 @@ services:
     depends_on: [postgres, redis]
     networks: [tnet]
 
-  anchor:
-    image: edvin3i/loyelto-anchor:latest
-    entrypoint: ["/bin/bash", "-c"]
-    command: >
-       "avm use 0.29.0 &&
-        cd /anchor &&
-        anchor build &&
-        anchor deploy --provider.cluster testnet"
-    environment:
-      - ANCHOR_WALLET=/root/.config/solana/id.json
-      - SOLANA_URL=https://api.testnet.solana.com
-    volumes:
-      - ~/.config/solana:/root/.config/solana:ro
-      - ./srcs/backend/anchor:/anchor
-      - ./out/idl:/out/idl
-      - ./out/so:/out/so
-    networks: [tnet]
+  # anchor:
+  #   image: edvin3i/loyelto-anchor:latest
+  #   entrypoint: ["/bin/bash", "-c"]
+  #   command: >
+  #      "avm use 0.29.0 &&
+  #       cd /anchor &&
+  #       anchor build &&
+  #       anchor deploy --provider.cluster testnet"
+  #   environment:
+  #     - ANCHOR_WALLET=/root/.config/solana/id.json
+  #     - SOLANA_URL=https://api.testnet.solana.com
+  #   volumes:
+  #     - ~/.config/solana:/root/.config/solana:ro
+  #     - ./srcs/backend/anchor:/anchor
+  #     - ./out/idl:/out/idl
+  #     - ./out/so:/out/so
+  #   networks: [tnet]
 
   worker:
     build: ../containers/worker
