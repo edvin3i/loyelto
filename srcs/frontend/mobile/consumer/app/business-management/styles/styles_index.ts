@@ -74,7 +74,7 @@ const styles_index = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   sectionHeaderWithButton: {
     flexDirection: 'row',
@@ -123,6 +123,7 @@ const styles_index = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
+    marginBottom: 10,
   },
   addButtonText: {
     color: '#000',

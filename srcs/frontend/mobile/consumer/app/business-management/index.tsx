@@ -60,7 +60,7 @@ export default function BusinessHomeScreen() {
         <ThemedView style={styles.balanceHeader}>
           <ThemedText type="title" style={styles.headerLabel}>My balance</ThemedText>
           <View style={styles.balanceContainer}>
-            <ThemedText style={styles.balanceText}>{formattedBalance}</ThemedText>
+            <ThemedText style={[styles.balanceText, { lineHeight: 40 }]}>{formattedBalance}</ThemedText>
             <View style={styles.coinIcon}>
               <FontAwesome name="circle" size={24} color="#FFD700" />
             </View>

@@ -130,11 +130,18 @@ export default function HomeScreen() {
                 <TouchableOpacity 
                   style={styles.expandedSwapButton}
                   onPress={() => {
-                    // Add your swap coins functionality here
-                    console.log(`Swap coins for store ${store.id}`);
+                    // Navigate to swap points screen with store data
+                    router.push({
+                      pathname: '/swap-points',
+                      params: {
+                        storeId: store.id,
+                        storeName: store.name,
+                        storeIcon: store.icon
+                      }
+                    });
                   }}
                 >
-                  <ThemedText style={styles.expandedSwapButtonText}>Swap Coins</ThemedText>
+                  <ThemedText style={styles.expandedSwapButtonText}>Swap Points</ThemedText>
                 </TouchableOpacity>
               </View>
             )}
@@ -145,8 +152,15 @@ export default function HomeScreen() {
                 <TouchableOpacity 
                   style={styles.expandedSwapButton}
                   onPress={() => {
-                    // Add your swap coins functionality here
-                    console.log(`Swap coins for store ${store.id}`);
+                    // Navigate to swap points screen with store data
+                    router.push({
+                      pathname: '/swap-points',
+                      params: {
+                        storeId: store.id,
+                        storeName: store.name,
+                        storeIcon: store.icon
+                      }
+                    });
                   }}
                 >
                   <ThemedText style={styles.expandedSwapButtonText}>Swap Coins</ThemedText>

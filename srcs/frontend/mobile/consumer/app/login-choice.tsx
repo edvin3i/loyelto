@@ -22,7 +22,7 @@ export default function LoginChoiceScreen() {
       <StatusBar style="dark" />
       
       <View style={styles.logoContainer}>
-        <Text style={styles.appName}>LoyeLto</Text>
+        <Text style={styles.appName}>LoyelTo</Text>
         <Text style={styles.tagline}>Your Loyalty, Your Rewards</Text>
       </View>
       
