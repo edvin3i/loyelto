@@ -41,13 +41,12 @@ services:
     networks: [tnet]
   anchor:
     image: edvin3i/loyelto-anchor:stage
+    entrypoint: ["/bin/bash", "-c"]
     command: >
-      bash -c "
-        avm use 0.29.0 &&
+       "avm use 0.29.0 &&
         cd /anchor &&
         anchor build &&
-        anchor deploy --provider.cluster testnet
-      "
+        anchor deploy --provider.cluster testnet"
     environment:
       - ANCHOR_WALLET=/root/.config/solana/id.json
       - SOLANA_URL=https://api.testnet.solana.com
