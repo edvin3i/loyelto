@@ -80,7 +80,7 @@ async def privy_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     """
     sig = request.headers.get("privy-signature")
     body = await request.body()
-    if not verify_sig(sig, body, settings.PRIVY_SECRET):
+    if not verify_sig(sig, body, settings.PRIVY_API_SECRET):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
     event = await request.json()
