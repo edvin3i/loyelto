@@ -32,9 +32,10 @@ class Settings(BaseSettings):
     TREASURY_KEYPAIR: str = Field(...)
     SOLANA_RPC_URL: str = Field("https://api.devnet.solana.com")
     EXCHANGE_PROGRAM_ID: str = Field(...)
-    # LOYL_TOKEN_PROGRAM_ID: str = Field(...)
+    EXCHANGE_IDL_PATH: str = Field("anchor/target/idl/exchange.json")
+    LOYL_TOKEN_PROGRAM_ID: str = Field(...)
     LOYALTY_IDL_PATH: str = Field("anchor/target/idl/loyalty_token.json")
-    # BIZ_FACTORY_PROGRAM_ID: str = Field(...)
+    BIZ_FACTORY_PROGRAM_ID: str = Field(...)
     BIZ_FACTORY_IDL_PATH: str = Field("anchor/target/idl/business_factory.json")
 
     PRIVY_APP_ID: str = Field(...)
