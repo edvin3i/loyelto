@@ -32,10 +32,15 @@ class Settings(BaseSettings):
     TREASURY_KEYPAIR: str = Field(...)
     SOLANA_RPC_URL: str = Field("https://api.devnet.solana.com")
     EXCHANGE_PROGRAM_ID: str = Field(...)
+    EXCHANGE_IDL_PATH: str = Field("anchor/target/idl/exchange.json")
+    LOYL_TOKEN_PROGRAM_ID: str = Field(...)
+    LOYALTY_IDL_PATH: str = Field("anchor/target/idl/loyalty_token.json")
+    BIZ_FACTORY_PROGRAM_ID: str = Field(...)
+    BIZ_FACTORY_IDL_PATH: str = Field("anchor/target/idl/business_factory.json")
 
     PRIVY_APP_ID: str = Field(...)
     PRIVY_API_KEY: str = Field(...)
-    PRIVY_SECRET: str = Field(...)
+    PRIVY_API_SECRET: str = Field(...)
 
     CELERY_BROKER: str = Field(...)
     CELERY_BACKEND: str = Field(...)
@@ -66,7 +71,7 @@ class Settings(BaseSettings):
     @property
     def treasury_kp(self) -> Keypair:
         """ """
-        raw = self.TREASURY_KEYPAIR  # строка вида "[12,34,...]"
+        raw = self.TREASURY_KEYPAIR  # string like "[12,34,...]"
         nums = json.loads(raw)  # list[int]
         return Keypair.from_bytes(bytes(nums))
 

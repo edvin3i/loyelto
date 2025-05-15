@@ -15,6 +15,7 @@ def _jwks() -> List[Dict]:
     """
     Fetch JWKS with 10-minute TTL cache.
     """
+    global _JWKS_CACHE
     now = time.time()
     ts, keys = _JWKS_CACHE
     if now - ts < 600 and keys:
@@ -28,7 +29,7 @@ def _jwks() -> List[Dict]:
     if not isinstance(new_keys, list):
         new_keys = []
     # cache update
-    global _JWKS_CACHE
+
     _JWKS_CACHE = (now, new_keys)
     return new_keys
 

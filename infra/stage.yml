@@ -1,36 +1,68 @@
 services:
   landing:
     image: edvin3i/loyelto-landing:stage
+    restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.landing.rule=Host(`stage.loyel.to`)
+      - traefik.http.routers.landing-stage.rule=Host(`stage.loyel.to`)
+      - traefik.http.routers.landing-stage.entrypoints=websecure
+      - traefik.http.routers.landing-stage.tls.certresolver=le
+      - traefik.http.services.landing-stage.loadbalancer.server.port=80
+    networks: [tnet]
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
-    env_file: ./infra/env/stage.env
+    restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.fastapi.rule=Host(`api.stage.loyel.to`)
+      - traefik.http.routers.fastapi-stage.rule=Host(`api.stage.loyel.to`)
+      - traefik.http.routers.fastapi-stage.entrypoints=websecure
+      - traefik.http.routers.fastapi-stage.tls.certresolver=le
+      - traefik.http.services.fastapi-stage.loadbalancer.server.port=8000
+    volumes:
+      - ./out/idl:/app/anchor/idl
+      - ./out/so:/app/anchor/so
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME:-stage.loyel.to}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-loyelto_stage}
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_PORT: ${DB_PORT:-5432}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
+      CELERY_BROKER: ${CELERY_BROKER}
+      CELERY_BACKEND: ${CELERY_BACKEND}
+      PRIVY_APP_ID: ${PRIVY_APP_ID}
+      PRIVY_API_KEY: ${PRIVY_API_KEY}
+      PRIVY_API_SECRET: ${PRIVY_API_SECRET}
+      TREASURY_KEYPAIR: ${TREASURY_KEYPAIR}
+      EXCHANGE_PROGRAM_ID: ${EXCHANGE_PROGRAM_ID:-}
+      EXCHANGE_IDL_PATH: /app/anchor/target/idl/exchange.json
+      LOYL_TOKEN_PROGRAM_ID: ${LOYL_TOKEN_PROGRAM_ID:-}
+      LOYALTY_IDL_PATH: /app/anchor/target/idl/loyalty_token.json
+      BIZ_FACTORY_PROGRAM_ID: ${BIZ_FACTORY_PROGRAM_ID:-}
+      BIZ_FACTORY_IDL_PATH: /app/anchor/target/idl/business_factory.json
+    networks: [tnet]
   anchor:
-    build:
-      context: .
-      dockerfile: containers/anchor/Dockerfile
+    image: edvin3i/loyelto-anchor:stage
+    entrypoint: ["/bin/bash", "-c"]
     command: >
-      bash -c "
-        avm use && 
-        cd anchor &&
+       "avm use 0.29.0 &&
+        cd /anchor &&
         anchor build &&
-        anchor deploy --provider.cluster testnet
-      "
+        anchor deploy --provider.cluster testnet"
     environment:
       - ANCHOR_WALLET=/root/.config/solana/id.json
       - SOLANA_URL=https://api.testnet.solana.com
     volumes:
-      - ~/.config/solana:/root/.config/solana:ro
-      - ./srcs/backend/anchor:/anchor
+      # - ./srcs/backend/anchor/target/idl:/app/anchor/target/idl:ro
+      # - ./srcs/backend/anchor/target/deploy:/app/anchor/target/deploy:ro
+      - ~/.config/solana/id.json:/root/.config/solana/id.json:ro
     networks: [tnet]
 
   worker:
-    build: ./containers/worker
+    build: ../containers/worker
     depends_on:
       - redis
       - fastapi
@@ -40,7 +72,7 @@ services:
     networks: [tnet]
 
   beat:
-    build: ./containers/beat
+    build: ../containers/beat
     depends_on:
       - redis
       - fastapi

@@ -8,6 +8,7 @@ from sqlalchemy import select
 from app.core.settings import settings
 from app.db.session import AsyncSessionLocal
 from app.models import CeleryTaskLog, TaskStatus
+from app.celery_app import celery
 from app.services.celery_wrapper import log_task
 
 log = logging.getLogger(__name__)

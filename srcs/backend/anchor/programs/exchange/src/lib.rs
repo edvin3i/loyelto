@@ -1,8 +1,8 @@
 use anchor_lang::prelude::*;
-use anchor_lang::system_program::System;      // если в Accounts есть system_program
-use anchor_spl::token::Token;         // если используете SPL-token
+use anchor_lang::system_program::System;
+use anchor_spl::token::Token;
 
-declare_id!("F9JP31siPUtWkS5GKEZPt4dvgqbZGZ6Uukyk5NMZ9kAz");
+declare_id!("77xmLbf5RiK9fWUbBoqA1pZWpDxarB3PWwm9i6hLFAqo");
 
 #[program]
 pub mod exchange {
@@ -50,11 +50,11 @@ pub struct InitPool<'info> {
     pub loyalty_mint: AccountInfo<'info>,
 
     #[account(mut, signer)]
-    /// CHECK: это наш бизнес-аккаунт-сигнер, который проверяется подписью
+    /// CHECK: this is our business account signer, which is verified by signature
     pub business_authority: AccountInfo<'info>,
     
     #[account(mut, signer)]
-    /// CHECK: это казначейский аккаунт-сигнер, управляется локально
+    /// CHECK: this is a treasury signer account, managed locally
     pub platform_authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
