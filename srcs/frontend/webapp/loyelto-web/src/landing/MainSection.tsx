@@ -29,9 +29,12 @@ export default function MainSection() {
                     color="initial"
                     gutterBottom
                     sx={{
-                        fontSize: { xs: '2.5rem', sm: '4.1rem' },
+                        fontSize: { xs: '2.5rem', sm: '4.1rem', xl: '8rem' },
+                        // fontSize: 'clamp(4vw, 8rem, 10vw)',
                         fontWeight: '600',
                         textAlign: {xs:'center', sm:'left'},
+                        // marginY: 3
+                        marginBottom: {xs: 2, sm: 9},
                         marginTop: 2
                     }}
                 >
