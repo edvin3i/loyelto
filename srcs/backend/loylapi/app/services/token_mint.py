@@ -13,7 +13,7 @@ from app.services.exchange_client import ExchangeClient
 from app.services.pool import PoolService
 
 # --- Constants & cached IDL load ----------------------------------------
-# The path to the IDL for loyalty_token; read once on import.
+# The path to the IDL for loyalty_token
 BASE_DIR = Path(__file__).resolve().parent
 IDL_PATH = (BASE_DIR / settings.LOYALTY_IDL_PATH).resolve()
 
