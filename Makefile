@@ -18,8 +18,12 @@ build:
 # ========== TRAEFIK ==========
 up-router:
 	@echo ">>> Checking Traefik..."
-	@docker compose -p loyelto-router -f infra/traefik.yml ps -q >/dev/null 2>&1 \
-		|| (echo ">>> Starting Traefik..." && ACME_EMAIL=admin@loyel.to docker compose -p loyelto-router -f infra/traefik.yml up -d)
+	@if ! docker ps --filter "name=loyelto-router-traefik-1" --filter "status=running" -q | grep -q .; then \
+		echo ">>> Starting Traefik..."; \
+		docker compose -p loyelto-router -f infra/traefik.yml up -d; \
+	else \
+		echo ">>> Traefik already running."; \
+	fi
 
 down-router:
 	@docker compose -p loyelto-router -f infra/traefik.yml down
