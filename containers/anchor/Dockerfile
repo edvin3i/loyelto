@@ -20,6 +20,11 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates bash \
  && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /anchor
+COPY ../../srcs/backend/anchor .
+RUN avm use 0.29.0 && \
+    anchor build
+
 COPY --from=builder /usr/local/cargo/bin/avm /usr/local/bin/avm
 COPY --from=builder /root/.avm /root/.avm
 COPY --from=builder /root/.config/anchor /root/.config/anchor
@@ -27,8 +32,7 @@ COPY --from=builder /root/.config/anchor /root/.config/anchor
 ENV PATH="/root/.avm/bin:${PATH}"
 ENV ANCHOR_VERSION=0.29.0
 
-WORKDIR /anchor
-COPY ../../srcs/backend/anchor ./anchor
+
 
 ENTRYPOINT ["avm"]
 
