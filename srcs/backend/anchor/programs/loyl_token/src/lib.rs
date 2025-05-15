@@ -1,109 +1,197 @@
-import base58
-from pathlib import Path
-from solders.keypair import Keypair
-from solders.pubkey import Pubkey
-from solders.system_program import ID as SYS_PROGRAM_ID
-from solders.sysvar import SYSVAR_RENT_PUBKEY
-from anchorpy import Provider, Wallet, Idl, Program
-from solana.rpc.async_api import AsyncClient
-from spl.token.constants import TOKEN_2022_PROGRAM_ID
-from spl.token.instructions import get_associated_token_address
-from sqlalchemy.ext.asyncio import AsyncSession
+use anchor_lang::prelude::*;
+use anchor_spl::{
+    token::{Mint, TokenAccount},
+    associated_token::{self, AssociatedToken},
+    token_2022::{
+        ID as Token2022Program,
+        cpi::accounts::{InitializeMint2, MintTo, TransferChecked},
+        cpi::program::Token2022,
+    },
+};
 
-from app.core.settings import settings
-from app.db.session import AsyncSessionLocal as SessionMaker
-from app.models import Business, Token
+declare_id!("LoyL111111111111111111111111111111111111111");
 
-# Path to your IDL for the loyalty_token program
-IDL_PATH = settings.root / "anchor" / "target" / "idl" / "loyalty_token.json"
-LOYALTY_PROGRAM_ID = Pubkey.from_string("LoyL111111111111111111111111111111111111111")
+#[program]
+pub mod loyalty_token {
+    use super::*;
 
-
-async def mint_and_record(business_id: str) -> None:
-    """
-    1) Creates a new SPL-2022 mint on-chain (via PDA mint authority),
-       mints `initial_supply` to the business ATA, and
-    2) Persists a Token record in Postgres.
-    """
-    async with SessionMaker() as db:  # type: AsyncSession
-        # --- load business & owner keypair ----------------------------
-        biz: Business | None = await db.get(Business, business_id)
-        if biz is None:
-            raise ValueError(f"Business {business_id} not found")
-
-        owner_kp = Keypair.from_bytes(base58.b58decode(biz.owner_privkey))
-
-        # --- prepare Anchor client -------------------------------------
-        client = AsyncClient(settings.SOLANA_RPC_URL)
-        provider = Provider(client, Wallet(owner_kp))
-        idl = Idl.from_json(IDL_PATH.read_text())
-        program = Program(idl, LOYALTY_PROGRAM_ID, provider)
-
-        # --- instruction params ----------------------------------------
-        decimals = 2
-        # fixed-point rate: 6 decimals of precision
-        rate_loyl_fp = int(biz.rate_loyl * 10**6)
-        # e.g. 1_000_000 loyalty tokens
-        initial_supply = 1_000_000 * 10**decimals
-
-        # --- generate a fresh mint account -----------------------------
-        mint_kp = Keypair.generate()
-        mint_pubkey = mint_kp.pubkey()
-
-        # --- derive PDAs used by your program --------------------------
-        # seeds = [b"mint", business_authority.key.as_ref()]
-        mint_auth_pda, _ = Pubkey.find_program_address(
-            [b"mint", bytes(owner_kp.pubkey())],
-            LOYALTY_PROGRAM_ID,
-        )
-        # seeds = [b"meta", mint.key().as_ref()]
-        loyalty_meta_pda, _ = Pubkey.find_program_address(
-            [b"meta", bytes(mint_pubkey)],
-            LOYALTY_PROGRAM_ID,
-        )
-
-        # --- compute business ATA for the new mint ----------------------
-        business_ata = get_associated_token_address(mint_pubkey, owner_kp.pubkey())
-
-        # --- invoke create_loyalty_mint on-chain ------------------------
-        tx_sig = await program.rpc["create_loyalty_mint"](
-            decimals,
-            rate_loyl_fp,
-            initial_supply,
-            ctx={
-                "accounts": {
-                    "mintAuthority": mint_auth_pda,
-                    "loyaltyMeta": loyalty_meta_pda,
-                    "mint": mint_pubkey,
-                    "businessAta": business_ata,
-                    "businessAuthority": owner_kp.pubkey(),
-                    "tokenProgram": TOKEN_2022_PROGRAM_ID,
-                    "associatedTokenProgram": Program.idl_idl_field(  # depending on AnchorPy version
-                        idl, "associated_token"
-                    ),
-                    "systemProgram": SYS_PROGRAM_ID,
-                    "rent": SYSVAR_RENT_PUBKEY,
-                },
-                # need to sign with the generated mint account
-                "signers": [mint_kp],
+    /// Создаёт SPL-2022 mint с PDA-авторитетом, ментит `initial_supply` на ATA бизнеса
+    pub fn create_loyalty_mint(
+        ctx: Context<CreateMint>,
+        decimals: u8,
+        rate_loyl: u64,
+        initial_supply: u64,
+    ) -> Result<()> {
+        // 1) InitializeMint2 (SPL-2022)
+        let signer_seeds = &[
+            b"mint".as_ref(),
+            ctx.accounts.business_authority.key.as_ref(),
+            &[ *ctx.bumps.get("mint_authority").unwrap() ],
+        ];
+        let cpi_ctx = CpiContext::new(
+            ctx.accounts.token_program.to_account_info(),
+            InitializeMint2 {
+                mint: ctx.accounts.mint.to_account_info(),
+                rent: ctx.accounts.rent.to_account_info(),
             },
-        )
-        # (Optionally: log / confirm tx here)
+        );
+        token_2022::cpi::initialize_mint2(cpi_ctx.with_signer(&[signer_seeds]), decimals, ctx.accounts.mint_authority.key, Some(ctx.accounts.mint_authority.key))?;
 
-        # --- persist Token record in your DB ---------------------------
-        db_token = Token(
-            mint=str(mint_pubkey),
-            symbol=biz.slug.upper()[:6],
-            business_id=biz.id,
-            settlement_token=False,
-            rate_loyl=biz.rate_loyl,
-            decimals=decimals,
-            min_rate=None,
-            max_rate=None,
-            total_supply=initial_supply,
-        )
-        db.add(db_token)
-        await db.commit()
-        await db.refresh(db_token)
+        // 2) Создаём (или берём существующий) associated token account бизнеса
+        let cpi_ctx2 = CpiContext::new(
+            ctx.accounts.associated_token_program.to_account_info(),
+            associated_token::Create {
+                payer: ctx.accounts.business_authority.to_account_info(),
+                associated_token: ctx.accounts.business_ata.to_account_info(),
+                authority: ctx.accounts.business_authority.to_account_info(),
+                mint: ctx.accounts.mint.to_account_info(),
+                system_program: ctx.accounts.system_program.to_account_info(),
+                token_program: ctx.accounts.token_program.to_account_info(),
+            },
+        );
+        associated_token::create(cpi_ctx2)?;
 
-        # (Optionally, enqueue your PoolService.bootstrap_pool(db_token) here)
+        // 3) Mint initial_supply → бизнес ATA
+        let cpi_ctx3 = CpiContext::new(
+            ctx.accounts.token_program.to_account_info(),
+            MintTo {
+                mint: ctx.accounts.mint.to_account_info(),
+                to: ctx.accounts.business_ata.to_account_info(),
+                authority: ctx.accounts.mint_authority.to_account_info(),
+            },
+        );
+        token_2022::cpi::mint_to(cpi_ctx3.with_signer(&[signer_seeds]), initial_supply)?;
+
+        // 4) Сохраняем метаданные
+        let meta = &mut ctx.accounts.loyalty_meta;
+        meta.mint = ctx.accounts.mint.key();
+        meta.business = ctx.accounts.business_authority.key();
+        meta.decimals = decimals;
+        meta.rate_loyl = rate_loyl;
+        meta.bump = *ctx.bumps.get("mint_authority").unwrap();
+
+        Ok(())
+    }
+
+    /// Business → User (earn points)
+    pub fn earn_points(ctx: Context<TransferBusiness>, amount: u64) -> Result<()> {
+        let cpi_ctx = CpiContext::new(
+            ctx.accounts.token_program.to_account_info(),
+            TransferChecked {
+                from: ctx.accounts.business_ata.to_account_info(),
+                to:   ctx.accounts.user_ata.to_account_info(),
+                authority: ctx.accounts.business_authority.to_account_info(),
+                mint: ctx.accounts.mint.to_account_info(),
+            },
+        );
+        // проверяем decimals, fee (0)
+        token_2022::cpi::transfer_checked(cpi_ctx, amount, ctx.accounts.mint.decimals)?;
+        Ok(())
+    }
+
+    /// User → Business (redeem points)
+    pub fn redeem_points(ctx: Context<TransferUser>, amount: u64) -> Result<()> {
+        let cpi_ctx = CpiContext::new(
+            ctx.accounts.token_program.to_account_info(),
+            TransferChecked {
+                from: ctx.accounts.user_ata.to_account_info(),
+                to:   ctx.accounts.business_ata.to_account_info(),
+                authority: ctx.accounts.user_authority.to_account_info(),
+                mint: ctx.accounts.mint.to_account_info(),
+            },
+        );
+        token_2022::cpi::transfer_checked(cpi_ctx, amount, ctx.accounts.mint.decimals)?;
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+#[instruction(decimals: u8)]
+pub struct CreateMint<'info> {
+    /// PDA, выступает в роли mint & freeze authority
+    #[account(
+        seeds = [b"mint", business_authority.key().as_ref()],
+        bump,
+    )]
+    pub mint_authority: UncheckedAccount<'info>,
+
+    /// Хранилище метаданных
+    #[account(
+        init,
+        payer = business_authority,
+        seeds = [b"meta", mint.key().as_ref()],
+        bump,
+        space = 8 + 32 + 32 + 1 + 8 + 1, // discriminator + поля LoyaltyMeta
+    )]
+    pub loyalty_meta: Account<'info, LoyaltyMeta>,
+
+    /// SPL-2022 mint
+    #[account(
+        init,
+        payer = business_authority,
+        mint::decimals = decimals,
+        mint::authority = mint_authority,
+        mint::freeze_authority = mint_authority,
+    )]
+    pub mint: Account<'info, Mint>,
+
+    /// Business ATA для mint
+    #[account(
+        init_if_needed,
+        payer = business_authority,
+        associated_token::mint = mint,
+        associated_token::authority = business_authority,
+    )]
+    pub business_ata: Account<'info, TokenAccount>,
+
+    #[account(mut)]
+    pub business_authority: Signer<'info>,
+
+    pub token_program: Program<'info, Token2022Program>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub system_program: Program<'info, System>,
+    pub rent: Sysvar<'info, Rent>,
+}
+
+#[derive(Accounts)]
+pub struct TransferBusiness<'info> {
+    #[account(mut)]
+    pub business_authority: Signer<'info>,
+
+    #[account(mut)]
+    pub business_ata: Account<'info, TokenAccount>,
+
+    #[account(mut)]
+    pub user_ata: Account<'info, TokenAccount>,
+
+    /// Чтобы иметь доступ к decimals в TransferChecked
+    pub mint: Account<'info, Mint>,
+
+    pub token_program: Program<'info, Token2022Program>,
+}
+
+#[derive(Accounts)]
+pub struct TransferUser<'info> {
+    #[account(mut)]
+    pub user_authority: Signer<'info>,
+
+    #[account(mut)]
+    pub user_ata: Account<'info, TokenAccount>,
+
+    #[account(mut)]
+    pub business_ata: Account<'info, TokenAccount>,
+
+    /// Чтобы иметь доступ к decimals в TransferChecked
+    pub mint: Account<'info, Mint>,
+
+    pub token_program: Program<'info, Token2022Program>,
+}
+
+#[account]
+pub struct LoyaltyMeta {
+    pub mint: Pubkey,
+    pub business: Pubkey,
+    pub decimals: u8,
+    pub rate_loyl: u64,
+    pub bump: u8,
+}

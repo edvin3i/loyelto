@@ -1,6 +1,6 @@
 #!/command/execlineb -P
 with-contenv
-export PYTHONPATH "."
+export PYTHONPATH "./app"
 /bin/uv
 run
 /app/.venv/bin/python3

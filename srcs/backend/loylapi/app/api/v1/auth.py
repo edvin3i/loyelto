@@ -17,7 +17,7 @@ auth_scheme = HTTPBearer(auto_error=False)
 privy_rest = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
 
 
-@router.post("/handshake", status_code=204, operation_id="privy_handshake_v1", dependencies=[])
+@router.post("/handshake", status_code=204, dependencies=[])
 async def privy_handshake(
     creds: HTTPAuthorizationCredentials = Depends(auth_scheme),
     db: AsyncSession = Depends(get_db),
@@ -52,7 +52,7 @@ async def privy_handshake(
     return  # 204
 
 
-@router.get("/callback", operation_id="privy_callback_v1")
+@router.get("/callback")
 async def privy_callback(code: str, db: AsyncSession = Depends(get_db)):
     """
     Get privy_id by code, creating user and hidden-wallet.
@@ -73,7 +73,7 @@ async def privy_callback(code: str, db: AsyncSession = Depends(get_db)):
     return RedirectResponse(url="/")  # frontend gets session cookkie
 
 
-@router.post("/webhook", operation_id="privy_webhook_v1")
+@router.post("/webhook")
 async def privy_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     """
     Listening events on 'user.updated', update e-mail / phone.
