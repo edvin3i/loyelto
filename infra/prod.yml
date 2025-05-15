@@ -22,8 +22,9 @@ services:
       - traefik.http.routers.fastapi-prod.tls.certresolver=le
       - traefik.http.services.fastapi-prod.loadbalancer.server.port=8000
     volumes:
-      - ./out/idl:/app/anchor/idl
-      - ./out/so:/app/anchor/so
+      # - ./srcs/backend/anchor/target/idl:/app/anchor/target/idl:ro
+      # - ./srcs/backend/anchor/target/deploy:/app/anchor/target/deploy:ro
+      - ~/.config/solana/id.json:/root/.config/solana/id.json:ro
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME:-stage.loyel.to}
       DB_USER: ${DB_USER:-postgres}
@@ -40,10 +41,12 @@ services:
       PRIVY_API_KEY: ${PRIVY_API_KEY}
       PRIVY_API_SECRET: ${PRIVY_API_SECRET}
       TREASURY_KEYPAIR: ${TREASURY_KEYPAIR}
-      EXCHANGE_PROGRAM_ID: ${EXCHANGE_PROGRAM_ID:-"LoyL111111111111111111111111111111111111111"}
-      EXCHANGE_IDL_PATH: ${EXCHANGE_IDL_PATH:-/app/anchor/idl/exchange.json}
+      EXCHANGE_PROGRAM_ID: ${EXCHANGE_PROGRAM_ID:-}
+      EXCHANGE_IDL_PATH: /app/anchor/target/idl/exchange.json
       LOYL_TOKEN_PROGRAM_ID: ${LOYL_TOKEN_PROGRAM_ID:-}
+      LOYALTY_IDL_PATH: /app/anchor/target/idl/loyalty_token.json
       BIZ_FACTORY_PROGRAM_ID: ${BIZ_FACTORY_PROGRAM_ID:-}
+      BIZ_FACTORY_IDL_PATH: /app/anchor/target/idl/business_factory.json
     depends_on: [postgres, redis]
     networks: [tnet]
 
