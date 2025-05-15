@@ -21,6 +21,7 @@ WORKDIR /app
 ADD ../../srcs/backend/loylapi /app
 
 COPY containers/fastapi/entrypoint.sh /tmp/entrypoint.sh
+RUN chmod +x /tmp/entrypoint.sh
 RUN uv sync --no-cache
 
 ENTRYPOINT ["sh", "/tmp/entrypoint.sh"]

@@ -1,5 +1,6 @@
 from __future__ import annotations
 import asyncio, base58
+from pathlib import Path
 from solders.pubkey import Pubkey
 from solders.keypair import Keypair
 from solana.rpc.async_api import AsyncClient
@@ -14,7 +15,7 @@ from app.services.pool import PoolService
 # --- Constants & cached IDL load ----------------------------------------
 
 # The path to the IDL for loyalty_token; read once on import.
-IDL_PATH = settings.root / settings.LOYALTY_IDL_PATH
+IDL_PATH = Path(settings.LOYALTY_IDL_PATH)
 _IDL: Idl
 try:
     _IDL = Idl.from_json(IDL_PATH.read_text())
