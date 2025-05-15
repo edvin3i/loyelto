@@ -12,7 +12,13 @@ RUN cargo install \
       --locked \
       avm \
  && avm install ${ANCHOR_VERSION} \
- && avm use     ${ANCHOR_VERSION}
+ && avm use ${ANCHOR_VERSION}
+
+WORKDIR /anchor
+COPY ../../srcs/backend/anchor .
+
+RUN avm use ${ANCHOR_VERSION} && \
+    anchor build
 
 FROM debian:bullseye-slim AS runtime
 
@@ -22,27 +28,12 @@ RUN apt-get update \
 
 COPY --from=builder /usr/local/cargo/bin/avm /usr/local/bin/avm
 COPY --from=builder /root/.avm /root/.avm
-COPY --from=builder /root/.config/anchor /root/.config/anchor
+COPY --from=builder /anchor /anchor
+COPY --from=builder /anchor/target/idl /out/idl
+COPY --from=builder /anchor/target/deploy /out/so
 
 ENV PATH="/root/.avm/bin:${PATH}"
-ENV ANCHOR_VERSION=0.29.0
 
 WORKDIR /anchor
-COPY ../../srcs/backend/anchor ./anchor
 
 ENTRYPOINT ["avm"]
-
-
-
-
-# FROM rust:1.79-slim-bullseye
-
-# ARG ANCHOR_VERSION=0.29.0
-
-# RUN apt-get update && \
-#     cargo install --git https://github.com/coral-xyz/anchor avm --locked && \
-#     avm install ${ANCHOR_VERSION} && avm use ${ANCHOR_VERSION}
-
-# WORKDIR /anchor
-
-# COPY ../../srcs/backend/anchor ./anchor
