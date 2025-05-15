@@ -6,10 +6,10 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.landing.rule=Host(`loyel.to`)
-      - traefik.http.routers.landing.entrypoints=websecure
-      - traefik.http.routers.landing.tls.certresolver=le
-      - traefik.http.services.landing.loadbalancer.server.port=80
+      - traefik.http.routers.landing-prod.rule=Host(`loyel.to`)
+      - traefik.http.routers.landing-prod.entrypoints=websecure
+      - traefik.http.routers.landing-prod.tls.certresolver=le
+      - traefik.http.services.landing-prod.loadbalancer.server.port=80
     networks: [tnet]
 
   fastapi:
@@ -17,10 +17,10 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.fastapi.rule=Host(`api.loyel.to`)
-      - traefik.http.routers.fastapi.entrypoints=websecure
-      - traefik.http.routers.fastapi.tls.certresolver=le
-      - traefik.http.services.fastapi.loadbalancer.server.port=8000
+      - traefik.http.routers.fastapi-prod.rule=Host(`api.loyel.to`)
+      - traefik.http.routers.fastapi-prod.entrypoints=websecure
+      - traefik.http.routers.fastapi-prod.tls.certresolver=le
+      - traefik.http.services.fastapi-prod.loadbalancer.server.port=8000
     volumes:
       - ./out/idl:/app/anchor/idl
       - ./out/so:/app/anchor/so
