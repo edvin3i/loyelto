@@ -19,7 +19,7 @@ build:
 up-router:
 	@echo ">>> Checking Traefik..."
 	@docker compose -p loyelto-router -f infra/traefik.yml ps -q >/dev/null 2>&1 \
-		|| (echo ">>> Starting Traefik..." && docker compose -p loyelto-router -f infra/traefik.yml up -d)
+		|| (echo ">>> Starting Traefik..." && docker compose -p loyelto-router --env-file $(CURDIR)/infra/env/prod.env -f infra/traefik.yml up -d)
 
 down-router:
 	@docker compose -p loyelto-router -f infra/traefik.yml down

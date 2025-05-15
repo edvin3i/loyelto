@@ -54,7 +54,6 @@ services:
         cd /anchor &&
         anchor build &&
         anchor deploy --provider.cluster testnet"
-    command: sleep infinity
     environment:
       - ANCHOR_WALLET=/root/.config/solana/id.json
       - SOLANA_URL=https://api.testnet.solana.com

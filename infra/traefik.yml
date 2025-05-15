@@ -9,16 +9,18 @@ services:
       - --entryPoints.web.address=:80
       - --entryPoints.websecure.address=:443
       # LetsEncrypt (ACME)
-      - --certificatesResolvers.le.acme.email=${ACME_EMAIL}
+      - --certificatesResolvers.le.acme.email=admin@loyel.to
       - --certificatesResolvers.le.acme.storage=/acme/acme.json
       - --certificatesResolvers.le.acme.httpChallenge.entryPoint=web
     # - --entryPoints.websecure.http.tls.certificates:
     # - certFile: "/certs/loyel.to.crt"
     #   keyFile:  "/certs/loyel.to.key"
+    environment:
+      - ACME_EMAIL=${ACME_EMAIL}
     ports:
       - "80:80"
       - "443:443"
-      # - "8080:8080"          # dashboard
+      - "8080:8080"          # dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-acme:/acme
