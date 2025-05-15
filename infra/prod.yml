@@ -9,6 +9,7 @@ services:
       - traefik.http.routers.landing.rule=Host(`loyel.to`)
       - traefik.http.routers.landing.entrypoints=websecure
       - traefik.http.routers.landing.tls.certresolver=le
+      - traefik.http.services.landing.loadbalancer.server.port=80
     networks: [tnet]
 
   fastapi:

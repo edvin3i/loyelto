@@ -11,7 +11,7 @@ services:
     networks: [tnet]
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
-    restart: no
+    restart: unless-stopped
     labels:
       - traefik.enable=true
       - traefik.http.routers.fastapi.rule=Host(`api.stage.loyel.to`)
