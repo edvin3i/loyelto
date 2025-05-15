@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # C extensions
-*.so
+#*.so
 
 # Distribution / packaging
 .Python
@@ -73,7 +73,7 @@ docs/_build/
 
 # PyBuilder
 .pybuilder/
-target/
+# target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -215,3 +215,10 @@ migrations/
 *.db
 print_all.sh
 all.txt
+
+# anchor
+target/release/
+target/debug/
+target/sbf-solana-solana
+target/types/
+target/.rustc_info.json
