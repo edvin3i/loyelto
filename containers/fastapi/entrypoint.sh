@@ -11,7 +11,7 @@ done
 echo "✅ Database is up!"
 
 echo "⚡️ Running Alembic migrations..."
-uv run alembic upgrade head
+PYTHONPATH=/app uv run alembic upgrade head
 
 echo "🚀 Starting FastAPI app via Uvicorn..."
 exec "$@"
