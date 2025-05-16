@@ -4,11 +4,10 @@ __pycache__/
 *$py.class
 
 # C extensions
-*.so
+#*.so
 
 # Distribution / packaging
 .Python
-node_modules/
 build/
 develop-eggs/
 dist/
@@ -74,7 +73,7 @@ docs/_build/
 
 # PyBuilder
 .pybuilder/
-target/
+# target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -204,6 +203,8 @@ cython_debug/
 *.out
 *.app
 
+
+# Others
 *.env
 *.sqlite3
 data/
@@ -212,3 +213,12 @@ migrations/
 
 .DS_Store
 *.db
+print_all.sh
+all.txt
+
+# anchor
+srcs/backend/anchor/target/release/*
+srcs/backend/anchor/target/debug/*
+srcs/backend/anchor/target/sbf-solana-solana/*
+srcs/backend/anchor/target/types/*
+srcs/backend/anchor/target/.rustc_info.json

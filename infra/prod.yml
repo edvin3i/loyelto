@@ -1,30 +1,89 @@
+networks: {tnet: {external: true}}
+
 services:
-  postgres:
-    env_file: env/prod.env
-    volumes:
-      - /mnt/HC_Volume_102520323/loylvolume/pgdata-prod:/var/lib/postgresql/data
-    networks: [tnet-prod]
-    depends_on: [redis]
-  redis:
-    env_file: env/prod.env
-    networks: [tnet-prod] 
   landing:
     image: edvin3i/loyelto-landing:latest
+    restart: unless-stopped
     labels:
       - traefik.enable=true
       - traefik.http.routers.landing-prod.rule=Host(`loyel.to`)
       - traefik.http.routers.landing-prod.entrypoints=websecure
       - traefik.http.routers.landing-prod.tls.certresolver=le
-    networks: [tnet-prod]
+      - traefik.http.services.landing-prod.loadbalancer.server.port=80
+    networks: [tnet]
 
   fastapi:
     image: edvin3i/loyelto-fastapi:latest
-    env_file: env/prod.env
+    restart: unless-stopped
     labels:
       - traefik.enable=true
       - traefik.http.routers.fastapi-prod.rule=Host(`api.loyel.to`)
       - traefik.http.routers.fastapi-prod.entrypoints=websecure
       - traefik.http.routers.fastapi-prod.tls.certresolver=le
       - traefik.http.services.fastapi-prod.loadbalancer.server.port=8000
+    volumes:
+      # - ./srcs/backend/anchor/target/idl:/app/anchor/target/idl:ro
+      # - ./srcs/backend/anchor/target/deploy:/app/anchor/target/deploy:ro
+      - ~/.config/solana/id.json:/root/.config/solana/id.json:ro
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME:-stage.loyel.to}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-loyelto_stage}
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_PORT: ${DB_PORT:-5432}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
+      CELERY_BROKER: ${CELERY_BROKER}
+      CELERY_BACKEND: ${CELERY_BACKEND}
+      PRIVY_APP_ID: ${PRIVY_APP_ID}
+      PRIVY_API_KEY: ${PRIVY_API_KEY}
+      PRIVY_API_SECRET: ${PRIVY_API_SECRET}
+      TREASURY_KEYPAIR: ${TREASURY_KEYPAIR}
+      EXCHANGE_PROGRAM_ID: ${EXCHANGE_PROGRAM_ID:-}
+      EXCHANGE_IDL_PATH: /app/anchor/target/idl/exchange.json
+      LOYL_TOKEN_PROGRAM_ID: ${LOYL_TOKEN_PROGRAM_ID:-}
+      LOYALTY_IDL_PATH: /app/anchor/target/idl/loyalty_token.json
+      BIZ_FACTORY_PROGRAM_ID: ${BIZ_FACTORY_PROGRAM_ID:-}
+      BIZ_FACTORY_IDL_PATH: /app/anchor/target/idl/business_factory.json
     depends_on: [postgres, redis]
-    networks: [tnet-prod]
+    networks: [tnet]
+
+  # anchor:
+  #   image: edvin3i/loyelto-anchor:latest
+  #   entrypoint: ["/bin/bash", "-c"]
+  #   command: >
+  #      "avm use 0.29.0 &&
+  #       cd /anchor &&
+  #       anchor build &&
+  #       anchor deploy --provider.cluster testnet"
+  #   environment:
+  #     - ANCHOR_WALLET=/root/.config/solana/id.json
+  #     - SOLANA_URL=https://api.testnet.solana.com
+  #   volumes:
+  #     - ~/.config/solana:/root/.config/solana:ro
+  #     - ./srcs/backend/anchor:/anchor
+  #     - ./out/idl:/out/idl
+  #     - ./out/so:/out/so
+  #   networks: [tnet]
+
+  worker:
+    build: ../containers/worker
+    depends_on:
+      - redis
+      - fastapi
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/1
+    networks: [tnet]
+
+  beat:
+    build: ../containers/beat
+    depends_on:
+      - redis
+      - fastapi
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/1
+    networks: [tnet]

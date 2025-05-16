@@ -2,11 +2,13 @@ import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Stack, SvgIcon, Box, useScrollTrigger } from '@mui/material';
+import { Stack, SvgIcon, Box, useScrollTrigger, Button } from '@mui/material';
 import { styled } from '@mui/material/styles'
 
 import svgLogo from '../assets/loyelto_cropped.svg'
 import { useTheme, Theme } from '@mui/material/styles'
+
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     children?: React.ReactElement<{ elevation?: number }>;
@@ -29,14 +31,22 @@ export default function LoyelToBar(props: Props) {
     const Image = styled('img')({
         width: '100%',
     });
+    const { i18n } = useTranslation();
+
+    const toggleLanguage = () => {
+        const newLang = i18n.language === 'en' ? 'fr' : 'en';
+        i18n.changeLanguage(newLang);
+    }
 
     return (
         <ElevationScroll {...props}>
             <AppBar position='fixed' sx={{ zIndex: 10, backgroundColor: theme.palette.primary.light }}>
-                <Toolbar>
-                    <Stack direction="row" spacing={4} sx={{ 
+                <Toolbar  sx={{paddingRight: {xs: 0, sm: '24px'}}}>
+                    <Stack direction="row" spacing={4} 
+                    sx={{ 
                         marginLeft: {sm:5, xs: 1}, 
-                        marginTop: 2 
+                        marginTop: 2,
+                        flexGrow: 1
                         }}>
                         <div style={{ paddingLeft: '1rem' }}>
                             <Image src={svgLogo} alt='logo' sx={{ 
@@ -60,6 +70,29 @@ export default function LoyelToBar(props: Props) {
                         </Box>
 
                     </Stack>
+                    <Box
+                        sx={{
+                            position: { xs: 'absolute', sm: 'static' },
+                            top: { xs: 8, sm: 'auto' },
+                            right: { xs: 8, sm: 'auto' },
+                            zIndex: 20,
+                            display: { xs: 'block', sm: 'flex' },
+                        }}
+                    >
+                        <Button
+                            color="inherit"
+                            size="large"
+                            onClick={toggleLanguage}
+                            sx={{
+                                padding: 0,
+                                fontSize: { xs: '1.5rem', sm: '2rem' },
+                                marginRight: { sm: 4 },
+                                minWidth: 0,
+                            }}
+                        >
+                            {i18n.language === 'en' ? '🇫🇷' : '🇬🇧'}
+                        </Button>
+                    </Box>
                 </Toolbar>
             </AppBar>
         </ElevationScroll>

@@ -1,6 +1,7 @@
 import { Stack, Box, Typography, Button } from "@mui/material"
 import { styled } from '@mui/material/styles'
 import { useTheme, Theme } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
 
 
 const Image = styled('img')({
@@ -10,6 +11,7 @@ const Image = styled('img')({
 
 export default function MainSection() {
     const theme = useTheme<Theme>();
+    const { t } = useTranslation();
     return (
 
         <Stack direction={{ xs: 'column-reverse', sm: 'row' }} sx={{marginBottom: 5}}>
@@ -27,13 +29,16 @@ export default function MainSection() {
                     color="initial"
                     gutterBottom
                     sx={{
-                        fontSize: { xs: '2.5rem', sm: '4.1rem' },
+                        fontSize: { xs: '2.5rem', sm: '4.1rem', xl: '8rem' },
+                        // fontSize: 'clamp(4vw, 8rem, 10vw)',
                         fontWeight: '600',
                         textAlign: {xs:'center', sm:'left'},
+                        // marginY: 3
+                        marginBottom: {xs: 2, sm: 9},
                         marginTop: 2
                     }}
                 >
-                    Swap & Save: <br /> La Fidélité Nouvelle Génération
+                    Swap & Save: <br /> {t('mainHeading')}
                 </Typography>
                 <Box sx={{ marginLeft: {sm: 0}, marginTop: 1, marginX: {xs: 2}}}>
                     <Button 
@@ -56,7 +61,7 @@ export default function MainSection() {
                            
                         }}
                     >
-                        Rejoindre LoyelTo
+                        {t('joinLoyeltoButton')}
                     </Button>
                 </Box>
             </Box>

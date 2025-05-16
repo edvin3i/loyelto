@@ -1,18 +1,28 @@
+import os
+import app.models  # noqa: F401
+from pathlib import Path
+from dotenv import load_dotenv
+
+root = Path(__file__).parent.parent.parent.parent.parent.parent
+load_dotenv(root / ".env")
+print(root)
+
+
 import asyncio
 from logging.config import fileConfig
-
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import pool
-
 from app.core.settings import settings
 from app.db.base import Base
+
 
 config = context.config
 fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
 
+down_revision = None
 
 def run_migrations_offline() -> None:
     """
@@ -44,7 +54,9 @@ async def run_migrations_online() -> None:
             lambda sync_conn: context.configure(
                 connection=sync_conn,
                 target_metadata=target_metadata,
-                compare_type=True,
+                render_as_batch=True,
+                # compare_type=True,
+                compare_type=(sync_conn.dialect.name != "sqlite"),
             )
         )
         async with connection.begin():
