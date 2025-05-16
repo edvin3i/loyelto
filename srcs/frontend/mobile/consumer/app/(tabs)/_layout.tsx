@@ -30,7 +30,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -52,7 +52,7 @@ export default function TabLayout() {
         name="shops_list"
         options={{
           title: 'Browse',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="storefront.fill" color={color} />
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="magnifyingglass" color={color} />
         }}
       />
     </Tabs>

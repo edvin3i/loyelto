@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -48,28 +48,44 @@ export default function ShopsList() {
 
   const renderShopItem = ({ item: store }: { item: Shop }) => (
     <TouchableOpacity 
-      style={styles_shops_list.shopItemContainer}
+      style={[styles_shops_list.shopItemContainer, { backgroundColor: 'white' }]}
       onPress={() => router.push(`../business/${store.id}`)}
     >
-      <View style={[styles_shops_list.shopItem, { backgroundColor: store.backgroundColor }]}>
-        <IconSymbol size={24} name={store.icon} color="black" />
+      <View style={[styles_shops_list.shopItem, { backgroundColor: 'white' }]}>
+        <IconSymbol size={36} name={store.icon} color="black" />
         <Text style={styles_shops_list.shopName}>{store.name}</Text>
       </View>
       
-      <View style={styles_shops_list.couponContainer}>
-        <View style={styles_shops_list.couponBadge}>
-          <Text style={styles_shops_list.couponText}>{store.coupons} coupons</Text>
+      <View style={[styles_shops_list.couponContainer, { flexDirection: 'column' }]}>
+        <View style={[styles_shops_list.ratingContainer, { alignSelf: 'flex-start', justifyContent: 'flex-start' }]}>
+          <View style={{ marginLeft: 15 }}>
+            <IconSymbol size={16} name="star" color="gray" />
+          </View>
+          <Text style={[styles_shops_list.ratingText, { marginLeft: 5}]}>{store.rating}</Text>
         </View>
-        <View style={styles_shops_list.ratingContainer}>
-          <IconSymbol size={16} name="star.fill" color="black" />
-          <Text style={styles_shops_list.ratingText}>{store.rating}</Text>
+        
+        <View style={[styles_shops_list.couponTextContainer, { marginTop: 8, alignSelf: 'flex-start', marginLeft: 15, flexDirection: 'row', alignItems: 'center' }]}>
+          <View style={{ backgroundColor: '#BEE2FF', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 }}>
+            <Text style={[styles_shops_list.ticketText]}>my </Text>
+            <Image 
+              source={require('../../assets/images/coupon_shops_page.png')} 
+              style={{ width: 24, height: 24 }}
+            />
+          </View>
+          {store.coupons === 1 ? (
+            <Text style={[styles_shops_list.couponText, { marginLeft: 5 }]}>{store.coupons} voucher</Text>
+          ) : store.coupons > 1 ? (
+            <Text style={[styles_shops_list.couponText, { marginLeft: 5 }]}>{store.coupons} vouchers</Text>
+          ) : null}
+        </View>
+        
+        <View style={[styles_shops_list.promotionsContainer, { marginTop: 8, alignSelf: 'flex-start', justifyContent: 'flex-start' }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 15 }}>
+            <Text style={styles_shops_list.promotionCount}>{store.promotions}</Text>
+            <Text style={[styles_shops_list.promotionText, { marginLeft: 5 }]}>Promotions available</Text>
+          </View>
         </View>
       </View>
-      
-      <TouchableOpacity style={styles_shops_list.promotionButton}>
-        <Text style={styles_shops_list.promotionText}>{store.promotions} Promotions available</Text>
-        <IconSymbol size={16} name="chevron.right" color="#007AFF" />
-      </TouchableOpacity>
     </TouchableOpacity>
   );
 
@@ -86,13 +102,19 @@ export default function ShopsList() {
   );
 
   return (
-    <View style={[styles_shops_list.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
+    <View style={[styles_shops_list.container, { backgroundColor: '#EDF7FF' }]}>
       {/* Balance Section */}
-      <View style={styles_shops_list.balanceContainer}>
+      <View style={[styles_shops_list.balanceContainer, { backgroundColor: 'white' }]}>
         <IconSymbol size={24} name="person.fill" color="#F6A623" />
         <Text style={styles_shops_list.balanceTitle}>My balance</Text>
         <View style={styles_shops_list.pointsSection}>
-          <Text style={styles_shops_list.pointsValue}>1234</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={styles_shops_list.pointsValue}>1234</Text>
+            <Image 
+              source={require('../../assets/images/coin_loyl.png')} 
+              style={styles_shops_list.coinIcon} 
+            />
+          </View>
           <Text style={styles_shops_list.pointsLabel}>points</Text>
         </View>
       </View>

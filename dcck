@@ -20,7 +20,6 @@ networks:
     driver: bridge
 services:
   landing:
-    container_name: landing
     build:
       context: .
       dockerfile: containers/landing/Dockerfile
@@ -30,7 +29,6 @@ services:
       - tnet
     restart: always
   fastapi:
-    container_name: fastapi
     build: 
       context: .
       dockerfile: containers/fastapi/Dockerfile
@@ -42,7 +40,6 @@ services:
       - tnet
     restart: always
   postgres:
-    container_name: postgres
     shm_size: 128mb
     build: 
       context: .
@@ -59,7 +56,6 @@ services:
       - tnet
     restart: always
   redis:
-    container_name: redis
     build:
       context: .
       dockerfile: containers/redis/Dockerfile
@@ -71,7 +67,6 @@ services:
       - tnet
     restart: always
   # adminer:
-  #   container_name: adminer
   #   build:
   #     context: .
   #     dockerfile: containers/adminer/Dockerfile
