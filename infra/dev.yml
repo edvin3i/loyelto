@@ -23,14 +23,14 @@ services:
     # env_file: ./infra/env/dev.env
     build:
       context: .
-      dockerfile: containers/fastapi/Dockerfile
+      dockerfile: ../containers/fastapi/Dockerfile
     ports: ["8000:8000"]
     networks: [tnet-dev]
   
   anchor:
     build:
       context: .
-      dockerfile: containers/anchor/Dockerfile
+      dockerfile: ../containers/anchor/Dockerfile
     command: >
       bash -c "
         avm use && 
@@ -52,6 +52,6 @@ services:
   landing:
     build:
       context: .
-      dockerfile: containers/landing/Dockerfile
+      dockerfile: ../containers/landing/Dockerfile
     ports: ["80:80"]
     networks: [tnet-dev]

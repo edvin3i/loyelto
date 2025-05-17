@@ -1,5 +1,8 @@
 networks: {tnet: {external: true}}
 
+volumes:
+  pgdata:
+
 services:
   postgres:
     image: postgres:17.4
@@ -10,7 +13,8 @@ services:
       POSTGRES_DB: ${DB_NAME:-postgres}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - /mnt/HC_Volume_102520323/loylvolume/pgdata:/var/lib/postgresql/data
+      - ${PGDATA_PATH:-pgdata}:/var/lib/postgresql/data/pgdata
+      # - /mnt/HC_Volume_102520323/loylvolume/pgdata:/var/lib/postgresql/data
     networks: [tnet]
 
   redis:
