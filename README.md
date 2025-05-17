@@ -4,18 +4,19 @@
 
 ## 🚀 Features
 
-- Issue loyalty tokens for businesses (SPL-2022)
+- Issue loyalty (branded) tokens for businesses (SPL-2022)
 - Settlement via internal token LOYL
 - User authentication through Privy
 - Support for NFT vouchers
-- REST API built with FastAPI for managing loyalty programs
+- REST API built with FastAPI
 - Task queues using Celery and Redis
 - CI/CD with GitHub Actions and Docker
+- Mobile app for business users and for consumers
 
 ## 🧱 Tech Stack
 
 - **Backend**: FastAPI, SQLAlchemy, PostgreSQL, Redis, Celery
-- **Blockchain**: Solana, Anchor, SPL-2022, Bubblegum
+- **Blockchain**: Solana, Anchor, SPL-2022; in future - Bubblegum for NFTs
 - **Frontend**: React (Web), React Native (Mobile)
 - **DevOps**: Docker, GitHub Actions
 
