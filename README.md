@@ -28,3 +28,10 @@ cd loyelto
 mv infra/env/stage.env.example infra/env/stage.env
 # set the real values in env variables
 make up-stage
+```
+## Our social media:
+- [Website](https:loyel.to)
+- [Linkedin](https://www.linkedin.com/company/loyelto)
+- [Telegram](https://t.me/loyelto)
+- [Instagram](https://www.instagram.com/loyelto)
+- [X](https://x.com/loyelto75)
