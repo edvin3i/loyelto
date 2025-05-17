@@ -20,7 +20,7 @@
 - **Frontend**: React (Web), React Native (Mobile)
 - **DevOps**: Docker, GitHub Actions
 
-## 📦 Installation (not for peronal use)
+## 📦 Installation (not for personal use)
 
 ```bash
 git clone https://github.com/edvin3i/loyelto.git
