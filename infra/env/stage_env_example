@@ -1,0 +1,33 @@
+ENV=stage
+
+# Database configuration
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=stage_db
+DB_USER=pgdbuser
+DB_PASSWORD=SuperSecretPassword
+PGDATA_PATH=
+
+# FastAPI configuration
+RUN_MODE=stage
+REDIS_PASSWORD=redis_password
+CACHE_KEY_SALT=test_cache_salt
+
+# Domain configuration
+DOMAIN_NAME=stage.loyel.to
+
+
+ACME_EMAIL=admin@loyel.to
+
+TREASURY_KEYPAIR="[210,82,144,141,141 ... 199,239,43]"
+EXCHANGE_PROGRAM_ID=some_addr
+EXCHANGE_IDL_PATH=/app/anchor/idl/exchange.json
+LOYL_TOKEN_PROGRAM_ID=some_addr
+LOYALTY_IDL_PATH=/app/anchor/idl/loyalty_token.json
+BIZ_FACTORY_PROGRAM_ID=some_addr
+BIZ_FACTORY_IDL_PATH=/app/anchor/idl/business_factory.json
+PRIVY_APP_ID=some_id
+PRIVY_API_SECRET=some_secret
+
+CELERY_BROKER=redis://redis:6379/0
+CELERY_BACKEND=redis://redis:6379/1
