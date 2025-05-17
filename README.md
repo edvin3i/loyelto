@@ -24,5 +24,6 @@
 ```bash
 git clone https://github.com/edvin3i/loyelto.git
 cd loyelto
-mv infra/env/dev.env.example infra/env/dev.env
-make up-dev
+mv infra/env/stage.env.example infra/env/stage.env
+# set the real values in env variables
+make up-stage
