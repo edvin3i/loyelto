@@ -5,33 +5,32 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-loyl_token = "DEwDyoE1cQSEDwEACRygT2Un5sRkSUaF8kXgRXzzyP6x"
-business_factory = "TXWo3ecumxrx6DVxKHSjwMKhTf1mLotpgia8m18vTeN"
+loyl_settlement = "5U4pGCH5Lvq25c5L24dKNHCCvvDPg1eVut29eZi2gK6A"
 exchange = "77xmLbf5RiK9fWUbBoqA1pZWpDxarB3PWwm9i6hLFAqo"
-
-[programs.testnet]
 loyl_token = "DEwDyoE1cQSEDwEACRygT2Un5sRkSUaF8kXgRXzzyP6x"
-business_factory = "TXWo3ecumxrx6DVxKHSjwMKhTf1mLotpgia8m18vTeN"
-exchange = "77xmLbf5RiK9fWUbBoqA1pZWpDxarB3PWwm9i6hLFAqo"
 
 [programs.localnet]
-loyl_token = "DEwDyoE1cQSEDwEACRygT2Un5sRkSUaF8kXgRXzzyP6x"
-business_factory = "TXWo3ecumxrx6DVxKHSjwMKhTf1mLotpgia8m18vTeN"
+loyl_settlement = "5U4pGCH5Lvq25c5L24dKNHCCvvDPg1eVut29eZi2gK6A"
 exchange = "77xmLbf5RiK9fWUbBoqA1pZWpDxarB3PWwm9i6hLFAqo"
+loyl_token = "DEwDyoE1cQSEDwEACRygT2Un5sRkSUaF8kXgRXzzyP6x"
+
+[programs.testnet]
+loyl_settlement = "5U4pGCH5Lvq25c5L24dKNHCCvvDPg1eVut29eZi2gK6A"
+exchange = "77xmLbf5RiK9fWUbBoqA1pZWpDxarB3PWwm9i6hLFAqo"
+loyl_token = "DEwDyoE1cQSEDwEACRygT2Un5sRkSUaF8kXgRXzzyP6x"
+
+
+
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster =  "https://api.testnet.solana.com"
+cluster = "https://api.testnet.solana.com"
 wallet = "/Users/edvin/.config/solana/id.json"
 
 [workspace]
-members = [
-    "programs/exchange",
-    "programs/business_factory",
-    "programs/loyl_token",
-    ]
+members = ["programs/exchange", "programs/business_factory", "programs/loyl_token"]
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
