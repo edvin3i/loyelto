@@ -15,7 +15,7 @@ const SEED_POOL:          &[u8] = b"pool";
 const SEED_TREASURY:      &[u8] = b"treasury";
 
 /*────────────────────────────  PROGRAM ID  ───────────────────────────*/
-declare_id!("9zRFjJNfaJBbGAbQHVq2PASi6DPd7oUHmsqtD9h5pz7R");
+declare_id!("3kzE3Xvgzi9PurL9cjRU7t9twHLYZUhaVv2AVmLXqbxm");
 
 /*───────────────────────────  STATE ACCOUNTS  ───────────────────────*/
 #[account]

@@ -9,7 +9,7 @@ use anchor_spl::{
 };
 
 /*────────── CONSTANTS & PDA SEEDS ──────────*/
-declare_id!("5U4pGCH5Lvq25c5L24dKNHCCvvDPg1eVut29eZi2gK6A");
+declare_id!("47RVB2NnGEYXdSvxxN7DfLFk69FvpJemvhH4rxLnjE4s");
 
 const SEED_PLATFORM: &[u8] = b"platform";
 const SEED_MINT:     &[u8] = b"loyl_mint";

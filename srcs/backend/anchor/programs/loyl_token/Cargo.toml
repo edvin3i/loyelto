@@ -30,6 +30,6 @@ anchor-spl = { version = "0.29.0", features = [
     "associated_token",
 ] }
 solana-program = "1.18.26"
+spl-token = { version = "3.5.0", default-features = false, features = ["no-entrypoint"] }
 spl-token-2022 = { version = "0.9.0", features = ["no-entrypoint"] }
-spl-token = "3.5.0"
 tokio = "1.45.0"

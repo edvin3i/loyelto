@@ -1,0 +1,207 @@
+{
+  "version": "0.1.0",
+  "name": "loyl_settlement",
+  "instructions": [
+    {
+      "name": "initLoyl",
+      "accounts": [
+        {
+          "name": "platform",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "loylMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "decimals",
+          "type": "u8"
+        },
+        {
+          "name": "initialSupply",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "mintLoylTo",
+      "accounts": [
+        {
+          "name": "platform",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "loylMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "destAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updateSettings",
+      "accounts": [
+        {
+          "name": "governor",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "config",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "minUpdateInterval",
+          "type": "i64"
+        },
+        {
+          "name": "maxDeltaBps",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Settings",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "minUpdateInterval",
+            "type": "i64"
+          },
+          {
+            "name": "maxDeltaBps",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "LoylCreated",
+      "fields": [
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "supply",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "LoylMinted",
+      "fields": [
+        {
+          "name": "destination",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "SettingsUpdated",
+      "fields": [
+        {
+          "name": "minUpdateInterval",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "maxDeltaBps",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidDecimals",
+      "msg": "Invalid decimals (must be 6)"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAmount",
+      "msg": "Amount must be positive"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidDestination",
+      "msg": "Destination must be PDA-owned"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidInterval",
+      "msg": "Update interval must be positive"
+    }
+  ],
+  "metadata": {
+    "address": "47RVB2NnGEYXdSvxxN7DfLFk69FvpJemvhH4rxLnjE4s"
+  }
+}
