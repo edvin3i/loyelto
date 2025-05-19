@@ -32,11 +32,12 @@ LOYALTY_PROGRAM_ID = Pubkey.from_string(
 
 async def _mint_and_record_async(business_id: str) -> None:
     """
-    1) We remove the business, the owner's key.
-    2) Start the Anchor RPC createLoyaltyMint.
-    3) We derive PDA from mint.
-    4) Saving the Token record.
-    5) We bootstrap liquidity pool via ExchangeClient + PoolService.
+    Creates a branded loyalty token for a business and initializes a liquidity pool:
+    1) Retrieve the business and its owner's keypair
+    2) Create the branded loyalty token via the Anchor RPC createLoyaltyMint
+    3) Derive the PDA (Program Derived Address) for the mint
+    4) Save the token record to the database
+    5) Bootstrap the liquidity pool via ExchangeClient + PoolService
     """
     # 1) We open a session
     async with AsyncSessionLocal() as db:  # type: AsyncSession
@@ -106,9 +107,18 @@ async def _mint_and_record_async(business_id: str) -> None:
 
 def mint_and_record(business_id: str) -> None:
     """
-    Synchronous wrapper for Celery: we simply run asyncio.
+    Synchronous wrapper for Celery: runs the async token minting process.
+    
+    Args:
+        business_id: UUID of the business to mint tokens for
+        
+    Raises:
+        RuntimeError: If any step in the token minting process fails
     """
     try:
         asyncio.run(_mint_and_record_async(business_id))
     except Exception as err:
+        # Log the error with more details
+        import logging
+        logging.error(f"Token minting failed for business {business_id}: {err}", exc_info=True)
         raise RuntimeError(f"mint_and_record failed for {business_id}: {err}") from err
