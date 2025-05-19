@@ -20,6 +20,11 @@
 - **Frontend**: React (Web), React Native (Mobile)
 - **DevOps**: Docker, GitHub Actions
 
+## 🧬 Programms on TESTNET
+- **loyl_settlement**: 47RVB2NnGEYXdSvxxN7DfLFk69FvpJemvhH4rxLnjE4s
+- **loyl_token**: 3kzE3Xvgzi9PurL9cjRU7t9twHLYZUhaVv2AVmLXqbxm
+- **exchange**: uMhywp8T3MGLrXPgaTnX7HQjNCT6Cv9tp9pfZ2S7WBp
+
 ## 📦 Installation (not for personal use)
 
 ```bash
@@ -29,7 +34,7 @@ mv infra/env/stage.env.example infra/env/stage.env
 # set the real values in env variables
 make up-stage
 ```
-## Our social media:
+## 📱 Our social media:
 - [Website](https:loyel.to)
 - [Linkedin](https://www.linkedin.com/company/loyelto)
 - [Telegram](https://t.me/loyelto)
