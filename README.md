@@ -35,8 +35,8 @@ mv infra/env/stage.env.example infra/env/stage.env
 make up-stage
 ```
 ## 📱 Our social media:
-- [Website](https:loyel.to)
-- [Linkedin](https://www.linkedin.com/company/loyelto)
-- [Telegram](https://t.me/loyelto)
-- [Instagram](https://www.instagram.com/loyelto)
-- [X](https://x.com/loyelto75)
+- [📜 Website](https:loyel.to)
+- [🏢 Linkedin](https://www.linkedin.com/company/loyelto)
+- [📠 Telegram](https://t.me/loyelto)
+- [📸 Instagram](https://www.instagram.com/loyelto)
+- [📟 X](https://x.com/loyelto75)
