@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     EXCHANGE_PROGRAM_ID: str = Field(...)
     EXCHANGE_IDL_PATH: str = Field("anchor/target/idl/exchange.json")
     LOYL_TOKEN_PROGRAM_ID: str = Field(...)
-    LOYALTY_IDL_PATH: str = Field("anchor/target/idl/loyalty_token.json")
+    LOYL_IDL_PATH: str = Field("anchor/target/idl/loyl_token.json")
     LOYL_SETTLEMENT_PROGRAM_ID: str = Field(...)
     LOYL_SETTLEMENT_IDL_PATH: str = Field("anchor/idl/loyl_settlement.json")
 
