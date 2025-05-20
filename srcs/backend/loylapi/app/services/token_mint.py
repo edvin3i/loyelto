@@ -14,7 +14,7 @@ from app.services.pool import PoolService
 
 # --- Constants & cached IDL load ----------------------------------------
 # The path to the IDL for loyalty_token
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 IDL_PATH = (BASE_DIR / settings.LOYALTY_IDL_PATH).resolve()
 
 _IDL: Idl
@@ -23,9 +23,7 @@ try:
 except Exception as e:
     raise RuntimeError(f"Failed to load IDL at {IDL_PATH}: {e}")
 
-LOYALTY_PROGRAM_ID = Pubkey.from_string(
-    "LoyL111111111111111111111111111111111111111"
-)
+LOYALTY_PROGRAM_ID = Pubkey.from_string(settings.LOYL_TOKEN_PROGRAM_ID)
 
 
 # --- Core mint & record logic ------------------------------------------
