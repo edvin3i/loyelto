@@ -36,7 +36,8 @@ app.include_router(ws_router)
 
 # initializationn of Anchor client
 root = Path(__file__).parent.parent.parent
-idl_path = root / "anchor" / "target" / "idl" / "exchange.json"
+print(f"==================== {root} ====================")
+idl_path = root / "app" / "anchor" / "target" / "idl" / "exchange.json"
 
 # print(idl_path.exists(), idl_path.read_text()[:200])
 
