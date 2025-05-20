@@ -45,8 +45,8 @@ services:
       EXCHANGE_IDL_PATH: /app/anchor/target/idl/exchange.json
       LOYL_TOKEN_PROGRAM_ID: ${LOYL_TOKEN_PROGRAM_ID:-}
       LOYALTY_IDL_PATH: /app/anchor/target/idl/loyalty_token.json
-      BIZ_FACTORY_PROGRAM_ID: ${BIZ_FACTORY_PROGRAM_ID:-}
-      BIZ_FACTORY_IDL_PATH: /app/anchor/target/idl/business_factory.json
+      LOYL_SETTLEMENT_PROGRAM_ID: ${LOYL_SETTLEMENT_PROGRAM_ID:-}
+      LOYL_SETTLEMENT_IDL_PATH: /app/anchor/target/idl/loyl_settlement.json
     depends_on: [postgres, redis]
     networks: [tnet]
 
