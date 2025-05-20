@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, BackgroundTasks
 from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.services.business import business_service
@@ -16,14 +16,7 @@ async def onboard_business(
     background_tasks: BackgroundTasks,
     db: Annotated[AsyncSession, Depends(get_db)]
 ):
-    """
-    Onboard a new business:
-    1. Create the business record
-    2. Generate Solana keypair
-    3. Trigger token minting and pool initialization
-    
-    The token minting process happens asynchronously via Celery.
-    """
+
     # Create the business with its keypair
     business = await business_service.create(db, payload)
     
