@@ -44,7 +44,7 @@ services:
       EXCHANGE_PROGRAM_ID: ${EXCHANGE_PROGRAM_ID:-}
       EXCHANGE_IDL_PATH: /app/anchor/target/idl/exchange.json
       LOYL_TOKEN_PROGRAM_ID: ${LOYL_TOKEN_PROGRAM_ID:-}
-      LOYALTY_IDL_PATH: /app/anchor/target/idl/loyalty_token.json
+      LOYL_IDL_PATH: /app/anchor/target/idl/loyl_token.json
       LOYL_SETTLEMENT_PROGRAM_ID: ${LOYL_SETTLEMENT_PROGRAM_ID:-}
       LOYL_SETTLEMENT_IDL_PATH: /app/anchor/target/idl/loyl_settlement.json
     depends_on: [postgres, redis]
