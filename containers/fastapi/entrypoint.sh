@@ -1,17 +1,28 @@
-# #!/bin/sh
+#!/bin/sh
 
 set -e
 
-echo "⚡️ Waiting for PostgreSQL on $DB_HOST:$DB_PORT..."
-until nc -z -v -w30 $DB_HOST $DB_PORT
-do
-  echo "Waiting for database connection..."
+echo "⚡️ Awaiting PostgreSQL on $DB_HOST:$DB_PORT..."
+until nc -z -v -w30 "$DB_HOST" "$DB_PORT"; do
+  echo "⏳ Awaiting connection to DB..."
   sleep 1
 done
-echo "✅ Database is up!"
+echo "✅ DB is available!"
 
-echo "⚡️ Running Alembic migrations..."
-PYTHONPATH=/app uv run alembic upgrade head
+echo "🔍 Checking that DB is exists $POSTGRES_DB..."
+DB_EXIST=$(PGPASSWORD=$DB_PASSWORD psql -h "$DB_HOST" -U "$DB_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '$POSTGRES_DB'")
 
-echo "🚀 Starting FastAPI app via Uvicorn..."
+if [ "$DB_EXIST" = "1" ]; then
+  echo "✅ Database '$POSTGRES_DB' is exist already."
+else
+  echo "🛠 Database '$POSTGRES_DB' didn't find. Creating..."
+  PGPASSWORD=$DB_PASSWORD createdb -h "$DB_HOST" -U "$DB_USER" "$POSTGRES_DB"
+  echo "✅ Database '$POSTGRES_DB' is created."
+fi
+
+
+echo "⚡️ Apply Alembic migrations..."
+PYTHONPATH=/app alembic upgrade head
+
+echo "🚀 Starting FastAPI over Uvicorn..."
 exec "$@"
