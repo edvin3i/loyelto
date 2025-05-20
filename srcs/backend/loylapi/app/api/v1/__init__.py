@@ -15,3 +15,4 @@ from .voucher_mint import router as voucher_mint
 from .business_rate import router as biz_rate
 from .reviews import router as reviews
 from .loyalty import router as loyalty
+from .token_minting import router as token_minting
