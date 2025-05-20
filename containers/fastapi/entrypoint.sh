@@ -10,13 +10,13 @@ done
 echo "✅ DB is available!"
 
 echo "🔍 Checking that DB is exists $POSTGRES_DB..."
-DB_EXIST=$(PGPASSWORD=$DB_PASSWORD psql -h "$DB_HOST" -U "$DB_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '$POSTGRES_DB'")
+DB_EXIST=$(PGPASSWORD=$POSTGRES_PASSWORD psql -h "$DB_HOST" -U "$POSTGRES_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '$POSTGRES_DB'")
 
 if [ "$DB_EXIST" = "1" ]; then
   echo "✅ Database '$POSTGRES_DB' is exist already."
 else
   echo "🛠 Database '$POSTGRES_DB' didn't find. Creating..."
-  PGPASSWORD=$DB_PASSWORD createdb -h "$DB_HOST" -U "$DB_USER" "$POSTGRES_DB"
+  PGPASSWORD=$POSTGRES_PASSWORD createdb -h "$DB_HOST" -U "$POSTGRES_USER" "$POSTGRES_DB"
   echo "✅ Database '$POSTGRES_DB' is created."
 fi
 
