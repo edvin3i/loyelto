@@ -1,0 +1,452 @@
+{
+  "version": "0.1.0",
+  "name": "loyl_token",
+  "instructions": [
+    {
+      "name": "createLoyaltyMint",
+      "accounts": [
+        {
+          "name": "platformConfig",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "loylMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "platformTreasuryAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "platformTreasuryAta",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "businessAuthority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mintAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "businessAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "loyaltyMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "pool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "poolVaultToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "poolVaultLoyl",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasury",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "rateLoyl",
+          "type": "u64"
+        },
+        {
+          "name": "decimals",
+          "type": "u8"
+        },
+        {
+          "name": "initialSupply",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "earnPoints",
+      "accounts": [
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasury",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "redeemPoints",
+      "accounts": [
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasury",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "userAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "mintExtra",
+      "accounts": [
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "businessAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "destination",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updateRateLoyl",
+      "accounts": [
+        {
+          "name": "pool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "businessAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "loyaltyMeta",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "platformConfig",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "newRate",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "LoyaltyMeta",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "business",
+            "type": "publicKey"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "rateLoyl",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PlatformConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "minUpdateInterval",
+            "type": "u64"
+          },
+          {
+            "name": "maxDeltaBps",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "rate",
+            "type": "u64"
+          },
+          {
+            "name": "lastRate",
+            "type": "u64"
+          },
+          {
+            "name": "lastUpdated",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Treasury",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "ExtraMinted",
+      "fields": [
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": true
+        },
+        {
+          "name": "destination",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "MintCreated",
+      "fields": [
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": true
+        },
+        {
+          "name": "business",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "initialSupply",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "rateLoyl",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "RateUpdated",
+      "fields": [
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": true
+        },
+        {
+          "name": "oldRate",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "newRate",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidRate",
+      "msg": "rate_loyl must be > 0"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAmount",
+      "msg": "amount must be > 0"
+    },
+    {
+      "code": 6002,
+      "name": "MathOverflow",
+      "msg": "math overflow"
+    },
+    {
+      "code": 6003,
+      "name": "RateTooFrequent",
+      "msg": "update too frequent"
+    },
+    {
+      "code": 6004,
+      "name": "RateTooVolatile",
+      "msg": "rate change too large"
+    }
+  ],
+  "metadata": {
+    "address": "3kzE3Xvgzi9PurL9cjRU7t9twHLYZUhaVv2AVmLXqbxm"
+  }
+}

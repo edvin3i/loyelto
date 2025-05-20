@@ -222,3 +222,5 @@ srcs/backend/anchor/target/debug/*
 srcs/backend/anchor/target/sbf-solana-solana/*
 srcs/backend/anchor/target/types/*
 srcs/backend/anchor/target/.rustc_info.json
+
+*-keypair.json

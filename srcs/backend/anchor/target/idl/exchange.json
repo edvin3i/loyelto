@@ -3,57 +3,104 @@
   "name": "exchange",
   "instructions": [
     {
-      "name": "initPool",
+      "name": "updateRate",
+      "docs": [
+        "Update the fixed exchange rate for an existing pool"
+      ],
       "accounts": [
         {
           "name": "pool",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "Pool account to update"
+          ]
         },
         {
-          "name": "loyaltyMint",
+          "name": "authority",
           "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "businessAuthority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "platformAuthority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          "isSigner": true,
+          "docs": [
+            "Business owner authority"
+          ]
         }
       ],
       "args": [
         {
-          "name": "depositToken",
-          "type": "u64"
-        },
-        {
-          "name": "depositLoyl",
+          "name": "newRate",
           "type": "u64"
         }
       ]
     },
     {
       "name": "swap",
+      "docs": [
+        "Swap branded token A for branded token B using existing pools"
+      ],
       "accounts": [
         {
-          "name": "pool",
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true,
+          "docs": [
+            "User performing the swap"
+          ]
+        },
+        {
+          "name": "poolFrom",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "Source pool account"
+          ]
+        },
+        {
+          "name": "poolTo",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Destination pool account"
+          ]
+        },
+        {
+          "name": "vaultFrom",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Token vault of source pool"
+          ]
+        },
+        {
+          "name": "vaultTo",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Token vault of destination pool"
+          ]
+        },
+        {
+          "name": "userFrom",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "User's token account for source token"
+          ]
+        },
+        {
+          "name": "userTo",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "User's token account for destination token"
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "SPL token program"
+          ]
         }
       ],
       "args": [
@@ -71,22 +118,87 @@
   "accounts": [
     {
       "name": "Pool",
+      "docs": [
+        "PDA-stored state for each branded token pool"
+      ],
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "balanceToken",
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "rate",
             "type": "u64"
           },
           {
-            "name": "balanceLoyl",
-            "type": "u64"
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
     }
   ],
+  "events": [
+    {
+      "name": "SwapEvent",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mintFrom",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mintTo",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amountIn",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "amountOut",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "CalculationOverflow",
+      "msg": "Calculation overflow occurred"
+    },
+    {
+      "code": 6001,
+      "name": "InsufficientOutputAmount",
+      "msg": "Insufficient output amount"
+    },
+    {
+      "code": 6002,
+      "name": "Unauthorized",
+      "msg": "Unauthorized operation"
+    }
+  ],
   "metadata": {
-    "address": "77xmLbf5RiK9fWUbBoqA1pZWpDxarB3PWwm9i6hLFAqo"
+    "address": "uMhywp8T3MGLrXPgaTnX7HQjNCT6Cv9tp9pfZ2S7WBp"
   }
 }

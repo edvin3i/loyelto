@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "programs/exchange",
-    "programs/business_factory",
+    "programs/loyl_settlement",
     "programs/loyl_token",
 ]
 resolver = "2"
