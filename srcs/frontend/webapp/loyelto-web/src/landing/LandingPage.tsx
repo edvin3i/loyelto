@@ -9,7 +9,7 @@ import SlogansSection from './SlogansSection';
 import { businessSlogans_fr, businessSlogans_en, consumerSlogans_en, consumerSlogans_fr } from "./slogans";
 import WaitlistForm from './WaitlistForm';
 import SocialLinks from './SocialLinks';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -29,7 +29,6 @@ export default function LandingPage() {
                 padding: {sm: 5},
                 marginTop: 5,
                 marginBottom: 7
-              
             }}> 
                 <MainSection />
                 <SlogansSection forWhom={t('businessSloganTitle')} bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
@@ -37,6 +36,6 @@ export default function LandingPage() {
                 <WaitlistForm />
                 <SocialLinks />
             </Box>
-        </div >
+        </div>
     )
 }
