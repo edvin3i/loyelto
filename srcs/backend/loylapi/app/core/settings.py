@@ -25,9 +25,9 @@ class Settings(BaseSettings):
 
     DB_HOST: str | None = Field(default=None)
     DB_PORT: int | None = Field(default=None)
-    DB_NAME: str | None = Field(default=None)
-    DB_USER: str | None = Field(default=None)
-    DB_PASSWORD: str | None = Field(default=None)
+    POSTGRES_DB: str | None = Field(default=None)
+    POSTGRES_USER: str | None = Field(default=None)
+    POSTGRES_PASSWORD: str | None = Field(default=None)
 
     TREASURY_KEYPAIR: str = Field(...)
     SOLANA_RPC_URL: str = Field("https://api.test.solana.com")
@@ -54,8 +54,8 @@ class Settings(BaseSettings):
         if self.ENV == "dev":
             return self.SQLITE_PATH
         return (
-            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.POSTGRES_DB}"
         )
 
     @property
