@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8' />
+  <title>Loyelto API Tester</title>
+  <link rel='stylesheet' href='https://unpkg.com/swagger-ui-dist/swagger-ui.css' />
+  <style>
+    html,body{height:100%;margin:0}
+    #swagger-ui{height:calc(100% - 42px)}
+    .topbar{display:none}
+    #loginBar{display:flex;align-items:center;padding:6px 12px;background:#0b0c10;color:#fff;font-family:Arial,Helvetica,sans-serif}
+    #loginBar button{margin-left:8px;padding:6px 10px;border:none;border-radius:4px;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div id='loginBar'>
+    <span id='loginStatus'>Not authenticated</span>
+    <button id='btnLogin'>Login with Privy</button>
+    <button id='btnLogout' style='display:none;'>Logout</button>
+  </div>
+  <div id='swagger-ui'></div>
+
+  <script src='https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js'></script>
+  <script src='https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js'></script>
+  <script src='https://sdk.privy.io/v1'></script>
+  <script>
+    // --- Config ------------------------------------------------------------
+    const APP_ID = 'cmaisgjg700a7l20m3bydnz79';  // ← set via .env or inline
+    const CLUSTER = 'testnet';                   // 'mainnet' for production
+    const API_BASE = 'https://api.stage.loyel.to';                         // same origin; change if proxying
+    const STORAGE_KEY = 'loyelto_privy_jwt';
+
+    // --- Swagger UI setup --------------------------------------------------
+    const swaggerUI = SwaggerUIBundle({
+      url: API_BASE + '/openapi.json',
+      dom_id: '#swagger-ui',
+      presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+      layout: 'BaseLayout',
+      requestInterceptor: req => {
+        const jwt = localStorage.getItem(STORAGE_KEY);
+        if (jwt) {
+          req.headers['Authorization'] = 'Bearer ' + jwt;
+        }
+        return req;
+      }
+    });
+
+    // --- Privy client ------------------------------------------------------
+    const privy = Privy.createClient({ appId: APP_ID, cluster: CLUSTER });
+
+    async function login() {
+      try {
+        const { did, idToken } = await privy.login();
+        localStorage.setItem(STORAGE_KEY, idToken);
+        await fetch(API_BASE + '/api/v1/auth/handshake', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + idToken }
+        });
+        updateUi(did);
+      } catch (err) {
+        console.error(err);
+        alert('Privy login failed');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem(STORAGE_KEY);
+      privy.logout();
+      updateUi(null);
+    }
+
+    function updateUi(did) {
+      if (did) {
+        document.getElementById('loginStatus').textContent = 'Connected as ' + did.slice(0, 10) + '…';
+        document.getElementById('btnLogin').style.display = 'none';
+        document.getElementById('btnLogout').style.display = '';
+      } else {
+        document.getElementById('loginStatus').textContent = 'Not authenticated';
+        document.getElementById('btnLogin').style.display = '';
+        document.getElementById('btnLogout').style.display = 'none';
+      }
+      // reload spec so that new Authorization header is picked up
+      swaggerUI.specActions.updateUrl(API_BASE + '/openapi.json');
+      swaggerUI.specActions.download();
+    }
+
+    document.getElementById('btnLogin').addEventListener('click', login);
+    document.getElementById('btnLogout').addEventListener('click', logout);
+
+    // auto-use cached JWT if present
+    (async () => {
+      const jwt = localStorage.getItem(STORAGE_KEY);
+      if (jwt) {
+        // best‑effort decode DID from payload part of JWT
+        try {
+          const payload = JSON.parse(atob(jwt.split('.')[1]));
+          updateUi(payload.sub || 'cached');
+        } catch { updateUi('cached'); }
+      }
+    })();
+  </script>
+</body>
+</html>
