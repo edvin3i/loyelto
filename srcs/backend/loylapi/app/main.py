@@ -20,24 +20,6 @@ def current_user(creds=Depends(bearer)):
 
 app = FastAPI(**settings.fastapi_kwargs)
 
-
-from fastapi.middleware.cors import CORSMiddleware
-
-origins = [
-    "http://localhost:8080",
-    "https://stage.loyel.to",
-    "https://api.stage.loyel.to",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
 # 1) public endpoints ver 1
 public_v1 = APIRouter(prefix="/api/v1")
 public_v1.include_router(auth_router)  # только /auth
