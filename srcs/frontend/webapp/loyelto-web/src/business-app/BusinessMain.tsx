@@ -1,7 +1,10 @@
-import { Box, CssBaseline, Typography, Stack, Chip, IconButton } from '@mui/material';
+import { Box, CssBaseline, Typography, Stack, Chip, IconButton, Paper, Button } from '@mui/material';
 import { styled } from '@mui/material/styles'
 import { useTheme, Theme } from '@mui/material/styles'
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
+import ProgramElement from './ProgramElement';
+import CustomersOrOffersHeading from './CustomersOrOffersHeading';
+import AddIcon from '@mui/icons-material/Add';
 
 const Image = styled('img')({
     width: '100%',
@@ -24,12 +27,12 @@ export default function BusinessMain() {
                 <Typography variant='h4' gutterBottom>My balance</Typography>
                 <Stack direction="row" spacing={1}>
                     <Typography variant='h1' sx={{
-                        fontSize: { xs: '3.5rem' },
+                        fontSize: { xs: '3rem' },
                         fontWeight: 800
                     }}>566 979</Typography>
                     <Box sx={{ paddingTop: 1 }}>
                         <Image src="coin_loyl.png"
-                            sx={{ height: '3.5rem', width: '3.5rem' }}
+                            sx={{ height: '2.8rem', width: '2.8rem' }}
                         />
                     </Box>
                 </Stack>
@@ -41,37 +44,47 @@ export default function BusinessMain() {
             </Box>
             <Box component="section" sx={{
                 marginTop: 2,
+                marginX: 2,
                 display: "flex",
-                justifyContent: 'space-around'
+                justifyContent: 'space-between'
             }}>
-                <Stack direction="row">
-                    <Typography variant='h6' color='initial' gutterBottom sx={{ fontWeight: 600 }}>New customers:</Typography>
-                    <Chip label="657" size="small" sx={{
-                        backgroundColor: theme.palette.secondary.main,
-                        // fontSize: '1.1rem',
-                        fontWeight: 600,
-                        marginTop: 0.5,
-                        marginLeft: 1
-                    }} />
-                </Stack>
+                <CustomersOrOffersHeading heading='New customers' chipContent={386} />
                 <IconButton size="small">
                     <InfoOutlineIcon />
                 </IconButton>
             </Box>
-            <Box component="section">
+            <Box component="section" sx={{ marginX: 2 }}>
                 <Box sx={{
-                    marginTop: 2,
                     display: "flex",
-                    justifyContent: 'space-around'
+                    justifyContent: 'space-between'
                 }}>
-                    <Typography variant="h5" color="initial"
-                        sx={{ fontWeight: 'bold' }}
+                    <Typography variant="h5" color="initial" gutterBottom
+                        sx={{ fontWeight: '600' }}
                     >My loyalty program</Typography>
                     <IconButton size="small">
                         <InfoOutlineIcon />
                     </IconButton>
                 </Box>
-                <Stack></Stack>
+                <Stack spacing={2}>
+                    <ProgramElement condition='each €10 spent =' points='5' />
+                    <ProgramElement condition='more than €200 spent =' points='200' />
+                </Stack>
+            </Box>
+            <Box component="section" sx={{
+                marginTop: 2,
+                marginX: 2,
+                display: "flex",
+                justifyContent: 'space-between'
+            }}>
+                <CustomersOrOffersHeading heading='My active offers' chipContent={5} />
+                <Button variant="contained" color="secondary" endIcon={<AddIcon fontSize='large'/>}
+                sx={{
+                    textTransform: 'none', 
+                    fontWeight: 700,
+                    fontSize: '1rem',
+                    paddingY: 0,
+                    borderRadius: 2
+                }}>Add</Button>
             </Box>
         </>
     )
