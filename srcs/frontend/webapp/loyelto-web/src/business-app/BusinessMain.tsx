@@ -1,4 +1,4 @@
-import { Box, CssBaseline, Typography, Stack, Chip, IconButton, Paper, Button } from '@mui/material';
+import { Box, CssBaseline, Typography, Stack, Chip, IconButton, Paper, Button, Card, CardMedia } from '@mui/material';
 import { styled } from '@mui/material/styles'
 import { useTheme, Theme } from '@mui/material/styles'
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
@@ -38,8 +38,9 @@ export default function BusinessMain() {
                 </Stack>
                 <Typography variant='caption' gutterBottom
                     sx={{
-                        textAlign: 'center'
-                    }}>points that you've distributed to the consumers</Typography>
+                        textAlign: 'center',
+                        color: 'text.secondary'
+                    }}>points you've distributed to the consumers</Typography>
 
             </Box>
             <Box component="section" sx={{
@@ -70,21 +71,50 @@ export default function BusinessMain() {
                     <ProgramElement condition='more than €200 spent =' points='200' />
                 </Stack>
             </Box>
-            <Box component="section" sx={{
-                marginTop: 2,
-                marginX: 2,
-                display: "flex",
-                justifyContent: 'space-between'
-            }}>
-                <CustomersOrOffersHeading heading='My active offers' chipContent={5} />
-                <Button variant="contained" color="secondary" endIcon={<AddIcon fontSize='large'/>}
+            <Box component="section"
                 sx={{
-                    textTransform: 'none', 
-                    fontWeight: 700,
-                    fontSize: '1rem',
-                    paddingY: 0,
-                    borderRadius: 2
-                }}>Add</Button>
+                    marginTop: 4,
+                    marginX: 2,
+                }}>
+                <Box sx={{
+
+                    display: "flex",
+                    justifyContent: 'space-between',
+                    marginBottom: 1.5
+                }}>
+                    <CustomersOrOffersHeading heading='My active offers' chipContent={5} />
+                    <Button variant="contained" color="secondary" endIcon={<AddIcon fontSize='large' />}
+                        sx={{
+                            textTransform: 'none',
+                            fontWeight: 700,
+                            fontSize: '1rem',
+                            paddingY: 0,
+                            borderRadius: 2
+                        }}>Add</Button>
+                </Box>
+                <Card variant='outlined' sx={{padding: 1, borderRadius: 2}}>
+                    <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                        <Stack direction="column">
+                            <Typography variant="h5" color="initial" gutterBottom
+                                sx={{ fontWeight: '600' }}
+                            >Free Pizza Margarita</Typography>
+                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                Classic pizza with tomato sauce, mozzarella, and fresh basil</Typography>
+                        </Stack>
+                        <Stack direction="column">
+                            <CardMedia
+                                component="img"
+                                sx={{ width: 50 }}
+                                image="pizza-nobg.png"
+                                alt="Pizza Mozzarella campaign"
+                            />
+                            <Stack direction="column" sx={{ paddingRight: 2 }}>
+                                <Box sx={{ fontSize: '1.3rem', fontWeight: 700, display: 'flex', justifyContent: 'center', color: 'blue' }}>15</Box>
+                                <Box>points</Box>
+                            </Stack>
+                        </Stack>
+                    </Box>
+                </Card>
             </Box>
         </>
     )
