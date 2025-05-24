@@ -3,23 +3,37 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome } from '@expo/vector-icons'; // Using Expo's built-in icons instead
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function LoginChoiceScreen() {
   const router = useRouter();
+  const { user, logout } = useAuth();
 
   const handleCustomerLogin = () => {
-    // Navigate to consumer app
-    router.push('/shops_list');
+    router.push('/(tabs)');
   };
 
   const handleBusinessLogin = () => {
-    // Navigate to business app
     router.push('/business-management');
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/auth/login');
   };
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
+      
+      <View style={styles.userHeader}>
+        <Text style={styles.welcomeText}>
+          Welcome, {user?.email || user?.phone || 'User'}
+        </Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <FontAwesome name="sign-out" size={20} color="#666" />
+        </TouchableOpacity>
+      </View>
       
       <View style={styles.logoContainer}>
         <Text style={styles.appName}>LoyelTo</Text>
@@ -73,6 +87,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F8FF',
     padding: 20,
     justifyContent: 'space-between',
+  },
+  userHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  welcomeText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  logoutButton: {
+    padding: 8,
   },
   logoContainer: {
     alignItems: 'center',

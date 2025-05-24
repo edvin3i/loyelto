@@ -1,21 +1,23 @@
 {
   "expo": {
     "name": "Loyelto",
-    "slug": "Loyelto",
+    "slug": "loyelto",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "loyelto",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.loyelto.consumer"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.loyelto.consumer"
     },
     "web": {
       "bundler": "metro",
@@ -24,6 +26,8 @@
     },
     "plugins": [
       "expo-router",
+      "expo-secure-store",
+      "@react-native-async-storage/async-storage",
       [
         "expo-splash-screen",
         {
@@ -36,6 +40,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
     }
   }
 }
