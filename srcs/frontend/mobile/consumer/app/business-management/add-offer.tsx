@@ -6,6 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
 import BusinessNavBar from './components/BusinessNavBar';
 import styles_add_offer from './styles/styles_add_offer';
+import { createVoucherTemplate } from '../utils/business_profile';
 
 interface OfferFormData {
   title: string;
@@ -38,15 +39,23 @@ export default function AddOfferScreen() {
         return;
       }
       
-      // In a real app, this would call an API to create the offer
-      // For now, we'll simulate a delay
-      setTimeout(() => {
-        setLoading(false);
-        // Navigate back to the home screen
-        router.back();
-      }, 1000);
+      // Convert string values to numbers
+      const voucherData = {
+        ...formData,
+        points_required: parseInt(formData.points_required, 10),
+        expiry_days: parseInt(formData.expiry_days, 10),
+        is_active: true
+      };
+      
+      // Call the API
+      await createVoucherTemplate(voucherData);
+      
+      setLoading(false);
+      // Navigate back to the home screen
+      router.back();
     } catch (error) {
       console.error('Failed to create offer:', error);
+      alert('Failed to create offer. Please try again.');
       setLoading(false);
     }
   };

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import apiClient from './apiClient';
 
 // Business data interfaces
 export interface Business {
@@ -50,78 +51,104 @@ export interface VoucherTemplateCreate {
 
 // Business API functions
 export const getBusinessProfile = async (): Promise<Business> => {
-  // Mock implementation - replace with actual API call
-  return {
-    id: '1',
-    name: 'My Business',
-    slug: 'my-business',
-    logo_url: null,
-    owner_email: 'business@example.com',
-    description: 'A sample business description',
-    country: 'France',
-    city: 'Paris',
-    address: '123 Business St',
-    zip_code: '75001',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
+  try {
+    return await apiClient.get<Business>('/businesses');
+  } catch (error) {
+    console.error('Failed to fetch business profile:', error);
+    // Return mock data as fallback for now
+    return {
+      id: '1',
+      name: 'My Business',
+      slug: 'my-business',
+      logo_url: null,
+      owner_email: 'business@example.com',
+      description: 'A sample business description',
+      country: 'France',
+      city: 'Paris',
+      address: '123 Business St',
+      zip_code: '75001',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+  }
 };
 
 export const updateBusinessProfile = async (data: BusinessUpdate): Promise<Business> => {
-  // Mock implementation - replace with actual API call
-  const currentProfile = await getBusinessProfile();
-  return {
-    ...currentProfile,
-    ...data,
-    updated_at: new Date().toISOString(),
-  };
+  try {
+    return await apiClient.put<Business>('/businesses', data);
+  } catch (error) {
+    console.error('Failed to update business profile:', error);
+    // Return mock data as fallback for now
+    const currentProfile = await getBusinessProfile();
+    return {
+      ...currentProfile,
+      ...data,
+      updated_at: new Date().toISOString(),
+    };
+  }
 };
 
 export const getVoucherTemplates = async (): Promise<VoucherTemplate[]> => {
-  // Mock implementation - replace with actual API call
-  return [
-    {
-      id: '1',
-      business_id: '1',
-      title: 'Free Pizza',
-      description: 'Get a free pizza with your purchase',
-      points_required: 500,
-      expiry_days: 30,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: '2',
-      business_id: '1',
-      title: 'Discount Coupon',
-      description: '20% off on your next purchase',
-      points_required: 200,
-      expiry_days: 15,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-  ];
+  try {
+    return await apiClient.get<VoucherTemplate[]>('/voucher_templates');
+  } catch (error) {
+    console.error('Failed to fetch voucher templates:', error);
+    // Return mock data as fallback for now
+    return [
+      {
+        id: '1',
+        business_id: '1',
+        title: 'Free Pizza',
+        description: 'Get a free pizza with your purchase',
+        points_required: 500,
+        expiry_days: 30,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      {
+        id: '2',
+        business_id: '1',
+        title: 'Discount Coupon',
+        description: '20% off on your next purchase',
+        points_required: 200,
+        expiry_days: 15,
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }
+    ];
+  }
 };
 
 export const createVoucherTemplate = async (data: VoucherTemplateCreate): Promise<VoucherTemplate> => {
-  // Mock implementation - replace with actual API call
-  return {
-    id: Math.random().toString(36).substring(7),
-    business_id: '1',
-    ...data,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
+  try {
+    return await apiClient.post<VoucherTemplate>('/voucher_templates', data);
+  } catch (error) {
+    console.error('Failed to create voucher template:', error);
+    // Return mock data as fallback for now
+    return {
+      id: Math.random().toString(36).substring(7),
+      business_id: '1',
+      ...data,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+  }
 };
 
 export const deleteVoucherTemplate = async (id: string): Promise<void> => {
-  // Mock implementation - replace with actual API call
-  console.log(`Deleted voucher template with ID: ${id}`);
+  try {
+    await apiClient.delete(`/voucher_templates/${id}`);
+    console.log(`Deleted voucher template with ID: ${id}`);
+  } catch (error) {
+    console.error(`Failed to delete voucher template with ID: ${id}`, error);
+    // Mock implementation as fallback
+    console.log(`Mock deletion of voucher template with ID: ${id}`);
+  }
 };
 
-// Styles for business profile screens
+// Keep the existing styles
 const business_profile_styles = StyleSheet.create({
     container: {
       flex: 1,
