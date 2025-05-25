@@ -1,4 +1,5 @@
 import { View, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
@@ -27,7 +28,8 @@ export default function ScanQRResultScreen() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <ThemedView style={styles_scan_qr_result.container}>
+      <SafeAreaView style={styles_scan_qr_result.container} edges={['top']}>
+        <ThemedView style={{ flex: 1 }}>
 
         <ThemedView style={styles_scan_qr_result.content}>
           <View style={styles_scan_qr_result.successIcon}>
@@ -73,7 +75,8 @@ export default function ScanQRResultScreen() {
           </TouchableOpacity>
         </ThemedView>
         <BusinessNavBar />
-      </ThemedView>
+        </ThemedView>
+      </SafeAreaView>
     </>
   );
 }

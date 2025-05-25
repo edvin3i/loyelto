@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
     },
     header: {
       padding: 16,
-      paddingTop: 60,
       backgroundColor: '#FFFFFF',
     },
     profileSection: {

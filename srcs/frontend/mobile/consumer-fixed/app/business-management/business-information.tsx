@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { ScrollView, TouchableOpacity, View, ActivityIndicator, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
 import { getBusinessProfile, updateBusinessProfile, Business, BusinessUpdate } from '../utils/business_profile';
+import BusinessNavBar from './components/BusinessNavBar';
 import styles from './styles/styles_business_information';
 
 export default function BusinessInformationScreen() {
@@ -60,14 +62,15 @@ export default function BusinessInformationScreen() {
 
   if (loading) {
     return (
-      <ThemedView style={styles.loadingContainer}>
+      <SafeAreaView style={styles.loadingContainer} edges={[]}>
         <ActivityIndicator size="large" color="#4CAF50" />
-      </ThemedView>
+        <BusinessNavBar />
+      </SafeAreaView>
     );
   }
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F5F5' }} edges={[]}>
       <Stack.Screen 
         options={{
           headerTitle: 'Business Information',
@@ -252,6 +255,7 @@ export default function BusinessInformationScreen() {
           </View>
         </ThemedView>
       </ScrollView>
-    </>
+      <BusinessNavBar />
+    </SafeAreaView>
   );
 }

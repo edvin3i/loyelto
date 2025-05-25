@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from '../../hooks/useColorScheme';
 import { Colors } from '../../constants/Colors';
 import { IconSymbol } from '../../components/ui/IconSymbol';
@@ -102,7 +103,7 @@ export default function ShopsList() {
   );
 
   return (
-    <View style={[styles_shops_list.container, { backgroundColor: '#EDF7FF' }]}>
+    <SafeAreaView style={[styles_shops_list.container, { backgroundColor: '#EDF7FF' }]} edges={['top']}>
       {/* Balance Section */}
       <View style={[styles_shops_list.balanceContainer, { backgroundColor: 'white' }]}>
         <IconSymbol size={24} name="person.fill" color="#F6A623" />
@@ -147,6 +148,6 @@ export default function ShopsList() {
         keyExtractor={store => store.id}
         contentContainerStyle={styles_shops_list.listContainer}
       />
-    </View>
+    </SafeAreaView>
   );
 }

@@ -14,7 +14,7 @@ export default function RootLayout() {
           <Stack.Screen name="login-choice" options={{ title: 'Login Choice' }} />
           <Stack.Screen name="auth/login" options={{ title: 'Login' }} />
           <Stack.Screen name="business-management" options={{ headerShown: false }} />
-          <Stack.Screen name="business/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="business/[id]" options={{ headerShown: true }} />
           <Stack.Screen name="swap-points" options={{ title: 'Swap Points' }} />
           <Stack.Screen name="+not-found" />
         </Stack>

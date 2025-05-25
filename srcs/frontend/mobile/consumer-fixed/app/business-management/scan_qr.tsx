@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
@@ -34,7 +35,7 @@ export default function ScanQRScreen() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
       <ThemedView style={styles_scan_qr.container}>
         <ThemedView style={styles_scan_qr.header}>
           <ThemedText type="title">Scan Customer Code</ThemedText>
@@ -63,6 +64,6 @@ export default function ScanQRScreen() {
         </ThemedView>
       </ThemedView>
       <BusinessNavBar />
-    </View>
+    </SafeAreaView>
   );
 }

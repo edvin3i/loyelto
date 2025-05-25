@@ -4,7 +4,7 @@ import React from 'react';
 
 const scan_qr = () => {
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <Text>SHOW MY QR</Text>
     </SafeAreaView>
   );

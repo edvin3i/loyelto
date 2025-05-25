@@ -1,4 +1,5 @@
 import { View, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
 import { FontAwesome } from '@expo/vector-icons';
@@ -44,9 +45,9 @@ export default function BusinessHomeScreen() {
 
   if (loading) {
     return (
-      <ThemedView style={styles.loadingContainer}>
+      <SafeAreaView style={styles.loadingContainer} edges={['top', 'bottom']}>
         <ActivityIndicator size="large" color="#4CAF50" />
-      </ThemedView>
+      </SafeAreaView>
     );
   }
 
@@ -54,7 +55,7 @@ export default function BusinessHomeScreen() {
   const formattedBalance = '536 679';
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['top']}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Balance Header */}
         <ThemedView style={styles.balanceHeader}>
@@ -172,6 +173,6 @@ export default function BusinessHomeScreen() {
         </ThemedView>
       </ScrollView>
       <BusinessNavBar />
-    </View>
+    </SafeAreaView>
   );
 }
