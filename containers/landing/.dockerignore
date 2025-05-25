@@ -1,0 +1,5 @@
+# Exclude mobile app from web builds
+srcs/frontend/mobile/
+**/node_modules
+**/.expo
+**/.git
