@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome } from '@expo/vector-icons'; // Using Expo's built-in icons instead
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from './stores/authStore';
 import ApiTest from './components/ApiTest';
 
@@ -48,7 +49,7 @@ export default function LoginChoiceScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <StatusBar style="dark" />
       
       {isAuthenticated && (
@@ -119,7 +120,7 @@ export default function LoginChoiceScreen() {
       <Text style={styles.footerText}>
         By continuing, you agree to our Terms of Service and Privacy Policy
       </Text>
-    </View>
+    </SafeAreaView>
   );
 }
 

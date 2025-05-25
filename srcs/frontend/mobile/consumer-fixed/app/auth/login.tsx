@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, TextInput } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../stores/authStore';
 import { usePrivyAuth } from '../hooks/usePrivyAuth';
 
@@ -149,7 +150,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <TouchableOpacity 
         style={styles.backButton}
         onPress={() => router.back()}
@@ -271,7 +272,7 @@ export default function LoginScreen() {
           Choose your preferred login method. Privy provides secure authentication with multiple options.
         </Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
