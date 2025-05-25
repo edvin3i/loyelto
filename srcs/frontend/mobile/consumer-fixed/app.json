@@ -25,8 +25,7 @@
     },
     "plugins": [
       "expo-secure-store",
-      "expo-web-browser",
-      "@privy-io/expo"
+      "expo-web-browser"
     ],
     "extra": {
       "eas": {

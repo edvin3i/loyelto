@@ -1,23 +1,23 @@
-import { usePrivy, useLoginWithEmail, useLoginWithSMS } from '@privy-io/expo';
+// Temporarily disable Privy imports to avoid crypto issues
+// import { usePrivy, useLoginWithEmail, useLoginWithSMS } from '@privy-io/expo';
 import { useAuthStore } from '../stores/authStore';
 import { useEffect } from 'react';
 
 export function usePrivyAuth() {
-  const { 
-    ready, 
-    authenticated, 
-    user, 
-    login, 
-    logout: privyLogout,
-    getAccessToken,
-    linkEmail,
-    linkPhone,
-    unlinkEmail,
-    unlinkPhone,
-  } = usePrivy();
+  // Mock Privy hooks for now to avoid crypto issues
+  const ready = true;
+  const authenticated = false;
+  const user = null;
+  const login = async () => console.log('Privy login mock');
+  const privyLogout = async () => console.log('Privy logout mock');
+  const getAccessToken = async () => 'mock_token';
+  const linkEmail = async () => console.log('Link email mock');
+  const linkPhone = async () => console.log('Link phone mock');
+  const unlinkEmail = async () => console.log('Unlink email mock');
+  const unlinkPhone = async () => console.log('Unlink phone mock');
   
-  const { loginWithEmail } = useLoginWithEmail();
-  const { loginWithSMS } = useLoginWithSMS();
+  const loginWithEmail = async () => console.log('Email login mock');
+  const loginWithSMS = async () => console.log('SMS login mock');
   
   const { 
     privyHandshake, 
