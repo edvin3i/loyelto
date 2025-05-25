@@ -13,6 +13,7 @@ export interface User {
   email: string;
   phone: string;
   created_at: string;
+  role?: 'consumer' | 'business';
   wallets?: Wallet[];
 }
 
@@ -30,6 +31,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   isOnline: boolean;
+  userRole: 'consumer' | 'business' | null;
   
   // Actions
   privyHandshake: (privyToken: string) => Promise<void>;
@@ -37,6 +39,7 @@ export interface AuthState {
   updateUser: (userData: Partial<User>) => void;
   checkAuthStatus: () => Promise<void>;
   setOnlineStatus: (status: boolean) => void;
+  setUserRole: (role: 'consumer' | 'business') => void;
   
   // Biometric authentication
   enableBiometric: () => Promise<boolean>;
@@ -53,6 +56,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       isOnline: true,
+      userRole: null,
 
       // Privy Handshake (main authentication method)
       privyHandshake: async (privyToken: string) => {
@@ -108,7 +112,8 @@ export const useAuthStore = create<AuthState>()(
           set({
             user: null,
             privyToken: null,
-            isAuthenticated: false
+            isAuthenticated: false,
+            userRole: null
           });
         } catch (error) {
           console.error('Logout error:', error);
@@ -165,6 +170,11 @@ export const useAuthStore = create<AuthState>()(
       // Set Online Status
       setOnlineStatus: (status: boolean) => {
         set({ isOnline: status });
+      },
+
+      // Set User Role
+      setUserRole: (role: 'consumer' | 'business') => {
+        set({ userRole: role });
       },
 
       // Biometric Authentication

@@ -7,33 +7,53 @@ import { useAuthStore } from './stores/authStore';
 
 export default function LoginChoiceScreen() {
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { isAuthenticated, setUserRole, logout } = useAuthStore();
 
-  const handleCustomerLogin = () => {
-    router.push('/(tabs)');
+  const handleConsumerLogin = () => {
+    // Set user role as consumer
+    setUserRole('consumer');
+    
+    if (isAuthenticated) {
+      // If already authenticated, go directly to consumer interface
+      router.replace('/(tabs)');
+    } else {
+      // If not authenticated, go to login first
+      router.push('/auth/login?role=consumer');
+    }
   };
 
   const handleBusinessLogin = () => {
-    router.push('/business-management');
+    // Set user role as business
+    setUserRole('business');
+    
+    if (isAuthenticated) {
+      // If already authenticated, go directly to business interface
+      router.replace('/business-management');
+    } else {
+      // If not authenticated, go to login first
+      router.push('/auth/login?role=business');
+    }
   };
 
   const handleLogout = async () => {
     await logout();
-    router.replace('/auth/login');
+    // Stay on login choice screen after logout
   };
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
       
-      <View style={styles.userHeader}>
-        <Text style={styles.welcomeText}>
-          Welcome, {user?.email || user?.phone || 'User'}
-        </Text>
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <FontAwesome name="sign-out" size={20} color="#666" />
-        </TouchableOpacity>
-      </View>
+      {isAuthenticated && (
+        <View style={styles.userHeader}>
+          <Text style={styles.welcomeText}>
+            Welcome back! Choose your account type
+          </Text>
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+            <FontAwesome name="sign-out" size={20} color="#666" />
+          </TouchableOpacity>
+        </View>
+      )}
       
       <View style={styles.logoContainer}>
         <Text style={styles.appName}>LoyelTo</Text>
@@ -45,32 +65,38 @@ export default function LoginChoiceScreen() {
         
         <TouchableOpacity 
           style={styles.choiceButton}
-          onPress={handleCustomerLogin}
+          onPress={handleConsumerLogin}
         >
-          <View style={styles.iconContainer}>
-            <FontAwesome name="user" size={40} color="#0082FF" />
+          <View style={styles.choiceLeftContent}>
+            <View style={styles.iconContainer}>
+              <FontAwesome name="user" size={40} color="#0082FF" />
+            </View>
+            <View style={styles.choiceTextContainer}>
+              <Text style={styles.choiceButtonTitle}>Consumer</Text>
+              <Text style={styles.choiceButtonDescription}>
+                Collect points, redeem rewards, and discover local businesses
+              </Text>
+            </View>
           </View>
-          <View style={styles.choiceTextContainer}>
-            <Text style={styles.choiceButtonTitle}>Customer</Text>
-            <Text style={styles.choiceButtonDescription}>
-              Collect points, redeem rewards, and discover local businesses
-            </Text>
-          </View>
+          <FontAwesome name="chevron-right" size={20} color="#ccc" />
         </TouchableOpacity>
         
         <TouchableOpacity 
           style={styles.choiceButton}
           onPress={handleBusinessLogin}
         >
-          <View style={styles.iconContainer}>
-            <FontAwesome name="building" size={40} color="#0082FF" />
+          <View style={styles.choiceLeftContent}>
+            <View style={styles.iconContainer}>
+              <FontAwesome name="building" size={40} color="#0082FF" />
+            </View>
+            <View style={styles.choiceTextContainer}>
+              <Text style={styles.choiceButtonTitle}>Business</Text>
+              <Text style={styles.choiceButtonDescription}>
+                Manage your loyalty program, create offers, and grow your customer base
+              </Text>
+            </View>
           </View>
-          <View style={styles.choiceTextContainer}>
-            <Text style={styles.choiceButtonTitle}>Business</Text>
-            <Text style={styles.choiceButtonDescription}>
-              Manage your loyalty program, create offers, and grow your customer base
-            </Text>
-          </View>
+          <FontAwesome name="chevron-right" size={20} color="#ccc" />
         </TouchableOpacity>
       </View>
       
@@ -134,6 +160,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 20,
     alignItems: 'center',
+    justifyContent: 'space-between',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -148,6 +175,11 @@ const styles = StyleSheet.create({
     marginRight: 15,
     backgroundColor: '#F0F7FF',
     borderRadius: 30,
+  },
+  choiceLeftContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   choiceTextContainer: {
     flex: 1,

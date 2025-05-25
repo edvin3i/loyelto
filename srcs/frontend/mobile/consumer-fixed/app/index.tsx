@@ -1,19 +1,36 @@
 import { useEffect } from 'react';
 import { router } from 'expo-router';
-import { View, ActivityIndicator } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { ThemedText } from '../components/ThemedText';
 import { ThemedView } from '../components/ThemedView';
+import { useAuthStore } from './stores/authStore';
 
 export default function HomeScreen() {
-  useEffect(() => {
-    // Automatically redirect to the main tabs interface
-    // You can add authentication logic here later
-    const timer = setTimeout(() => {
-      router.replace('/(tabs)');
-    }, 1000); // Show loading for 1 second
+  const { isAuthenticated, userRole, checkAuthStatus } = useAuthStore();
 
-    return () => clearTimeout(timer);
-  }, []);
+  useEffect(() => {
+    const initializeAuth = async () => {
+      // Check if user is already authenticated
+      await checkAuthStatus();
+      
+      // Navigate based on authentication and role status
+      setTimeout(() => {
+        if (isAuthenticated && userRole) {
+          // User is authenticated and has selected a role
+          if (userRole === 'consumer') {
+            router.replace('/(tabs)');
+          } else if (userRole === 'business') {
+            router.replace('/business-management');
+          }
+        } else {
+          // User needs to authenticate or choose role
+          router.replace('/login-choice');
+        }
+      }, 1500); // Show loading for 1.5 seconds
+    };
+
+    initializeAuth();
+  }, [isAuthenticated, userRole, checkAuthStatus]);
 
   return (
     <ThemedView style={{ 
