@@ -40,16 +40,16 @@ const theme = createTheme({
       contrastText: '#ffffff',
     },
     info: {
-      main: '#0288d1',
-      light: '#03a9f4',
-      dark: '#01579b',
-      contrastText: '#ffffff',
+      main: '#abe7b2', //green in the business main page
+      light: '#f3f3f3', //grey in the business main
+      dark: '#0082ff', //blue in the business main
+      contrastText: '#000',
     },
     custom: {
       light: 'rgb(179, 229, 252)',
-      main: 'rgb(2, 136, 209)',
+      main: '#f6ccca',
       dark: 'rgb(1, 87, 155)',
-      contrastText: '#fff',
+      contrastText: '#000',
     },
   } as PaletteOptions,
 });

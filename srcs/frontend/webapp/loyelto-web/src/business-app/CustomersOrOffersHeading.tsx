@@ -12,7 +12,7 @@ export default function CustomersOrOffersHeading({heading, chipContent}: Custome
         <Stack direction="row">
                     <Typography variant='h6' color='initial' gutterBottom sx={{ fontWeight: 600 }}>{heading}:</Typography>
                     <Chip label={chipContent} size="small" sx={{
-                        backgroundColor: theme.palette.secondary.main,
+                        backgroundColor: theme.palette.info.main,
                         fontSize: '1.1rem',
                         fontWeight: 700,
                         marginTop: 0.5,
