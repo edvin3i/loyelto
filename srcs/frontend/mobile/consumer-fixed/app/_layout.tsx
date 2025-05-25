@@ -1,9 +1,10 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { PrivyProvider } from './providers/PrivyProvider';
 
 export default function RootLayout() {
   return (
-    <>
+    <PrivyProvider>
       <StatusBar style="auto" />
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -15,6 +16,6 @@ export default function RootLayout() {
         <Stack.Screen name="swap-points" options={{ title: 'Swap Points' }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-    </>
+    </PrivyProvider>
   );
 }

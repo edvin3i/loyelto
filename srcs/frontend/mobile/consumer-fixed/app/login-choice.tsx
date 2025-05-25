@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome } from '@expo/vector-icons'; // Using Expo's built-in icons instead
 import { useAuthStore } from './stores/authStore';
+import ApiTest from './components/ApiTest';
 
 export default function LoginChoiceScreen() {
   const router = useRouter();
   const { isAuthenticated, setUserRole, logout } = useAuthStore();
+  const [showApiTest, setShowApiTest] = useState(false);
 
   const handleConsumerLogin = () => {
     // Set user role as consumer
@@ -40,24 +42,38 @@ export default function LoginChoiceScreen() {
     // Stay on login choice screen after logout
   };
 
+  // Show API test screen if requested
+  if (showApiTest) {
+    return <ApiTest onBack={() => setShowApiTest(false)} />;
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
       
       {isAuthenticated && (
-        <View style={styles.userHeader}>
-          <Text style={styles.welcomeText}>
+      <View style={styles.userHeader}>
+        <Text style={styles.welcomeText}>
             Welcome back! Choose your account type
-          </Text>
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <FontAwesome name="sign-out" size={20} color="#666" />
-          </TouchableOpacity>
-        </View>
+        </Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <FontAwesome name="sign-out" size={20} color="#666" />
+        </TouchableOpacity>
+      </View>
       )}
       
       <View style={styles.logoContainer}>
         <Text style={styles.appName}>LoyelTo</Text>
         <Text style={styles.tagline}>Your Loyalty, Your Rewards</Text>
+        
+        {/* API Test Button */}
+        <TouchableOpacity 
+          style={styles.apiTestButton}
+          onPress={() => setShowApiTest(true)}
+        >
+          <FontAwesome name="cog" size={16} color="white" />
+          <Text style={styles.apiTestButtonText}> API Test</Text>
+        </TouchableOpacity>
       </View>
       
       <View style={styles.choiceContainer}>
@@ -68,15 +84,15 @@ export default function LoginChoiceScreen() {
           onPress={handleConsumerLogin}
         >
           <View style={styles.choiceLeftContent}>
-            <View style={styles.iconContainer}>
-              <FontAwesome name="user" size={40} color="#0082FF" />
-            </View>
-            <View style={styles.choiceTextContainer}>
+          <View style={styles.iconContainer}>
+            <FontAwesome name="user" size={40} color="#0082FF" />
+          </View>
+          <View style={styles.choiceTextContainer}>
               <Text style={styles.choiceButtonTitle}>Consumer</Text>
-              <Text style={styles.choiceButtonDescription}>
-                Collect points, redeem rewards, and discover local businesses
-              </Text>
-            </View>
+            <Text style={styles.choiceButtonDescription}>
+              Collect points, redeem rewards, and discover local businesses
+            </Text>
+          </View>
           </View>
           <FontAwesome name="chevron-right" size={20} color="#ccc" />
         </TouchableOpacity>
@@ -86,15 +102,15 @@ export default function LoginChoiceScreen() {
           onPress={handleBusinessLogin}
         >
           <View style={styles.choiceLeftContent}>
-            <View style={styles.iconContainer}>
-              <FontAwesome name="building" size={40} color="#0082FF" />
-            </View>
-            <View style={styles.choiceTextContainer}>
-              <Text style={styles.choiceButtonTitle}>Business</Text>
-              <Text style={styles.choiceButtonDescription}>
-                Manage your loyalty program, create offers, and grow your customer base
-              </Text>
-            </View>
+          <View style={styles.iconContainer}>
+            <FontAwesome name="building" size={40} color="#0082FF" />
+          </View>
+          <View style={styles.choiceTextContainer}>
+            <Text style={styles.choiceButtonTitle}>Business</Text>
+            <Text style={styles.choiceButtonDescription}>
+              Manage your loyalty program, create offers, and grow your customer base
+            </Text>
+          </View>
           </View>
           <FontAwesome name="chevron-right" size={20} color="#ccc" />
         </TouchableOpacity>
@@ -199,5 +215,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
     marginBottom: 20,
+  },
+  apiTestButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+  apiTestButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

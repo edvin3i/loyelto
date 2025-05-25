@@ -23,7 +23,11 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [],
+    "plugins": [
+      "expo-secure-store",
+      "expo-web-browser",
+      "@privy-io/expo"
+    ],
     "extra": {
       "eas": {
         "projectId": "loyelto-consumer-2025"

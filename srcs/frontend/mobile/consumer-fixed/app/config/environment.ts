@@ -1,9 +1,9 @@
 const ENV = {
   development: {
-    API_BASE_URL: 'http://localhost:8000/api/v1',
+    API_BASE_URL: 'https://api.stage.loyel.to/api/v1',
     PRIVY_APP_ID: 'cmaisgjg700a7l20m3bydnz79',
-    SOLANA_CLUSTER: 'devnet',
-    WS_URL: 'ws://localhost:8000/ws',
+    SOLANA_CLUSTER: 'testnet',
+    WS_URL: 'wss://api.stage.loyel.to/ws',
   },
   staging: {
     API_BASE_URL: 'https://api.stage.loyel.to/api/v1',
@@ -20,13 +20,15 @@ const ENV = {
 };
 
 function getEnvironment() {
-  if (__DEV__) return ENV.development;
-  if (process.env.EXPO_PUBLIC_APP_ENV === 'staging') return ENV.staging;
-  return ENV.production;
+  if (process.env.EXPO_PUBLIC_APP_ENV === 'production') return ENV.production;
+  return ENV.staging;
 }
 
-export const config = getEnvironment();
+const config = getEnvironment();
+
 export const API_BASE_URL = config.API_BASE_URL;
 export const PRIVY_APP_ID = config.PRIVY_APP_ID;
 export const SOLANA_CLUSTER = config.SOLANA_CLUSTER;
-export const WS_URL = config.WS_URL; 
+export const WS_URL = config.WS_URL;
+
+export default config; 
