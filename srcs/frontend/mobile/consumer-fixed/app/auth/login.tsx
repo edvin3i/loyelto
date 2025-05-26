@@ -4,53 +4,32 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../stores/authStore';
-import { useLoginWithEmail } from '@privy-io/expo';
+import { usePrivyAuth } from '../hooks/usePrivyAuth';
 
 export default function LoginScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { userRole, setUserRole } = useAuthStore();
+  const { userRole, setUserRole, privyHandshake } = useAuthStore();
+  const { 
+    ready, 
+    authenticated, 
+    login, 
+    loginWithEmailAndPassword, 
+    loginWithPhoneNumber,
+    isLoading: privyLoading 
+  } = usePrivyAuth();
   
-  const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
-  const [codeSent, setCodeSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
-  // Privy email login hook
-  const { sendCode, loginWithCode } = useLoginWithEmail();
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [loginMethod, setLoginMethod] = useState<'email' | 'phone' | 'demo'>('email');
   
   // Get the role from URL params or use the current userRole
   const selectedRole = (params.role as 'consumer' | 'business') || userRole;
 
-  const handleSendCode = async () => {
-    if (!email.trim()) {
-      Alert.alert('Error', 'Please enter your email address');
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      await sendCode({ email });
-      setCodeSent(true);
-      Alert.alert('Code Sent', 'Please check your email for the verification code');
-    } catch (error) {
-      Alert.alert('Error', 'Failed to send verification code. Please try again.');
-      console.error('Send code error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleLoginWithCode = async () => {
-    if (!code.trim()) {
-      Alert.alert('Error', 'Please enter the verification code');
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      await loginWithCode({ code, email });
-      
+  // Handle successful Privy authentication
+  useEffect(() => {
+    if (ready && authenticated) {
       // Set the user role if it was passed as parameter
       if (selectedRole) {
         setUserRole(selectedRole);
@@ -64,9 +43,50 @@ export default function LoginScreen() {
       } else {
         router.replace('/login-choice');
       }
+    }
+  }, [ready, authenticated, selectedRole]);
+
+  const handleEmailLogin = async () => {
+    if (!email.trim()) {
+      Alert.alert('Error', 'Please enter your email address');
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      await loginWithEmailAndPassword(email);
     } catch (error) {
-      Alert.alert('Login Failed', 'Invalid verification code. Please try again.');
-      console.error('Login with code error:', error);
+      Alert.alert('Login Failed', 'Please check your email and try again');
+      console.error('Email login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePhoneLogin = async () => {
+    if (!phone.trim()) {
+      Alert.alert('Error', 'Please enter your phone number');
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      await loginWithPhoneNumber(phone);
+    } catch (error) {
+      Alert.alert('Login Failed', 'Please check your phone number and try again');
+      console.error('Phone login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePrivyLogin = async () => {
+    setIsLoading(true);
+    try {
+      await login();
+    } catch (error) {
+      Alert.alert('Login Failed', 'Please try again');
+      console.error('Privy login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -147,84 +167,109 @@ export default function LoginScreen() {
           <Text style={styles.roleText}>Logging in as {getRoleDisplay()}</Text>
         </View>
 
-        {/* Email Login with OTP */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            editable={!codeSent}
-          />
-          
-          {codeSent && (
-            <TextInput
-              style={styles.input}
-              placeholder="Enter verification code"
-              value={code}
-              onChangeText={setCode}
-              keyboardType="number-pad"
-              autoCorrect={false}
-            />
-          )}
-
-          {!codeSent ? (
-            <TouchableOpacity 
-              style={[styles.button, isLoading && styles.buttonDisabled]}
-              onPress={handleSendCode}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text style={styles.buttonText}>Send Code</Text>
-              )}
-            </TouchableOpacity>
-          ) : (
-            <View>
-              <TouchableOpacity 
-                style={[styles.button, isLoading && styles.buttonDisabled]}
-                onPress={handleLoginWithCode}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <ActivityIndicator color="white" />
-                ) : (
-                  <Text style={styles.buttonText}>Login</Text>
-                )}
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={styles.resendButton}
-                onPress={() => {
-                  setCodeSent(false);
-                  setCode('');
-                }}
-              >
-                <Text style={styles.resendButtonText}>Change Email</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+        {/* Login Method Selector */}
+        <View style={styles.methodSelector}>
+          <TouchableOpacity 
+            style={[styles.methodButton, loginMethod === 'email' && styles.methodButtonActive]}
+            onPress={() => setLoginMethod('email')}
+          >
+            <Text style={[styles.methodButtonText, loginMethod === 'email' && styles.methodButtonTextActive]}>Email</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.methodButton, loginMethod === 'phone' && styles.methodButtonActive]}
+            onPress={() => setLoginMethod('phone')}
+          >
+            <Text style={[styles.methodButtonText, loginMethod === 'phone' && styles.methodButtonTextActive]}>Phone</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.methodButton, loginMethod === 'demo' && styles.methodButtonActive]}
+            onPress={() => setLoginMethod('demo')}
+          >
+            <Text style={[styles.methodButtonText, loginMethod === 'demo' && styles.methodButtonTextActive]}>Demo</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Demo Login Option */}
+        {/* Email Login */}
+        {loginMethod === 'email' && (
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            <TouchableOpacity 
+              style={[styles.button, (isLoading || privyLoading) && styles.buttonDisabled]}
+              onPress={handleEmailLogin}
+              disabled={isLoading || privyLoading}
+            >
+              {(isLoading || privyLoading) ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.buttonText}>Continue with Email</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Phone Login */}
+        {loginMethod === 'phone' && (
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your phone number"
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
+              autoCorrect={false}
+            />
+            <TouchableOpacity 
+              style={[styles.button, (isLoading || privyLoading) && styles.buttonDisabled]}
+              onPress={handlePhoneLogin}
+              disabled={isLoading || privyLoading}
+            >
+              {(isLoading || privyLoading) ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.buttonText}>Continue with Phone</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Demo Login */}
+        {loginMethod === 'demo' && (
+          <TouchableOpacity 
+            style={[styles.button, isLoading && styles.buttonDisabled]}
+            onPress={handleTestLogin}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text style={styles.buttonText}>Continue with Demo Login</Text>
+            )}
+          </TouchableOpacity>
+        )}
+
+        {/* Privy Universal Login */}
         <TouchableOpacity 
-          style={[styles.demoButton, isLoading && styles.buttonDisabled]}
-          onPress={handleTestLogin}
-          disabled={isLoading}
+          style={[styles.privyButton, (isLoading || privyLoading) && styles.buttonDisabled]}
+          onPress={handlePrivyLogin}
+          disabled={isLoading || privyLoading || !ready}
         >
-          {isLoading ? (
+          {(isLoading || privyLoading) ? (
             <ActivityIndicator color="#0082FF" />
           ) : (
-            <Text style={styles.demoButtonText}>Continue with Demo Login</Text>
+            <Text style={styles.privyButtonText}>Login with Privy</Text>
           )}
         </TouchableOpacity>
 
         <Text style={styles.demoNote}>
-          Enter your email to receive a one-time password for secure login via Privy.
+          Choose your preferred login method. Privy provides secure authentication with multiple options.
         </Text>
       </View>
     </SafeAreaView>
@@ -281,6 +326,60 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
+  button: {
+    backgroundColor: '#0082FF',
+    paddingVertical: 16,
+    paddingHorizontal: 40,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  demoNote: {
+    fontSize: 12,
+    color: '#999',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    lineHeight: 18,
+  },
+  methodSelector: {
+    flexDirection: 'row',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 8,
+    padding: 4,
+    marginBottom: 20,
+  },
+  methodButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  methodButtonActive: {
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  methodButtonText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  methodButtonTextActive: {
+    color: '#0082FF',
+    fontWeight: '600',
+  },
   inputContainer: {
     width: '100%',
     marginBottom: 20,
@@ -295,32 +394,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
   },
-  button: {
-    backgroundColor: '#0082FF',
-    paddingVertical: 16,
-    paddingHorizontal: 40,
-    borderRadius: 12,
-    marginBottom: 10,
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  resendButton: {
-    alignItems: 'center',
-    padding: 10,
-  },
-  resendButtonText: {
-    color: '#0082FF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  demoButton: {
+  privyButton: {
     backgroundColor: 'white',
     borderWidth: 2,
     borderColor: '#0082FF',
@@ -330,17 +404,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
   },
-  demoButtonText: {
+  privyButtonText: {
     color: '#0082FF',
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-  },
-  demoNote: {
-    fontSize: 12,
-    color: '#999',
-    textAlign: 'center',
-    paddingHorizontal: 20,
-    lineHeight: 18,
   },
 }); 

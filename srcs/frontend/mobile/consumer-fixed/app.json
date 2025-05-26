@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.loyelto.consumer",
+      "bundleIdentifier": "loyel.to",
       "infoPlist": {
         "UIViewControllerBasedStatusBarAppearance": false
       }
@@ -19,7 +19,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.loyelto.consumer"
+      "package": "loyel.to"
     },
     "web": {
       "bundler": "metro",

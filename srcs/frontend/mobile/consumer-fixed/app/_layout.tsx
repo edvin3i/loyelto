@@ -1,14 +1,16 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { PrivyProvider } from '@privy-io/expo';
+// Temporarily comment out Privy
+// import { PrivyProvider } from '@privy-io/expo';
 import { Slot } from 'expo-router';
-import config from './config/environment';
+// import config from './config/environment';
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <PrivyProvider appId={config.PRIVY_APP_ID} clientId={config.PRIVY_CLIENT_ID}>
+      {/* Temporarily disable PrivyProvider */}
+      {/* <PrivyProvider appId={config.PRIVY_APP_ID} clientId={config.PRIVY_CLIENT_ID}> */}
         <Slot />
         <StatusBar style="auto" />
         <Stack>
@@ -21,7 +23,7 @@ export default function RootLayout() {
           <Stack.Screen name="swap-points" options={{ title: 'Swap Points' }} />
           <Stack.Screen name="+not-found" />
         </Stack>
-      </PrivyProvider>
+      {/* </PrivyProvider> */}
     </SafeAreaProvider>
   );
 }
