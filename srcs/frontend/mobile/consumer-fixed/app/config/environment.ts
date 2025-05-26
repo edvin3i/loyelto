@@ -2,18 +2,21 @@ const ENV = {
   development: {
     API_BASE_URL: 'https://api.stage.loyel.to/api/v1',
     PRIVY_APP_ID: 'cmaisgjg700a7l20m3bydnz79',
+    PRIVY_CLIENT_ID: 'client-WY6LHQ3CKh6zMj6cHJiufNcN7PgG7dx9K1KdZZGyA3jgT',
     SOLANA_CLUSTER: 'testnet',
     WS_URL: 'wss://api.stage.loyel.to/ws',
   },
   staging: {
     API_BASE_URL: 'https://api.stage.loyel.to/api/v1',
     PRIVY_APP_ID: 'cmaisgjg700a7l20m3bydnz79',
+    PRIVY_CLIENT_ID: 'client-WY6LHQ3CKh6zMj6cHJiufNcN7PgG7dx9K1KdZZGyA3jgT',
     SOLANA_CLUSTER: 'testnet',
     WS_URL: 'wss://api.stage.loyel.to/ws',
   },
   production: {
     API_BASE_URL: 'https://api.loyel.to/api/v1',
     PRIVY_APP_ID: 'cmaisgjg700a7l20m3bydnz79',
+    PRIVY_CLIENT_ID: 'client-WY6LHQ3CKh6zMj6cHJiufNcN7PgG7dx9K1KdZZGyA3jgT',
     SOLANA_CLUSTER: 'mainnet-beta',
     WS_URL: 'wss://api.loyel.to/ws',
   },

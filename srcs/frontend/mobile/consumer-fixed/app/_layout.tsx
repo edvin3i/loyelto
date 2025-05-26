@@ -1,12 +1,15 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { PrivyProvider } from './providers/PrivyProvider';
+import { PrivyProvider } from '@privy-io/expo';
+import { Slot } from 'expo-router';
+import config from './config/environment';
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <PrivyProvider>
+      <PrivyProvider appId={config.PRIVY_APP_ID} clientId={config.PRIVY_CLIENT_ID}>
+        <Slot />
         <StatusBar style="auto" />
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
