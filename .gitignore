@@ -226,4 +226,5 @@ srcs/backend/anchor/target/.rustc_info.json
 *-keypair.json
 
 node_modules/*
-srcs/frontend/mobile/consumer/node_modules/*
+srcs/frontend/mobile/consumer-fixed/node_modules/*
+srcs/frontend/mobile/consumer-fixed/ios/*
