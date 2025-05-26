@@ -4,7 +4,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../stores/authStore';
-import { useLoginWithEmail, usePrivy } from '@privy-io/expo';
+import { useLoginWithEmail, usePrivy, PrivyUser } from '@privy-io/expo';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -16,19 +16,61 @@ export default function LoginScreen() {
   const [code, setCode] = useState('');
   const [codeSent, setCodeSent] = useState(false);
   
-  // Privy hooks from documentation
+  // Privy hooks from documentation - using correct property names
   const { sendCode, loginWithCode } = useLoginWithEmail();
-  const { ready, authenticated, user, logout: privyLogout } = usePrivy();
+  const { isReady, user, logout: privyLogout } = usePrivy();
+  
+  console.log('Privy Hook Raw Values:', { 
+    isReady: isReady,
+    user: user,
+    isReadyType: typeof isReady,
+    userType: typeof user
+  });
+
+  interface EmailAccount {
+    type: 'email';
+    address: string;
+  }
+  
+  interface LinkedAccount {
+    type: string;
+    [key: string]: any;
+  }
+  
+  const getUserEmail = (user: PrivyUser | null | undefined): string | null => {
+    if (!user?.linked_accounts) return null;
+    
+    const emailAccount = user.linked_accounts.find(
+      (account: LinkedAccount) => account.type === 'email'
+    ) as EmailAccount | undefined;
+    
+    return emailAccount?.address || null;
+  };
+
+  console.log('Privy Hook State:', { 
+    isReady, 
+    hasUser: !!user,
+    userId: user?.id,
+    userEmail: getUserEmail(user),
+    userCreatedAt: user?.created_at,
+    isAuthenticated: isReady && !!user,
+  });
   
   // Get the role from URL params or use the current userRole
   const selectedRole = (params.role as 'consumer' | 'business') || userRole;
 
-  // Handle successful Privy authentication
+  // Handle authentication state changes using proper Privy pattern
   useEffect(() => {
-    if (ready && authenticated && user) {
+    if (isReady && user) {
+      // User is authenticated, proceed with login flow
+      console.log('User is authenticated, proceeding with handleSuccessfulAuth');
       handleSuccessfulAuth();
+    } else if (isReady && !user) {
+      // User is not authenticated, stay on login screen
+      console.log('User is not authenticated, staying on login screen');
     }
-  }, [ready, authenticated, user, selectedRole]);
+    // If isReady is false, we're still initializing - do nothing
+  }, [isReady, user, selectedRole]);
 
   const handleSuccessfulAuth = async () => {
     try {
@@ -196,7 +238,7 @@ export default function LoginScreen() {
   };
 
   // Show loading while Privy is initializing
-  if (!ready) {
+  if (!isReady) {
     return (
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
         <View style={styles.loadingContainer}>
@@ -226,10 +268,10 @@ export default function LoginScreen() {
         </View>
 
         {/* Show current user info if already authenticated */}
-        {authenticated && user && (
+        {isReady && user && (
           <View style={styles.currentUserContainer}>
             <Text style={styles.currentUserTitle}>Currently logged in as:</Text>
-            <Text style={styles.currentUserEmail}>{user.email?.address || 'No email'}</Text>
+            <Text style={styles.currentUserEmail}>{getUserEmail(user) || 'No email'}</Text>
             <TouchableOpacity 
               style={styles.logoutButton}
               onPress={handleLogoutAndRetry}
@@ -240,7 +282,7 @@ export default function LoginScreen() {
         )}
 
         {/* Privy Email Login with OTP - Following documentation pattern */}
-        {!authenticated && (
+        {isReady && !user && (
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -318,7 +360,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         <Text style={styles.demoNote}>
-          {authenticated 
+          {isReady && user
             ? "You are already logged in. Choose to continue or logout and login with a different account."
             : "Enter your email to receive a one-time password for secure login via Privy."
           }

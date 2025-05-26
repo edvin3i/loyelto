@@ -4,6 +4,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PrivyProvider } from '@privy-io/expo';
 import config from './config/environment';
 
+console.log('config:', config);
+
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
