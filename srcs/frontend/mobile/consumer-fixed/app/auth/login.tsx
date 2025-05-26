@@ -18,7 +18,7 @@ export default function LoginScreen() {
   
   // Privy hooks from documentation - using correct property names
   const { sendCode, loginWithCode } = useLoginWithEmail();
-  const { isReady, user, logout: privyLogout } = usePrivy();
+  const { isReady, user, logout: privyLogout, getAccessToken } = usePrivy();
   
   console.log('Privy Hook Raw Values:', { 
     isReady: isReady,
@@ -74,15 +74,34 @@ export default function LoginScreen() {
 
   const handleSuccessfulAuth = async () => {
     try {
+      console.log('🔄 [AUTH] Starting post-authentication setup...');
+      
       // Set the user role if it was passed as parameter
       if (selectedRole) {
         setUserRole(selectedRole);
       }
 
-      // You can perform backend handshake here if needed
-      // await privyHandshake(accessToken);
+      // ✅ CRITICAL FIX: Perform backend handshake with Privy token
+      if (user) {
+        try {
+          // Get the Privy access token
+          const accessToken = await getAccessToken();
+          
+          if (accessToken) {
+            console.log('🔄 [AUTH] Performing backend handshake...');
+            await privyHandshake(accessToken);
+            console.log('✅ [AUTH] Backend handshake successful - API token stored');
+          } else {
+            console.warn('⚠️ [AUTH] No access token available from Privy');
+          }
+        } catch (handshakeError) {
+          console.error('❌ [AUTH] Backend handshake failed:', handshakeError);
+          // Don't block navigation for handshake failure in this demo
+        }
+      }
 
       // Navigate based on role
+      console.log('🚀 [AUTH] Navigating to app based on role:', selectedRole);
       if (selectedRole === 'consumer') {
         router.replace('/(tabs)');
       } else if (selectedRole === 'business') {

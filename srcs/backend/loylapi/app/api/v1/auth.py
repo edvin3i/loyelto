@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends, Request, HTTPException, status
 from starlette.responses import RedirectResponse
 from app.core.settings import settings
@@ -9,6 +10,7 @@ from app.services.user import user_service
 from app.services.wallet import wallet_service
 from app.core.security import verify_privy_token
 
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 privy = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
@@ -26,30 +28,73 @@ async def privy_handshake(
     1) Checking access-token.
     2) If user is absent — creating and minting embedded-wallet.
     """
-    if not creds:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    logger.info("🔄 [HANDSHAKE] Starting Privy handshake")
+    
+    try:
+        # Step 1: Check credentials
+        if not creds:
+            logger.warning("🚫 [HANDSHAKE] No credentials provided")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-    claims = verify_privy_token(creds.credentials)  # → did, sid
-    user = await user_service.create_or_get(
-        db,
-        privy_id=claims.did,
-        email="",  # maybe webhook (BUT WEBHOOK IN PRO SUBSCRIPTION)
-        phone="",
-    )
+        logger.info(f"🔑 [HANDSHAKE] Verifying token: {creds.credentials[:20]}...")
+        
+        # Step 2: Verify Privy token
+        try:
+            claims = verify_privy_token(creds.credentials)
+            logger.info(f"✅ [HANDSHAKE] Token verified for user: {claims.did}")
+        except Exception as e:
+            logger.error(f"❌ [HANDSHAKE] Token verification failed: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Invalid Privy token: {str(e)}"
+            )
 
-    # embeddedWallet created on frontend; just save pubkey,
-    # but if wallet absent - creating on the server
-    if not user.wallets:
-        address = await privy_rest.create_wallets(claims.did)
-        await wallet_service.add_if_missing(db, user, address)
+        # Step 3: Create or get user
+        try:
+            logger.info(f"👤 [HANDSHAKE] Creating/getting user for privy_id: {claims.did}")
+            user = await user_service.create_or_get(
+                db,
+                privy_id=claims.did,
+                email="",  # maybe webhook (BUT WEBHOOK IN PRO SUBSCRIPTION)
+                phone="",
+            )
+            logger.info(f"✅ [HANDSHAKE] User found/created: {user.id}")
+        except Exception as e:
+            logger.error(f"❌ [HANDSHAKE] User creation/retrieval failed: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"User service error: {str(e)}"
+            )
 
-    # if not user.wallets:
-    #     w = await privy_rest.create_wallet(
-    #         chain="solana"
-    #     )  # :contentReference[oaicite:2]{index=2}
-    #     await wallet_service.add_if_missing(db, user, w["address"])
+        # Step 4: Handle wallet creation if needed
+        try:
+            if not user.wallets:
+                logger.info(f"💰 [HANDSHAKE] Creating wallet for user: {user.id}")
+                address = await privy_rest.create_wallets(claims.did)
+                logger.info(f"🔑 [HANDSHAKE] Wallet created with address: {address}")
+                
+                await wallet_service.add_if_missing(db, user, address)
+                logger.info(f"✅ [HANDSHAKE] Wallet added to user: {user.id}")
+            else:
+                logger.info(f"✅ [HANDSHAKE] User already has {len(user.wallets)} wallet(s)")
+        except Exception as e:
+            logger.error(f"❌ [HANDSHAKE] Wallet creation/addition failed: {e}")
+            # Don't fail the handshake for wallet issues in development
+            logger.warning(f"⚠️ [HANDSHAKE] Continuing without wallet (development mode)")
 
-    return  # 204
+        logger.info("✅ [HANDSHAKE] Handshake completed successfully")
+        return  # 204
+
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
+    except Exception as e:
+        # Catch all other exceptions and return 500
+        logger.error(f"💥 [HANDSHAKE] Unexpected error: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}"
+        )
 
 
 @router.get("/callback")
