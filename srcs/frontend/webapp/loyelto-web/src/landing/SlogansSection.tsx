@@ -15,7 +15,7 @@ interface SlogansProps{
 export default function SlogansSection({ forWhom, bgcolor, slogans }: SlogansProps) {
     // const theme = useTheme<Theme>();
     return (
-        <Box sx={{marginBottom: 2}}>
+        <Box sx={{marginBottom: 2, maxWidth: 1280, marginX: 'auto'}}>
             <Typography variant="h3" 
             color="initial" 
             sx={{

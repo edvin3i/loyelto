@@ -4,7 +4,7 @@ import { socialLinks } from "./links";
 
 export default function SocialLinks() {
   return (
-    <Box sx={{my: 3, pb: 4 }}>
+    <Box sx={{my: 3, pb: 4, maxWidth: 1280, marginX: 'auto'  }}>
       <Typography variant="body1">
         Follow us on{" "}
         {socialLinks.map((l, index) => (

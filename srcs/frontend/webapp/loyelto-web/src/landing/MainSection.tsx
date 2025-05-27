@@ -14,19 +14,21 @@ export default function MainSection() {
     const { t } = useTranslation();
     return (
 
-        <Stack direction={{ xs: 'column-reverse', sm: 'row' }} sx={{ marginBottom: 5 }}>
+        <Stack direction={{ xs: 'column-reverse', sm: 'row' }} sx={{ marginBottom: 5, maxWidth: 1280, marginX: 'auto'  }}>
             <Box sx={{
-                width: { sm: '50%', xs: '100%' },
+                width: { sm: 524, xs: '100%' },
+                height: 380,
+                 justifyContent: 'space-between',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: "center",
+                
             }}>
                 <Typography
                     variant="h1"
                     color="initial"
                     gutterBottom
                     sx={{
-                        fontSize: { xs: '2.5rem', sm: '4.1rem', xl: '5.5rem' },
+                        fontSize: { xs: '2.5rem', sm: 56 },
                         fontWeight: '600',
                         textAlign: { xs: 'center', sm: 'left' },
                         marginBottom: { xs: 2, sm: 4 },
@@ -58,8 +60,8 @@ export default function MainSection() {
             </Box>
             <Box
                 sx={{  
-                    width: { sm: '50%', xs: '100%' },
-                    height: { xs: '96vw', sm: '60vh' },
+                    width: { sm: 740, xs: '100%' },
+                    height: { xs: '96vw', sm: 380 },
                     backgroundColor: theme.palette.secondary.main,
                     borderRadius: 7
                 }}>
