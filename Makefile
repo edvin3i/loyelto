@@ -28,6 +28,19 @@ up-router:
 down-router:
 	@docker compose -p loyelto-router -f infra/traefik.yml down
 
+# ========== LPG ==========
+up-mon:
+	@echo "Checking Loki-Promtail-Grafana stack..."
+	@if ! docker ps --filter "name=loyelto-lpg-monitor-1" --filter "status=running" -q | grep -q .; then \
+		echo ">>> Starting Monitoring..."; \
+		docker compose -p loyelto-lpg-monitor -f infra/monitor.yml up -d; \
+	else \
+		echo ">>> Monitoring already running."; \
+	fi
+down-mon:
+	@docker compose -p loyelto-lpg -f infra/monitor.yml down
+
+
 # ========== UP ==========
 up:
 	@echo "Usage: make up-[dev|stage|prod]"
