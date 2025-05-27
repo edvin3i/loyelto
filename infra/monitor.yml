@@ -1,3 +1,5 @@
+networks: {tnet: {external: true}}
+
 volumes:
   grafana_data:
   loki_data:
