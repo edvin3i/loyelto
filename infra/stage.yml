@@ -18,6 +18,8 @@ services:
       - traefik.http.routers.fastapi-stage.entrypoints=websecure
       - traefik.http.routers.fastapi-stage.tls.certresolver=le
       - traefik.http.services.fastapi-stage.loadbalancer.server.port=8000
+      - env=stage
+      - project=loyelto
     volumes:
       - ./out/idl:/app/anchor/idl
       - ./out/so:/app/anchor/so
