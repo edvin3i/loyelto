@@ -80,7 +80,7 @@ export default function WaitlistForm() {
         bgcolor: theme.palette.secondary.main, // Light green background similar to your screenshot
         padding: 4,
         borderRadius: 6,
-        width: {sm: 1280, xs: 375}, marginX: 'auto',
+        width: {sm: 1180, xxl: 1280, xs: 375}, marginX: 'auto',
         my: 4,
         textAlign: "center"
       }}

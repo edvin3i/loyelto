@@ -23,7 +23,7 @@ export default function MainSectionMobile() {
       
                 borderRadius: 5,
                 height: 518,
-                width: 375,
+                maxWidth: 375,
                 paddingX: 2
             }}>
                 <Stack >

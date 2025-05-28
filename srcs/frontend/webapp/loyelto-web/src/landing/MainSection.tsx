@@ -16,7 +16,7 @@ export default function MainSection() {
 
         <Stack component="section" direction="row" sx={{
             marginBottom: 5,
-            maxWidth: 1280,
+            width: {sm: 1180, xxl: 1280},
             marginX: 'auto',
             display: { xs: 'none', sm: 'flex' }
         }}>
@@ -65,8 +65,8 @@ export default function MainSection() {
             </Box>
             <Box
                 sx={{
-                    width: { sm: 740, xs: '100%' },
-                    height: { xs: '96vw', sm: 380 },
+                    width: 740,
+                    height: 380,
                     backgroundColor: theme.palette.secondary.main,
                     borderRadius: 7
                 }}>
