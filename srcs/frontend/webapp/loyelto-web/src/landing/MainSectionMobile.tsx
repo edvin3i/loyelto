@@ -20,13 +20,15 @@ export default function MainSectionMobile() {
         }}>
             <Box sx={{
                 backgroundColor: theme.palette.secondary.main,
+      
                 borderRadius: 5,
                 height: 460,
                 width: 335,
                 paddingX: 2
             }}>
                 <Stack >
-                    <Image src='landing_swapping_cutout.png' />
+                    <Image src='landing_swapping_cutout.png' sx={{
+                        borderRadius: 3}} />
                     <Typography variant="h1" color="initial" sx={{
                         fontSize: 43,
                         fontWeight: 600,
