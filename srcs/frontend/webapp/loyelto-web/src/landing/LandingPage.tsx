@@ -29,8 +29,10 @@ export default function LandingPage() {
                 sx={{
                     padding: { sm: 5 },
                     marginTop: 5,
-                    marginBottom: 7
-
+                    marginBottom: 7,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
                 }}>
                 <MainSection />
                 <MainSectionMobile />
