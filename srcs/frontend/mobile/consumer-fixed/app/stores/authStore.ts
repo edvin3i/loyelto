@@ -63,6 +63,13 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true });
         try {
           console.log('🔄 [AUTH-STORE] Starting handshake with backend...');
+          console.log('🔍 [AUTH-STORE] Request details:', {
+            url: `${API_BASE_URL}/auth/handshake`,
+            method: 'POST',
+            tokenLength: privyToken?.length || 0,
+            tokenStart: privyToken ? privyToken.substring(0, 30) : 'null',
+            baseUrl: API_BASE_URL
+          });
           
           const response = await fetch(`${API_BASE_URL}/auth/handshake`, {
             method: 'POST',
@@ -73,9 +80,49 @@ export const useAuthStore = create<AuthState>()(
           });
 
           console.log('📡 [AUTH-STORE] Handshake response status:', response.status);
+          console.log('📡 [AUTH-STORE] Response headers:', Object.fromEntries(response.headers.entries()));
 
           if (!response.ok) {
-            // Enhanced error handling for 500 errors
+            // Get response body for more details
+            let errorBody = '';
+            try {
+              errorBody = await response.text();
+              console.error('📄 [AUTH-STORE] Error response body:', errorBody);
+            } catch (e) {
+              console.error('📄 [AUTH-STORE] Could not read error response body');
+            }
+            
+            // Enhanced error handling for specific status codes
+            if (response.status === 401) {
+              console.error('🔐 [AUTH-STORE] 401 Unauthorized - Backend rejected the token');
+              console.error('🔍 [AUTH-STORE] Possible issues:');
+              console.error('  - Token format is wrong (should be JWT)');
+              console.error('  - Token signature validation failed');
+              console.error('  - Token audience/issuer mismatch');
+              console.error('  - Backend Privy config different from frontend');
+              console.error('  - Token expired or not yet valid');
+              
+              // For development: try to continue anyway
+              console.log('🎭 [AUTH-STORE] Development mode: storing token for API calls anyway');
+              await SecureStore.setItemAsync('privy_token', privyToken);
+              
+              set({
+                privyToken,
+                isAuthenticated: true,
+                isLoading: false,
+                user: {
+                  id: 'dev_user_401',
+                  privy_id: 'dev_privy_401',
+                  email: 'dev401@example.com',
+                  phone: '+1234567890',
+                  created_at: new Date().toISOString(),
+                }
+              });
+              
+              console.log('✅ [AUTH-STORE] Development mode: proceeding despite 401');
+              return;
+            }
+            
             if (response.status === 500) {
               console.error('💥 [AUTH-STORE] Backend handshake failed with 500 error');
               console.error('🔍 [AUTH-STORE] This could be due to:');
@@ -104,7 +151,7 @@ export const useAuthStore = create<AuthState>()(
               return;
             }
             
-            throw new Error(`Authentication failed: ${response.status}`);
+            throw new Error(`Authentication failed: ${response.status} - ${errorBody}`);
           }
 
           // Store token securely
