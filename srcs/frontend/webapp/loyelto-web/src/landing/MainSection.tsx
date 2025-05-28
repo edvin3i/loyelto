@@ -46,11 +46,14 @@ export default function MainSection() {
                         fullWidth
                         size="large"
                         variant="contained"
+<<<<<<< Updated upstream
                         onClick={() => {
                             document.getElementById('join-waitlist')?.scrollIntoView({
                                 behavior: 'smooth'
                             });
                         }}
+=======
+>>>>>>> Stashed changes
                         sx={{
                             alignSelf: 'center',
                             fontWeight: 'bold',
