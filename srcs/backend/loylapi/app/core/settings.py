@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     PRIVY_APP_ID: str = Field(...)
     PRIVY_API_KEY: str = Field(...)
     PRIVY_API_SECRET: str = Field(...)
-    PRIVY_JWKS = f"https://auth.privy.io/api/v1/apps/{PRIVY_APP_ID}/jwks.json"
+    PRIVY_JWKS: str  = Field(f"https://auth.privy.io/api/v1/apps/{PRIVY_APP_ID}/jwks.json")
 
     CELERY_BROKER: str = Field(...)
     CELERY_BACKEND: str = Field(...)
