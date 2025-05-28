@@ -13,25 +13,6 @@ export default function SocialLinks() {
             {index < socialLinks.length - 1 && ", "}
           </span>
         ))}
-        {/* <Link 
-          href="https://linkedin.com/company/loyelto" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          color="inherit"
-          sx={{ fontWeight: "bold"}}
-        >
-          LinkedIn
-        </Link>
-        ,{" "}
-        <Link 
-          href="https://t.me/loyelto" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          color="inherit"
-          sx={{ fontWeight: "bold"}}
-        >
-          Telegram
-        </Link> */}
       </Typography>
     </Box>
   );

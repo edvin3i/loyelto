@@ -16,19 +16,19 @@ export default function MainSectionMobile() {
             display: { sm: 'none', xs: 'flex' },
             justifyContent: 'center',
             alignItems: 'center',
-            height: 800
+            height: 866
         }}>
             <Box sx={{
                 backgroundColor: theme.palette.secondary.main,
                 borderRadius: 5,
-                height: 460,
-                width: 335,
+                height: 518,
+                width: 375,
                 paddingX: 2
             }}>
                 <Stack >
                     <Image src='landing_swapping_cutout.png' />
                     <Typography variant="h1" color="initial" sx={{
-                        fontSize: 43,
+                        fontSize: 44,
                         fontWeight: 600,
                         textAlign: 'center',
                     }}>
@@ -45,11 +45,10 @@ export default function MainSectionMobile() {
                         sx={{
                             alignSelf: 'center',
                             fontWeight: 'bold',
-
-                            borderRadius: 3,
+                            borderRadius: 4,
                             textTransform: 'none',
                             fontSize: '1.2rem',
-                            margin: 3,
+                            margin: 2,
                             boxShadow: 'none'
                         }}>
                         {t('joinLoyeltoButton')}
@@ -58,8 +57,8 @@ export default function MainSectionMobile() {
             </Box>
             <Box sx={{
                 overflow: 'hidden',
-                width: 335,
-                height: 335,
+                width: 375,
+                height: 348,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'flex-start',
