@@ -10,6 +10,7 @@ import { businessSlogans_fr, businessSlogans_en, consumerSlogans_en, consumerSlo
 import WaitlistForm from './WaitlistForm';
 import SocialLinks from './SocialLinks';
 import { useTranslation } from 'react-i18next'
+import MainSectionMobile from './MainSectionMobile';
 
 
 
@@ -25,13 +26,14 @@ export default function LandingPage() {
             <LoyelToBar />
             <Toolbar />
             <Box
-            sx={{
-                padding: {sm: 5},
-                marginTop: 5,
-                marginBottom: 7
-              
-            }}> 
+                sx={{
+                    padding: { sm: 5 },
+                    marginTop: 5,
+                    marginBottom: 7
+
+                }}>
                 <MainSection />
+                <MainSectionMobile />
                 <SlogansSection forWhom={t('businessSloganTitle')} bgcolor={theme.palette.secondary.light} slogans={businessSlogans} />
                 <SlogansSection forWhom={t('consumerSloganTitle')} bgcolor={theme.palette.neutral.main} slogans={consumerSlogans} />
                 <WaitlistForm />

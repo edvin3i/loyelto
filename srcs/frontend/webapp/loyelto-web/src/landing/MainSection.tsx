@@ -14,21 +14,26 @@ export default function MainSection() {
     const { t } = useTranslation();
     return (
 
-        <Stack direction={{ xs: 'column-reverse', sm: 'row' }} sx={{ marginBottom: 5, maxWidth: 1280, marginX: 'auto'  }}>
+        <Stack component="section" direction="row" sx={{
+            marginBottom: 5,
+            maxWidth: 1280,
+            marginX: 'auto',
+            display: { xs: 'none', sm: 'flex' }
+        }}>
             <Box sx={{
                 width: { sm: 524, xs: '100%' },
                 height: 380,
-                 justifyContent: 'space-between',
+                justifyContent: 'space-between',
                 display: 'flex',
                 flexDirection: 'column',
-                
+
             }}>
                 <Typography
                     variant="h1"
                     color="initial"
                     gutterBottom
                     sx={{
-                        fontSize: { xs: '2.5rem', sm: 56 },
+                        fontSize: 56,
                         fontWeight: '600',
                         textAlign: { xs: 'center', sm: 'left' },
                         marginBottom: { xs: 2, sm: 4 },
@@ -52,20 +57,20 @@ export default function MainSection() {
                             paddingY: { sm: 1.5, xs: 1 },
                             borderRadius: 3,
                             textTransform: 'none',
-                            fontSize: { sm: '1.5rem', xs: '1.2rem' },
+                            fontSize: '1.5rem',
                         }}>
                         {t('joinLoyeltoButton')}
                     </Button>
                 </Box>
             </Box>
             <Box
-                sx={{  
+                sx={{
                     width: { sm: 740, xs: '100%' },
                     height: { xs: '96vw', sm: 380 },
                     backgroundColor: theme.palette.secondary.main,
                     borderRadius: 7
                 }}>
-                <Stack direction="row" sx={{height: '100%'}}>
+                <Stack direction="row" sx={{ height: '100%' }}>
                     <Box>
                         <Image src='landing_swapping_cutout.png'
                             sx={{
@@ -73,7 +78,7 @@ export default function MainSection() {
                                 marginTop: { xs: 4, sm: 10 },
                             }} />
                     </Box>
-                    <Box sx={{ overflow: 'hidden'}}>
+                    <Box sx={{ overflow: 'hidden' }}>
                         <Image src='ecran_julien_nobg.png'
                             sx={{
                                 width: { xs: '85%', sm: '95%' },
