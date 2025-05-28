@@ -1,4 +1,4 @@
-from .auth import router as auth
+# from .auth import router as auth
 from .users import router as users
 from .businesses import router as businesses
 from .tokens import router as tokens
