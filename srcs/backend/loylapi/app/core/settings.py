@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     )
 
     ROOT: Path = Path(__file__).resolve().parent.parent.parent
-    print(f"============= {ROOT} =============")
+    # print(f"============= {ROOT} =============")
     ENV: str = Field("dev")
     SQLITE_PATH: str = Field(default="sqlite+aiosqlite:///./dev.db")
 
