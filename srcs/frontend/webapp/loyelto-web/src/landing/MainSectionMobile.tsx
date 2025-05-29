@@ -20,20 +20,22 @@ export default function MainSectionMobile() {
         }}>
             <Box sx={{
                 backgroundColor: theme.palette.secondary.main,
-      
+
                 borderRadius: 5,
                 height: 518,
-              
+
                 paddingX: 2
             }}>
-                <Stack >
+                <Stack spacing={2} sx={{paddingTop: 4}}>
                     <Image src='landing_swapping_cutout.png' sx={{
-                        borderRadius: 3}} />
-                    <Typography variant="h1" color="initial" sx={{
-                        fontSize: 44,
-                        fontWeight: 600,
-                        textAlign: 'center',
-                    }}>
+                        borderRadius: 3
+                    }} />
+                    <Typography variant="h1" color="initial" gutterBottom
+                        sx={{
+                            fontSize: 44,
+                            fontWeight: 600,
+                            textAlign: 'center',
+                        }}>
                         Swap & Save: <br /> {t('mainHeading')}
                     </Typography>
                     <Button
@@ -50,7 +52,7 @@ export default function MainSectionMobile() {
                             borderRadius: 4,
                             textTransform: 'none',
                             fontSize: '1.2rem',
-                            margin: 2,
+                            marginX: 1, 
                             boxShadow: 'none'
                         }}>
                         {t('joinLoyeltoButton')}
@@ -59,7 +61,7 @@ export default function MainSectionMobile() {
             </Box>
             <Box sx={{
                 overflow: 'hidden',
-                
+
                 height: 348,
                 display: 'flex',
                 justifyContent: 'center',
