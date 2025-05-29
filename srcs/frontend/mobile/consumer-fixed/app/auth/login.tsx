@@ -84,19 +84,90 @@ export default function LoginScreen() {
       // ✅ CRITICAL FIX: Perform backend handshake with Privy token
       if (user) {
         try {
-          // Get the Privy access token
+          console.log('🔑 [AUTH] Getting Privy access token...');
+          
+          // Enhanced token debugging
           const accessToken = await getAccessToken();
           
-          if (accessToken) {
+          console.log('🔍 [AUTH] Access token details:', {
+            hasToken: !!accessToken,
+            tokenType: typeof accessToken,
+            tokenLength: accessToken?.length || 0,
+            tokenStart: accessToken ? accessToken.substring(0, 50) : 'null',
+            isString: typeof accessToken === 'string',
+            isEmpty: accessToken === '' || accessToken === null || accessToken === undefined
+          });
+          
+          if (accessToken && typeof accessToken === 'string' && accessToken.length > 0) {
             console.log('🔄 [AUTH] Performing backend handshake...');
+            console.log('📝 [AUTH] Token preview:', `${accessToken.substring(0, 20)}...`);
+            
+            // Let's also test the token format
+            try {
+              // Try to decode the JWT header to verify it's a valid JWT
+              const parts = accessToken.split('.');
+              if (parts.length === 3) {
+                const header = JSON.parse(atob(parts[0]));
+                const payload = JSON.parse(atob(parts[1]));
+                console.log('🔍 [AUTH] JWT Structure:', {
+                  header: header,
+                  payload: {
+                    iss: payload.iss,
+                    aud: payload.aud,
+                    sub: payload.sub,
+                    exp: payload.exp,
+                    iat: payload.iat
+                  }
+                });
+                
+                // Check if token is expired
+                const now = Math.floor(Date.now() / 1000);
+                if (payload.exp && payload.exp < now) {
+                  console.error('❌ [AUTH] Token is expired!');
+                  console.error(`  Current time: ${now}`);
+                  console.error(`  Token expires: ${payload.exp}`);
+                  throw new Error('Access token is expired');
+                }
+                
+                console.log('✅ [AUTH] Token appears to be valid JWT');
+              } else {
+                console.warn('⚠️ [AUTH] Token does not appear to be a JWT (wrong number of parts)');
+              }
+            } catch (jwtError) {
+              console.error('❌ [AUTH] Failed to parse JWT:', jwtError);
+            }
+            
             await privyHandshake(accessToken);
-            console.log('✅ [AUTH] Backend handshake successful - API token stored');
+            console.log('✅ [AUTH] Backend handshake successful - API token stored in SecureStore');
           } else {
-            console.warn('⚠️ [AUTH] No access token available from Privy');
+            console.warn('⚠️ [AUTH] Invalid access token received from Privy:', {
+              token: accessToken,
+              type: typeof accessToken
+            });
+            throw new Error('Invalid access token from Privy');
           }
         } catch (handshakeError) {
           console.error('❌ [AUTH] Backend handshake failed:', handshakeError);
-          // Don't block navigation for handshake failure in this demo
+          
+          // Enhanced error analysis
+          if (handshakeError?.message?.includes('401')) {
+            console.error('🔐 [AUTH] 401 Unauthorized - Token validation failed');
+            console.error('  Possible causes:');
+            console.error('  • Token format is incorrect');
+            console.error('  • Token has expired');
+            console.error('  • Backend Privy configuration mismatch');
+            console.error('  • Clock skew between client and server');
+          }
+          
+          // Show error to user but don't block navigation completely
+          Alert.alert(
+            'Authentication Warning',
+            'Login successful but backend connection failed. Some features may not work properly.',
+            [
+              { text: 'Continue Anyway', style: 'default' },
+              { text: 'Retry', onPress: () => handleSuccessfulAuth() }
+            ]
+          );
         }
       }
 
@@ -111,6 +182,7 @@ export default function LoginScreen() {
       }
     } catch (error) {
       console.error('Post-auth setup failed:', error);
+      Alert.alert('Setup Error', 'Authentication setup failed. Please try logging in again.');
     }
   };
 

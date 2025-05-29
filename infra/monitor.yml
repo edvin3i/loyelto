@@ -10,16 +10,18 @@ services:
     image: grafana/loki:latest
     ports: [ "3100:3100" ]
     volumes:
-      - ./infra/configs/loki-config.yaml:/etc/loki/config.yaml
+      - ./configs/loki-config.yaml:/etc/loki/config.yaml
       - loki_data:/loki
     networks: [tnet]
 
   promtail:
     image: grafana/promtail:latest
+    user: root
+    command: -config.file=/etc/promtail/config.yaml
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./infra/configs/promtail-config.yaml:/etc/promtail/config.yaml
+      - ./configs/promtail-config.yaml:/etc/promtail/config.yaml
     networks: [tnet]
 
   grafana:

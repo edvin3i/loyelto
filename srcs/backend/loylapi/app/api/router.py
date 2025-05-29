@@ -23,7 +23,7 @@ from app.api.v1 import (
 
 
 router = APIRouter()
-router.include_router(auth)
+# router.include_router(auth)
 router.include_router(users)
 router.include_router(businesses)
 router.include_router(tokens)

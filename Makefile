@@ -38,7 +38,7 @@ up-mon:
 		echo ">>> Monitoring already running."; \
 	fi
 down-mon:
-	@docker compose -p loyelto-lpg -f infra/monitor.yml down
+	@docker compose -p loyelto-lpg-monitor -f infra/monitor.yml down
 
 
 # ========== UP ==========

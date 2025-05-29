@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     )
 
     ROOT: Path = Path(__file__).resolve().parent.parent.parent
-    print(f"============= {ROOT} =============")
+    # print(f"============= {ROOT} =============")
     ENV: str = Field("dev")
     SQLITE_PATH: str = Field(default="sqlite+aiosqlite:///./dev.db")
 
@@ -41,6 +41,7 @@ class Settings(BaseSettings):
     PRIVY_APP_ID: str = Field(...)
     PRIVY_API_KEY: str = Field(...)
     PRIVY_API_SECRET: str = Field(...)
+    PRIVY_JWKS: str  = Field(f"https://auth.privy.io/api/v1/apps/{PRIVY_APP_ID}/jwks.json")
 
     CELERY_BROKER: str = Field(...)
     CELERY_BACKEND: str = Field(...)

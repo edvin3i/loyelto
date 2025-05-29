@@ -5,7 +5,7 @@ from typing import List, Dict
 from pydantic import BaseModel
 from app.core.settings import settings
 
-PRIVY_JWKS = "https://auth.privy.io/.well-known/jwks.json"
+# PRIVY_JWKS = "https://auth.privy.io/.well-known/jwks.json"
 ALGS = ["ES256"]
 _JWKS_CACHE: tuple[float, List[Dict]] = (0.0, [])
 
@@ -21,7 +21,7 @@ def _jwks() -> List[Dict]:
     if now - ts < 600 and keys:
         return keys
 
-    r = httpx.get(PRIVY_JWKS, timeout=10)
+    r = httpx.get(settings.PRIVY_JWKS, timeout=10)
     r.raise_for_status()
     data = r.json()
     # garantee that keys will be list[dict]

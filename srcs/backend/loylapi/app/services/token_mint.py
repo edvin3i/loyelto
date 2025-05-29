@@ -15,7 +15,7 @@ from app.services.pool import PoolService
 # --- Constants & cached IDL load ----------------------------------------
 # The path to the IDL for loyalty_token
 BASE_DIR = Path(__file__).resolve().parent
-print(f"==================== {BASE_DIR} ====================")
+# print(f"==================== {BASE_DIR} ====================")
 IDL_PATH = (BASE_DIR / settings.LOYL_IDL_PATH).resolve()
 
 _IDL: Idl
