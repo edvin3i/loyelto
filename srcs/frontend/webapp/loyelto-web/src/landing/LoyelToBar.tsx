@@ -43,12 +43,15 @@ export default function LoyelToBar(props: Props) {
             <AppBar position='fixed' sx={{
                 zIndex: 10,
                 backgroundColor: theme.palette.primary.light, 
+               
+            //    alignSelf: 'flex-start'
              
             }}>
                 <Toolbar sx={{
                     paddingRight: { xs: 0, sm: '24px' },
-                    width: {sm: 1180, xxl: 1280, xs: 375},
-                    marginX: { xs: 0, sm: 'auto' }
+                    left: {xs: 0, sm: 'auto'},
+                     maxWidth: {sm: 1280,  xs: 340},
+                    // marginX: { xs: 0, sm: 'auto' }
                 }}>
                     <Stack direction="row" spacing={4}
                         sx={{
@@ -82,7 +85,7 @@ export default function LoyelToBar(props: Props) {
                         sx={{
                             position: { xs: 'absolute', sm: 'static' },
                             top: { xs: 8, sm: 'auto' },
-                            right: { xs: 8, sm: 'auto' },
+                            right: { xs: 1, sm: 'auto' },
                             zIndex: 20,
                             display: { xs: 'block', sm: 'flex' },
                         }}

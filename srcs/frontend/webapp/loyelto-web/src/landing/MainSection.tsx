@@ -16,17 +16,17 @@ export default function MainSection() {
 
         <Stack component="section" direction="row" sx={{
             marginBottom: 5,
-            width: {sm: 1180, xxl: 1280},
+            
             marginX: 'auto',
             display: { xs: 'none', sm: 'flex' }
         }}>
             <Box sx={{
-                width: { sm: 524, xs: '100%' },
+                // maxWidth: 524,
+                width: "41%",
                 height: 380,
                 justifyContent: 'space-between',
                 display: 'flex',
-                flexDirection: 'column',
-
+                flexDirection: 'column'
             }}>
                 <Typography
                     variant="h1"
@@ -65,24 +65,27 @@ export default function MainSection() {
             </Box>
             <Box
                 sx={{
-                    width: 740,
+                    // maxWidth: 740,
+                    width: "59%",
                     height: 380,
                     backgroundColor: theme.palette.secondary.main,
                     borderRadius: 7
                 }}>
                 <Stack direction="row" sx={{ height: '100%' }}>
-                    <Box>
+                    <Box sx={{width: "50%", paddingLeft: 6, paddingTop: 12}}>
                         <Image src='landing_swapping_cutout.png'
                             sx={{
-                                width: { xs: '85%' },
-                                marginTop: { xs: 4, sm: 10 },
+                                // width: 200,
+                                // marginTop: { xs: 4, sm: 10 },
                             }} />
                     </Box>
-                    <Box sx={{ overflow: 'hidden' }}>
-                        <Image src='ecran_julien_nobg.png'
+                    <Box sx={{ overflow: 'hidden', width: '50%', paddingX: 7}}>
+                        <Image src='phone_loyl_coin.jpg'
                             sx={{
-                                width: { xs: '85%', sm: '95%' },
-                                marginTop: { xs: 4, sm: 9 },
+                                borderRadius: 10,
+                              
+                                // width: "50%",
+                                marginTop: 10,
                                 objectFit: 'cover', // Ensures the image is cropped to fit the parent
                             }} />
                     </Box>

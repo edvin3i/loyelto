@@ -23,7 +23,7 @@ export default function MainSectionMobile() {
       
                 borderRadius: 5,
                 height: 518,
-                maxWidth: 375,
+              
                 paddingX: 2
             }}>
                 <Stack >
@@ -59,7 +59,7 @@ export default function MainSectionMobile() {
             </Box>
             <Box sx={{
                 overflow: 'hidden',
-                width: 375,
+                
                 height: 348,
                 display: 'flex',
                 justifyContent: 'center',

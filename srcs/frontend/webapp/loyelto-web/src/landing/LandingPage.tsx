@@ -23,16 +23,19 @@ export default function LandingPage() {
     return (
         <div>
             <CssBaseline />
+      
             <LoyelToBar />
             <Toolbar />
-            <Box
+            <Box component="main"
                 sx={{
                     padding: { sm: 5 },
                     marginTop: 5,
                     marginBottom: 7,
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    // width: '100%',
+                    maxWidth: {sm: 1200, xs: 340}
                 }}>
                 <MainSection />
                 <MainSectionMobile />
@@ -41,6 +44,7 @@ export default function LandingPage() {
                 <WaitlistForm />
                 <SocialLinks />
             </Box>
+          
         </div >
     )
 }
