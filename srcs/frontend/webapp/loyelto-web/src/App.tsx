@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <ThemeProvider theme={theme} defaultMode='light'>
-        <CssBaseline />
+        {/* <CssBaseline /> */}
         <LandingPage />
       </ThemeProvider>
     </>

@@ -40,19 +40,30 @@ export default function LoyelToBar(props: Props) {
 
     return (
         <ElevationScroll {...props}>
-            <AppBar position='fixed' sx={{ zIndex: 10, backgroundColor: theme.palette.primary.light }}>
-                <Toolbar  sx={{paddingRight: {xs: 0, sm: '24px'}}}>
-                    <Stack direction="row" spacing={4} 
-                    sx={{ 
-                        marginLeft: {sm:5, xs: 1}, 
-                        marginTop: 2,
-                        flexGrow: 1
+            <AppBar position='fixed' sx={{
+                zIndex: 10,
+                backgroundColor: theme.palette.primary.light, 
+               
+            //    alignSelf: 'flex-start'
+             
+            }}>
+                <Toolbar sx={{
+                    paddingRight: { xs: 0, sm: '24px' },
+                    left: {xs: 0, sm: 'auto'},
+                     maxWidth: {sm: 1280,  xs: 340},
+                    // marginX: { xs: 0, sm: 'auto' }
+                }}>
+                    <Stack direction="row" spacing={4}
+                        sx={{
+                            marginLeft: { sm: 5, xs: 0 },
+                            marginTop: 2,
+                            flexGrow: 1
                         }}>
                         <div style={{ paddingLeft: '1rem' }}>
-                            <Image src={svgLogo} alt='logo' sx={{ 
-                                height: {xs: '4rem', sm: '6.5rem'}, 
-                                width: { xs: '4rem', sm:'6.5rem'} 
-                                }} />
+                            <Image src={svgLogo} alt='logo' sx={{
+                                height: { xs: '4rem', sm: '6.5rem' },
+                                width: { xs: '4rem', sm: '6.5rem' }
+                            }} />
                         </div>
                         <Box sx={{
                             display: 'flex',
@@ -60,12 +71,12 @@ export default function LoyelToBar(props: Props) {
                             alignItems: 'center',
                             justifyContent: 'space-around'
                         }}>
-                            <Typography variant="h3" color="initial"  sx={{
-                                fontSize: {xs: '2rem', sm: '3rem'}, 
-                                fontFamily: "Nunito", 
-                                fontWeight: "bold", 
-                                letterSpacing: '0.15rem' 
-                                }}>LOYELTO</Typography>
+                            <Typography variant="h3" color="initial" sx={{
+                                fontSize: { xs: '2rem', sm: '3rem' },
+                                fontFamily: "Nunito",
+                                fontWeight: "bold",
+                                letterSpacing: '0.15rem'
+                            }}>LOYELTO</Typography>
                             <Typography variant="subtitle1" color="initial" sx={{ fontFamily: "Inter" }}>Loyalty Exchange</Typography>
                         </Box>
 
@@ -74,7 +85,7 @@ export default function LoyelToBar(props: Props) {
                         sx={{
                             position: { xs: 'absolute', sm: 'static' },
                             top: { xs: 8, sm: 'auto' },
-                            right: { xs: 8, sm: 'auto' },
+                            right: { xs: 1, sm: 'auto' },
                             zIndex: 20,
                             display: { xs: 'block', sm: 'flex' },
                         }}
