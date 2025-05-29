@@ -26,7 +26,7 @@ export default function MainSectionMobile() {
 
                 paddingX: 2
             }}>
-                <Stack spacing={2} sx={{paddingTop: 4}}>
+                <Stack spacing={3} sx={{paddingTop: 4}}>
                     <Image src='landing_swapping_cutout.png' sx={{
                         borderRadius: 3
                     }} />
