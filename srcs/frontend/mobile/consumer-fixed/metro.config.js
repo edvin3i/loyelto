@@ -15,4 +15,15 @@ config.resolver.platforms = ['ios', 'android', 'native', 'web'];
 // Disable cache stores temporarily to fix the error
 config.cacheStores = undefined;
 
+// Suppress animation warnings in development
+if (__DEV__) {
+  const originalWarn = console.warn;
+  console.warn = (...args) => {
+    if (args[0]?.includes?.('onAnimatedValueUpdate')) {
+      return; // Suppress animation warnings
+    }
+    originalWarn(...args);
+  };
+}
+
 module.exports = config; 
