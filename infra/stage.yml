@@ -24,7 +24,6 @@ services:
       - ./out/idl:/app/anchor/idl
       - ./out/so:/app/anchor/so
     environment:
-      ENV: stage
       DOMAIN_NAME: ${DOMAIN_NAME:-stage.loyel.to}
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
