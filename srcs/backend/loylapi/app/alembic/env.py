@@ -15,6 +15,15 @@ from sqlalchemy import pool
 from app.core.settings import settings
 from app.db.base import Base
 
+import os
+
+print("=== ENV DEBUG ===")
+print("POSTGRES_DB:", os.getenv("POSTGRES_DB"))
+print("POSTGRES_USER:", os.getenv("POSTGRES_USER"))
+print("POSTGRES_PASSWORD:", os.getenv("POSTGRES_PASSWORD"))
+print("DB_HOST:", os.getenv("DB_HOST"))
+print("DB_PORT:", os.getenv("DB_PORT"))
+print("settings.database_url:", settings.database_url)
 
 config = context.config
 fileConfig(config.config_file_name)

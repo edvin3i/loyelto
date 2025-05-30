@@ -22,7 +22,7 @@ fi
 
 
 echo "⚡️ Apply Alembic migrations..."
-# PYTHONPATH=/app uv run python -m alembic upgrade head
+PYTHONPATH=/app uv run python -m alembic upgrade head
 
 echo "🚀 Starting FastAPI over Uvicorn..."
 exec "$@"
