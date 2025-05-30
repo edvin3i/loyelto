@@ -58,11 +58,11 @@ services:
   #   environment:
   #     - ANCHOR_WALLET=/root/.config/solana/id.json
   #     - SOLANA_URL=https://api.testnet.solana.com
-    volumes:
-      # - ./srcs/backend/anchor/target/idl:/app/anchor/target/idl:ro
-      # - ./srcs/backend/anchor/target/deploy:/app/anchor/target/deploy:ro
-      - ~/.config/solana/id.json:/root/.config/solana/id.json:ro
-    networks: [tnet-stage]
+    # volumes:
+    #   - ./srcs/backend/anchor/target/idl:/app/anchor/target/idl:ro
+    #   - ./srcs/backend/anchor/target/deploy:/app/anchor/target/deploy:ro
+    #   - ~/.config/solana/id.json:/root/.config/solana/id.json:ro
+    # networks: [tnet-stage]
 
   worker:
     build: ../containers/worker
