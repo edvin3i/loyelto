@@ -87,5 +87,3 @@ services:
 networks:
   tnet-stage:
     external: true
-  tnet-prod:
-    external: true
