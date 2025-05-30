@@ -8,7 +8,7 @@ services:
       - traefik.http.routers.landing-stage.entrypoints=websecure
       - traefik.http.routers.landing-stage.tls.certresolver=le
       - traefik.http.services.landing-stage.loadbalancer.server.port=80
-    networks: [tnet]
+    networks: [tnet-stage]
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
     restart: unless-stopped
@@ -46,7 +46,7 @@ services:
       LOYL_IDL_PATH: /app/anchor/target/idl/loyl_token.json
       LOYL_SETTLEMENT_PROGRAM_ID: ${LOYL_SETTLEMENT_PROGRAM_ID:-}
       LOYL_SETTLEMENT_IDL_PATH: /app/anchor/target/idl/loyl_settlement.json
-    networks: [tnet]
+    networks: [tnet-stage]
   anchor:
     image: edvin3i/loyelto-anchor:stage
     entrypoint: ["/bin/bash", "-c"]
@@ -62,7 +62,7 @@ services:
       # - ./srcs/backend/anchor/target/idl:/app/anchor/target/idl:ro
       # - ./srcs/backend/anchor/target/deploy:/app/anchor/target/deploy:ro
       - ~/.config/solana/id.json:/root/.config/solana/id.json:ro
-    networks: [tnet]
+    networks: [tnet-stage]
 
   worker:
     build: ../containers/worker
@@ -72,7 +72,7 @@ services:
     environment:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/1
-    networks: [tnet]
+    networks: [tnet-stage]
 
   beat:
     build: ../containers/beat
@@ -82,4 +82,10 @@ services:
     environment:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/1
-    networks: [tnet]
+    networks: [tnet-stage]
+
+networks:
+  tnet-stage:
+    external: true
+  tnet-prod:
+    external: true

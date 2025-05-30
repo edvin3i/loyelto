@@ -1,4 +1,4 @@
-networks: {tnet: {external: true}}
+# networks: {tnet: {external: true}}
 
 volumes:
   grafana_data:
@@ -12,7 +12,7 @@ services:
     volumes:
       - ./configs/loki-config.yaml:/etc/loki/config.yaml
       - loki_data:/loki
-    networks: [tnet]
+    networks: [tnet-stage, tnet-prod]
 
   promtail:
     image: grafana/promtail:latest
@@ -22,7 +22,7 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - ./configs/promtail-config.yaml:/etc/promtail/config.yaml
-    networks: [tnet]
+    networks: [tnet-stage, tnet-prod]
 
   grafana:
     image: grafana/grafana:latest
@@ -32,5 +32,11 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_USER:-loyluser}
     volumes:
       - grafana_data:/var/lib/grafana
-    networks: [tnet]
+    networks: [tnet-stage, tnet-prod]
+
+networks:
+  tnet-stage:
+    external: true
+  tnet-prod:
+    external: true
 

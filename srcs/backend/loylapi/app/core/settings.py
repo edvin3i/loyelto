@@ -25,8 +25,8 @@ class Settings(BaseSettings):
 
     DB_HOST: str | None = Field(default=None)
     DB_PORT: int | None = Field(default=None)
-    POSTGRES_DB: str | None = Field(default=None)
-    POSTGRES_USER: str | None = Field(default=None)
+    POSTGRES_DB: str | None = Field(default="loyelto_stage")
+    POSTGRES_USER: str | None = Field(default="pgdbuser")
     POSTGRES_PASSWORD: str | None = Field(default=None)
 
     TREASURY_KEYPAIR: str = Field(...)
