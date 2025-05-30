@@ -34,13 +34,13 @@ class BusinessReview(Base):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    business_id: Mapped[int] = mapped_column(ForeignKey("business.id", ondelete="CASCADE"))
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id", ondelete="CASCADE"))
     business: Mapped[Business] = relationship(
         "Business",
         back_populates="reviews",
         lazy="joined",
     )
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     score: Mapped[Decimal] = mapped_column(
         Numeric(3, 2),
         nullable=False,
