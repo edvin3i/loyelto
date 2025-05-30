@@ -16,7 +16,7 @@ if [ "$DB_EXIST" = "1" ]; then
   echo "✅ Database '$POSTGRES_DB' is exist already."
 else
   echo "🛠 Database '$POSTGRES_DB' didn't find. Creating..."
-  PGPASSWORD=$POSTGRES_PASSWORD createdb -h "$DB_HOST" -U "$POSTGRES_USER " "$POSTGRES_DB"
+  PGPASSWORD=$POSTGRES_PASSWORD createdb -h "$DB_HOST" -U "$POSTGRES_USER" "$POSTGRES_DB"
   echo "✅ Database '$POSTGRES_DB' is created."
 fi
 
