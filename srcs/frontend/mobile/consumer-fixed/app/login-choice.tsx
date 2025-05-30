@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome } from '@expo/vector-icons'; // Using Expo's built-in icons instead
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuthStore } from './stores/authStore';
+import { useAuthStore } from '../utils/providers/stores/authStore';
 import ApiTest from './components/ApiTest';
 
 export default function LoginChoiceScreen() {

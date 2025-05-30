@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
 import { ThemedText } from '../components/ThemedText';
 import { ThemedView } from '../components/ThemedView';
-import { useAuthStore } from './stores/authStore';
+import { useAuthStore } from '../utils/providers/stores/authStore';
 
 export default function HomeScreen() {
   const { isAuthenticated, userRole, checkAuthStatus } = useAuthStore();

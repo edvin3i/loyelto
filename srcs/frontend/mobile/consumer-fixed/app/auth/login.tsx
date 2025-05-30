@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Tex
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../../utils/providers/stores/authStore';
 import { useLoginWithEmail, usePrivy, PrivyUser } from '@privy-io/expo';
 
 export default function LoginScreen() {

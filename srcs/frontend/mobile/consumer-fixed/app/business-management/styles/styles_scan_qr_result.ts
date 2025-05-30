@@ -4,6 +4,7 @@ const styles_scan_qr_result = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    overflow: 'visible',
   },
   header: {
     flexDirection: 'row',
@@ -60,14 +61,16 @@ const styles_scan_qr_result = StyleSheet.create({
     alignItems: 'baseline',
   },
   pointsValue: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginRight: 4,
     color: '#0082FF',
+    marginRight: 4,
+    minHeight: 40,
+    textAlignVertical: 'center',
+    paddingVertical: 4,
   },
   pointsLabel: {
     fontSize: 16,
-    color: '#666',
   },
   actionsContainer: {
     flexDirection: 'row',

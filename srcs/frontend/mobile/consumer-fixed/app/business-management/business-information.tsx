@@ -62,7 +62,7 @@ export default function BusinessInformationScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.loadingContainer} edges={[]}>
+      <SafeAreaView style={styles.loadingContainer} edges={['top']}>
         <ActivityIndicator size="large" color="#4CAF50" />
         <BusinessNavBar />
       </SafeAreaView>
@@ -70,35 +70,53 @@ export default function BusinessInformationScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F5F5' }} edges={[]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F5F5' }} edges={['top']}>
       <Stack.Screen 
         options={{
-          headerTitle: 'Business Information',
-          headerRight: () => (
-            isEditing ? (
+          headerShown: false,
+        }}
+      />
+      <ScrollView style={styles.container}>
+        {/* Page Header with Edit Button */}
+        <View style={styles.pageHeader}>
+          <ThemedText type="title" style={styles.pageTitle}>
+            Profile
+          </ThemedText>
+          {isEditing ? (
+            <View style={styles.editActions}>
               <TouchableOpacity 
-                style={styles.headerButton} 
+                style={styles.cancelButton} 
+                onPress={() => setIsEditing(false)}
+              >
+                <FontAwesome name="times" size={18} color="#666" />
+                <ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.saveButton} 
                 onPress={handleUpdateProfile}
                 disabled={saving}
               >
                 {saving ? (
-                  <ActivityIndicator size="small" color="#4CAF50" />
+                  <ActivityIndicator size="small" color="#fff" />
                 ) : (
-                  <ThemedText style={styles.saveButtonText}>Save</ThemedText>
+                  <>
+                    <FontAwesome name="check" size={18} color="#fff" />
+                    <ThemedText style={styles.saveButtonText}>Save</ThemedText>
+                  </>
                 )}
               </TouchableOpacity>
-            ) : (
-              <TouchableOpacity 
-                style={styles.headerButton} 
-                onPress={() => setIsEditing(true)}
-              >
-                <FontAwesome name="edit" size={18} color="#4CAF50" />
-              </TouchableOpacity>
-            )
-          ),
-        }}
-      />
-      <ScrollView style={styles.container}>
+            </View>
+          ) : (
+            <TouchableOpacity 
+              style={styles.editButton} 
+              onPress={() => setIsEditing(true)}
+            >
+              <FontAwesome name="edit" size={18} color="#4CAF50" />
+              <ThemedText style={styles.editButtonText}>Edit</ThemedText>
+            </TouchableOpacity>
+          )}
+        </View>
+
         {/* Dashboard Button */}
         <TouchableOpacity 
           style={styles.dashboardButton}
