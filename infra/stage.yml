@@ -47,17 +47,17 @@ services:
       LOYL_SETTLEMENT_PROGRAM_ID: ${LOYL_SETTLEMENT_PROGRAM_ID:-}
       LOYL_SETTLEMENT_IDL_PATH: /app/anchor/target/idl/loyl_settlement.json
     networks: [tnet-stage]
-  anchor:
-    image: edvin3i/loyelto-anchor:stage
-    entrypoint: ["/bin/bash", "-c"]
-    command: >
-       "avm use 0.29.0 &&
-        cd /anchor &&
-        anchor build &&
-        anchor deploy --provider.cluster testnet"
-    environment:
-      - ANCHOR_WALLET=/root/.config/solana/id.json
-      - SOLANA_URL=https://api.testnet.solana.com
+  # anchor:
+  #   image: edvin3i/loyelto-anchor:stage
+  #   entrypoint: ["/bin/bash", "-c"]
+  #   command: >
+  #      "avm use 0.29.0 &&
+  #       cd /anchor &&
+  #       anchor build &&
+  #       anchor deploy --provider.cluster testnet"
+  #   environment:
+  #     - ANCHOR_WALLET=/root/.config/solana/id.json
+  #     - SOLANA_URL=https://api.testnet.solana.com
     volumes:
       # - ./srcs/backend/anchor/target/idl:/app/anchor/target/idl:ro
       # - ./srcs/backend/anchor/target/deploy:/app/anchor/target/deploy:ro

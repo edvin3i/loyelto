@@ -25,7 +25,6 @@ services:
     restart: always
     networks: [tnet-prod]
 
-
 networks:
   tnet-prod:
     external: true

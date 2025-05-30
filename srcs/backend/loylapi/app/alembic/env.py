@@ -1,4 +1,3 @@
-import os
 import app.models  # noqa: F401
 from pathlib import Path
 from dotenv import load_dotenv
@@ -31,6 +30,7 @@ def run_migrations_offline() -> None:
     """
 
     url = settings.database_url
+    print(f"=================== {url} ======================")
     context.configure(
         url=url,
         target_metadata=target_metadata,
