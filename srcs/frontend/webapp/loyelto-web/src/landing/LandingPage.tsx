@@ -23,7 +23,8 @@ export default function LandingPage() {
     return (
         <div>
             <CssBaseline />
-      
+
+
             <LoyelToBar />
             <Toolbar />
             <Box component="main"
@@ -34,8 +35,9 @@ export default function LandingPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
+                    width: { sm: 1200, xs: 340 }
                     // width: '100%',
-                    maxWidth: {sm: 1200, xs: 340}
+
                 }}>
                 <MainSection />
                 <MainSectionMobile />
@@ -44,7 +46,8 @@ export default function LandingPage() {
                 <WaitlistForm />
                 <SocialLinks />
             </Box>
-          
+
+
         </div >
     )
 }

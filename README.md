@@ -1,6 +1,6 @@
 # Loyelto
 
-**Loyelto** is a blockchain-based loyalty infrastructure on Solana designed for small and medium-sized businesses. Each business can issue its own loyalty tokens (SPL-2022), which are exchangeable through the settlement token LOYL (≈1 USDC). Users authenticate via Privy (email/phone/OAuth) without direct wallet interactions. The platform supports the issuance of NFT vouchers (compressed NFTs) and provides tools for analytics and loyalty program management.
+**Loyelto** is a blockchain-based loyalty platform on Solana designed for small and medium-sized businesses. Each business can issue its own loyalty tokens (SPL-2022), which are exchangeable through the settlement token LOYL (≈1 USDC). Users authenticate via Privy (email/phone/OAuth) without direct wallet interactions. The platform supports the issuance of NFT vouchers (compressed NFTs) and provides tools for analytics and loyalty program management.
 
 ## 🚀 Features
 
