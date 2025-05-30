@@ -23,8 +23,7 @@ def upgrade() -> None:
     tx_status   = postgresql.ENUM("PENDING", "SUCCESS", "FAILED", name="tx_status_enum")
     voucher_st  = postgresql.ENUM("ACTIVE", "REDEEMED", "EXPIRED", name="voucher_status_enum")
     promo_type  = postgresql.ENUM("DISCOUNT", name="promo_type_enum")
-    print("task_status:", task_status.enums)
-    print("tx_status:", tx_status.enums)
+
     for enum in (task_status, tx_type, tx_status, voucher_st, promo_type):
         enum.create(op.get_bind(), checkfirst=True)
 

@@ -22,7 +22,6 @@ class Settings(BaseSettings):
     # print(f"============= {ROOT} =============")
     ENV: str = Field(default="dev")
     SQLITE_PATH: str = Field(default="sqlite+aiosqlite:///./dev.db")
-    print(f"=================== {ENV} ======================")
 
     DB_HOST: str | None = Field(default=None)
     DB_PORT: int | None = Field(default=None)
