@@ -35,7 +35,7 @@ export default function LandingPage() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     // width: '100%',
-                    maxWidth: {sm: 1200, xs: 340}
+                    maxWidth: {sm: 1200, xs: 375}
                 }}>
                 <MainSection />
                 <MainSectionMobile />

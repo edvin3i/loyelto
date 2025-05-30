@@ -50,7 +50,7 @@ export default function LoyelToBar(props: Props) {
                 <Toolbar sx={{
                     paddingRight: { xs: 0, sm: '24px' },
                     left: {xs: 0, sm: 'auto'},
-                     maxWidth: {sm: 1280,  xs: 340},
+                     maxWidth: {sm: 1280,  xs: 375},
                     // marginX: { xs: 0, sm: 'auto' }
                 }}>
                     <Stack direction="row" spacing={4}
