@@ -18,12 +18,13 @@ depends_on = None
 
 def upgrade() -> None:
     # --- ENUMS ---
-    task_status = sa.Enum("PENDING", "SUCCESS", "FAILED", "RETRY", name="task_status_enum")
-    tx_type     = sa.Enum("EARN", "REDEEM", "SWAP_IN", "SWAP_OUT", name="tx_type_enum")
-    tx_status   = sa.Enum("PENDING", "SUCCESS", "FAILED", name="tx_status_enum")
-    voucher_st  = sa.Enum("ACTIVE", "REDEEMED", "EXPIRED", name="voucher_status_enum")
-    promo_type  = sa.Enum("DISCOUNT", name="promo_type_enum")
-
+    task_status = postgresql.ENUM("PENDING", "SUCCESS", "FAILED", "RETRY", name="task_status_enum")
+    tx_type     = postgresql.ENUM("EARN", "REDEEM", "SWAP_IN", "SWAP_OUT", name="tx_type_enum")
+    tx_status   = postgresql.ENUM("PENDING", "SUCCESS", "FAILED", name="tx_status_enum")
+    voucher_st  = postgresql.ENUM("ACTIVE", "REDEEMED", "EXPIRED", name="voucher_status_enum")
+    promo_type  = postgresql.ENUM("DISCOUNT", name="promo_type_enum")
+    print("task_status:", task_status.enums)
+    print("tx_status:", tx_status.enums)
     for enum in (task_status, tx_type, tx_status, voucher_st, promo_type):
         enum.create(op.get_bind(), checkfirst=True)
 
@@ -55,7 +56,7 @@ def upgrade() -> None:
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, nullable=False),
         sa.Column("task_id", sa.String(50), nullable=False, unique=True),
         sa.Column("queue", sa.String(32), nullable=False),
-        sa.Column("status", sa.Enum(name="task_status_enum", create_type=False), nullable=False),
+        sa.Column("status", postgresql.ENUM(name="task_status_enum", create_type=False), nullable=False),
         sa.Column("payload", sa.JSON(), nullable=True),
         sa.Column("result", sa.String(32), nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
@@ -144,7 +145,7 @@ def upgrade() -> None:
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, nullable=False),
         sa.Column("wallet_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column("token_id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("tx_type", sa.Enum(name="tx_type_enum", create_type=False), nullable=False),
+        sa.Column("tx_type", postgresql.ENUM(name="tx_type_enum", create_type=False), nullable=False),
         sa.Column("amount", sa.BigInteger(), nullable=False),
         sa.Column("fee_bps", sa.Integer(), nullable=True),
         sa.Column("sol_sig", sa.String(128), nullable=True),
@@ -167,7 +168,7 @@ def upgrade() -> None:
         sa.Column("fee_bps", sa.Integer(), nullable=False),
         sa.Column("sol_sig", sa.String(128), nullable=True),
         sa.Column("sol_sig_redeem", sa.String(128), nullable=True),
-        sa.Column("status", sa.Enum(name="tx_status_enum", create_type=False), nullable=False, server_default="PENDING"),
+        sa.Column("status", postgresql.ENUM(name="tx_status_enum", create_type=False), nullable=False, server_default="PENDING"),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
         sa.CheckConstraint("from_amount > 0 AND to_amount > 0", name="check_swap_amounts_positive"),
         sa.ForeignKeyConstraint(["from_token_id"], ["tokens.id"]),
@@ -183,7 +184,7 @@ def upgrade() -> None:
         sa.Column("template_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("user_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column("asset_id", sa.String(128), nullable=False),
-        sa.Column("status", sa.Enum(name="voucher_status_enum", create_type=False), nullable=False),
+        sa.Column("status", postgresql.ENUM(name="voucher_status_enum", create_type=False), nullable=False),
         sa.Column("redeemed_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
         sa.ForeignKeyConstraint(["template_id"], ["voucher_templates.id"], ondelete="CASCADE"),
@@ -197,7 +198,7 @@ def upgrade() -> None:
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, nullable=False),
         sa.Column("business_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("name", sa.String(128), nullable=False),
-        sa.Column("promo_type", sa.Enum(name="promo_type_enum", create_type=False), nullable=False),
+        sa.Column("promo_type", postgresql.ENUM(name="promo_type_enum", create_type=False), nullable=False),
         sa.Column("price_points", sa.BigInteger(), nullable=False),
         sa.Column("discount_pct", sa.Numeric(5, 2), nullable=False),
         sa.Column("active_from", sa.DateTime(timezone=True), nullable=True),
@@ -229,7 +230,7 @@ def upgrade() -> None:
         sa.Column("template_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("user_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("asset_id", sa.String(128), nullable=True),
-        sa.Column("status", sa.Enum(name="tx_status_enum", create_type=False), nullable=False),
+        sa.Column("status", postgresql.ENUM(name="tx_status_enum", create_type=False), nullable=False),
         sa.ForeignKeyConstraint(["template_id"], ["voucher_templates.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
     )
