@@ -59,6 +59,6 @@ def verify_privy_token(token: str) -> TokenClaims:
         key,
         algorithms=ALGS,
         audience=settings.PRIVY_APP_ID,
-        issuer="https://auth.privy.io",
+        issuer="privy.io",
     )
     return TokenClaims(did=payload["sub"], sid=payload["sid"])
