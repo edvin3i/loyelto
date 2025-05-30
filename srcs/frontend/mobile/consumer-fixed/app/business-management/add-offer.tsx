@@ -7,12 +7,14 @@ import { router, Stack } from 'expo-router';
 import BusinessNavBar from './components/BusinessNavBar';
 import styles_add_offer from './styles/styles_add_offer';
 import { createVoucherTemplate } from '../utils/business_profile';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface OfferFormData {
   title: string;
   description: string;
   points_required: string;
   expiry_days: string;
+  quantity: string;  // Add this line
 }
 
 export default function AddOfferScreen() {
@@ -22,6 +24,7 @@ export default function AddOfferScreen() {
     description: '',
     points_required: '',
     expiry_days: '30',
+    quantity: '1',     // Add this line with default value
   });
 
   const handleInputChange = (field: keyof OfferFormData, value: string) => {
@@ -61,10 +64,15 @@ export default function AddOfferScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} edges={['top']}>
       <Stack.Screen 
         options={{
           headerTitle: 'Create New Offer',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <FontAwesome name="arrow-left" size={24} color="black" />
+            </TouchableOpacity>
+          ),
           headerRight: () => (
             <TouchableOpacity 
               style={styles_add_offer.headerButton} 
@@ -127,6 +135,17 @@ export default function AddOfferScreen() {
             />
           </View>
           
+          <View style={styles_add_offer.formGroup}>
+            <ThemedText style={styles_add_offer.label}>Quantity</ThemedText>
+            <TextInput
+              style={styles_add_offer.input}
+              value={formData.quantity}
+              onChangeText={(value) => handleInputChange('quantity', value.replace(/[^0-9]/g, ''))}
+              placeholder="e.g. 100"
+              keyboardType="numeric"
+            />
+          </View>
+          
           <View style={styles_add_offer.infoBox}>
             <FontAwesome name="info-circle" size={18} color="#0082FF" style={styles_add_offer.infoIcon} />
             <ThemedText style={styles_add_offer.infoText}>
@@ -136,7 +155,7 @@ export default function AddOfferScreen() {
         </ThemedView>
       </ScrollView>
       <BusinessNavBar />
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -6,7 +6,7 @@ const styles_add_offer = StyleSheet.create({
     padding: 16,
   },
   headerButton: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     paddingVertical: 6,
   },
   saveButtonText: {
@@ -16,7 +16,7 @@ const styles_add_offer = StyleSheet.create({
   formContainer: {
     backgroundColor: 'white',
     borderRadius: 8,
-    padding: 16,
+    padding: 12,
     marginBottom: 16,
   },
   formGroup: {
