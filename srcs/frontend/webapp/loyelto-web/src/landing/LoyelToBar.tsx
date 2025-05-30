@@ -42,21 +42,17 @@ export default function LoyelToBar(props: Props) {
         <ElevationScroll {...props}>
             <AppBar position='fixed' sx={{
                 zIndex: 10,
-                backgroundColor: theme.palette.primary.light, 
-              left: 0,
-              right: 0,
-              boxSizing: 'border-box',
-              width: '100%',
-              maxWidth: {sm: 1200, xs: 340},
-                // width: '100%',
-                mx: 'auto'
-            //    alignSelf: 'center'
-             
+                backgroundColor: theme.palette.primary.light,
+                left: 0,
+                right: 0,
+                boxSizing: 'border-box',
+                width: '100%'
             }}>
                 <Toolbar sx={{
                     paddingRight: { xs: 0, sm: '24px' },
                     // left: {xs: 0, sm: 'auto'},
-                    
+                    width: { sm: 1200, xs: 340 },
+                     mx: 'auto'
                     // marginX: { xs: 0, sm: 'auto' }
                 }}>
                     <Stack direction="row" spacing={4}
@@ -64,7 +60,7 @@ export default function LoyelToBar(props: Props) {
                             // marginLeft: { sm: 5, xs: 0 },
                             marginTop: 2,
                             alignItems: 'center',
-                            
+
                             flexGrow: 1
                         }}>
                         <div style={{ paddingLeft: '1rem' }}>
