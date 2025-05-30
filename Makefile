@@ -3,7 +3,7 @@ STACK           ?= stage
 PROJECT         := loyelto-$(STACK)
 ENV_FILE        := $(CURDIR)/infra/env/$(STACK).env
 DOCKER_COMPOSE  := docker compose
-COMPOSE_FILES   := -f infra/base.yml -f infra/$(STACK).yml
+COMPOSE_FILES   := -f infra/base-${STACK}.yml -f infra/$(STACK).yml
 
 # ========== NETWORKS ==========
 create-networks:
