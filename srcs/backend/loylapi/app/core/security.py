@@ -21,15 +21,16 @@ def _jwks() -> List[Dict]:
     if now - ts < 600 and keys:
         return keys
 
-    r = httpx.get(settings.PRIVY_JWKS, timeout=10)
+    url = settings.privy_jwks_url
+    r = httpx.get(url, timeout=10)
     r.raise_for_status()
     data = r.json()
     # garantee that keys will be list[dict]
     new_keys = data.get("keys") or []
     if not isinstance(new_keys, list):
         new_keys = []
-    # cache update
 
+    # cache update
     _JWKS_CACHE = (now, new_keys)
     return new_keys
 
@@ -58,6 +59,6 @@ def verify_privy_token(token: str) -> TokenClaims:
         key,
         algorithms=ALGS,
         audience=settings.PRIVY_APP_ID,
-        issuer="https://auth.privy.io",
+        issuer="privy.io",
     )
     return TokenClaims(did=payload["sub"], sid=payload["sid"])

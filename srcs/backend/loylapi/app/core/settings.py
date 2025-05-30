@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     ROOT: Path = Path(__file__).resolve().parent.parent.parent
     # print(f"============= {ROOT} =============")
-    ENV: str = Field("dev")
+    ENV: str = Field(default="dev")
     SQLITE_PATH: str = Field(default="sqlite+aiosqlite:///./dev.db")
 
     DB_HOST: str | None = Field(default=None)
@@ -33,15 +33,17 @@ class Settings(BaseSettings):
     SOLANA_RPC_URL: str = Field("https://api.test.solana.com")
     EXCHANGE_PROGRAM_ID: str = Field(...)
     EXCHANGE_IDL_PATH: str = Field("/app/anchor/target/idl/exchange.json")
-    LOYL_TOKEN_PROGRAM_ID: str = Field(...)
+    LOYL_TOKEN_PROGRAM_ID: str = Field(default="stub")
     LOYL_IDL_PATH: str = Field("/app/anchor/target/idl/loyl_token.json")
-    LOYL_SETTLEMENT_PROGRAM_ID: str = Field(...)
+    LOYL_SETTLEMENT_PROGRAM_ID: str = Field(default="stub")
     LOYL_SETTLEMENT_IDL_PATH: str = Field("/app/anchor/target/idl/loyl_settlement.json")
 
     PRIVY_APP_ID: str = Field(...)
     PRIVY_API_KEY: str = Field(...)
-    PRIVY_API_SECRET: str = Field(...)
-    PRIVY_JWKS: str  = Field(f"https://auth.privy.io/api/v1/apps/{PRIVY_APP_ID}/jwks.json")
+    PRIVY_API_SECRET: str = Field(default="stub")
+    @property
+    def privy_jwks_url(self) -> str:
+        return f"https://auth.privy.io/api/v1/apps/{self.PRIVY_APP_ID}/jwks.json"
 
     CELERY_BROKER: str = Field(...)
     CELERY_BACKEND: str = Field(...)
