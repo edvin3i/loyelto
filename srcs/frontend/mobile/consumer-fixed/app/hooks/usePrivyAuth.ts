@@ -1,6 +1,6 @@
 // Temporarily disable Privy imports to avoid crypto issues
 // import { usePrivy, useLoginWithEmail, useLoginWithSMS } from '@privy-io/expo';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../../utils/providers/stores/authStore';
 import { useEffect } from 'react';
 
 export function usePrivyAuth() {

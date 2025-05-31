@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import * as Keychain from 'react-native-keychain';
 import NetInfo from '@react-native-community/netinfo';
-import { API_BASE_URL } from '../config/environment';
+import { API_BASE_URL } from '../../../app/config/environment';
 
 // Updated User interface to match backend model
 export interface User {

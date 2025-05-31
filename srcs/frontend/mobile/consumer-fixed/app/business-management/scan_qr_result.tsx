@@ -43,7 +43,9 @@ export default function ScanQRResultScreen() {
               <ThemedText style={styles_scan_qr_result.customerName}>{name}</ThemedText>
               <ThemedText style={styles_scan_qr_result.customerId}>ID: {customerId}</ThemedText>
               <View style={styles_scan_qr_result.pointsContainer}>
-                <ThemedText style={styles_scan_qr_result.pointsValue}>{points}</ThemedText>
+                <ThemedText style={[styles_scan_qr_result.pointsValue]}>
+                  {points}
+                </ThemedText>
                 <ThemedText style={styles_scan_qr_result.pointsLabel}>points</ThemedText>
               </View>
             </View>

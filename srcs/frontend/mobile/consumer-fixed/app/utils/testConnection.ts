@@ -10,3 +10,6 @@ export const testBackendConnection = async () => {
     return false;
   }
 };
+
+// Add default export to satisfy Expo Router
+export default testBackendConnection;

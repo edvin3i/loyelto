@@ -38,7 +38,7 @@ export default function ScanQRScreen() {
     <SafeAreaView style={{ flex: 1 }} edges={['top']}>
       <ThemedView style={styles_scan_qr.container}>
         <ThemedView style={styles_scan_qr.header}>
-          <ThemedText type="title">Scan Customer Code</ThemedText>
+          <ThemedText type="title" style={styles_scan_qr.headerTitle}>Scan Customer Code</ThemedText>
         </ThemedView>
 
         <ThemedView style={styles_scan_qr.scannerContainer}>

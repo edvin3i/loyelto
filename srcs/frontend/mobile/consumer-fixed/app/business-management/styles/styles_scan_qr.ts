@@ -81,6 +81,9 @@ const styles_scan_qr = StyleSheet.create({
     borderLeftWidth: 0,
     borderBottomRightRadius: 8,
   },
+  headerTitle: {
+    fontSize: 24,
+  },
 });
 
 export default styles_scan_qr;

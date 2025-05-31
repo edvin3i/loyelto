@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import apiClient from '../utils/apiClient';
-import { User } from '../stores/authStore';
+import apiClient from '../app/utils/apiClient';
+import { User } from '../utils/providers/stores/authStore';
 
 // Query Keys
 export const queryKeys = {

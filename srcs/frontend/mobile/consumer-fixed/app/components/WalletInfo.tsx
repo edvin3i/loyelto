@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../../utils/providers/stores/authStore';
 
 export default function WalletInfo() {
   const { user } = useAuthStore();
