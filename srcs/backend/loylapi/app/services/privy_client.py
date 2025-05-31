@@ -20,7 +20,7 @@ class PrivyClient:
         self._auth = httpx.BasicAuth(app_id, api_key)
         self._hdr = {"privy-app-id": app_id}
 
-    # ---------- helpers ----------
+    # ---------- helpers -------------------------------------------------
     async def _req(self, method: str, url: str, **kw) -> httpx.Response:
         kw.setdefault("auth", self._auth)
         kw.setdefault("headers", self._hdr)
@@ -29,17 +29,22 @@ class PrivyClient:
         r.raise_for_status()
         return r
 
-    # ---------- public API ----------
+    # ---------- public API ---------------------------------------------
     async def exchange_code(self, code: str) -> str:
         r = await self._req("POST", f"{self.base}/auth/exchange-code", json={"code": code})
         return r.json()["userId"]
 
     async def get_user(self, privy_id: str) -> PrivyUser:
         r = await self._req("GET", f"{self.base}/users/{privy_id}")
-        d: dict[str, Any] = r.json()
-        wallets = d.get("wallets", {}).get("solana", [])
+        data: dict[str, Any] = r.json()
+        wallets = data.get("wallets", {}).get("solana", [])
         embedded = wallets[0]["address"] if wallets else None
-        return PrivyUser(id=d["id"], embedded_wallet=embedded, email=d.get("email"), phone=d.get("phone"))
+        return PrivyUser(
+            id=data["id"],
+            embedded_wallet=embedded,
+            email=data.get("email"),
+            phone=data.get("phone"),
+        )
 
     async def create_wallets(self, privy_id: str) -> str:
         payload = {"createSolanaWallet": True, "createEthereumWallet": False, "cluster": self.cluster}
@@ -55,6 +60,32 @@ class PrivyClient:
         r = await self._req("POST", f"{self.base}/wallets/{wallet_address}/rpc", json=payload)
         return r.json()["result"]["signedTransaction"]  # full tx b64
 
+    async def get_user_by_token(self, id_token: str) -> PrivyUser:
+        """Return the currently‑authenticated user (email & phone) using an **idToken**.
+
+        This avoids the paid webhooks – we hit `/users/me` with the bearer idToken
+        and immediately get profile data on the free tier.
+        """
+        headers = {
+            **self._hdr,
+            "Authorization": f"Bearer {id_token}",
+        }
+        async with httpx.AsyncClient(timeout=20) as client:
+            r = await client.get(f"{self.base}/users/me", headers=headers)
+            r.raise_for_status()
+            data: dict[str, Any] = r.json()
+
+        wallets = data.get("wallets", {}).get("solana", [])
+        embedded = wallets[0]["address"] if wallets else None
+        return PrivyUser(
+            id=data["id"],
+            embedded_wallet=embedded,
+            email=data.get("email") or "",
+            phone=data.get("phone") or "",
+        )
+
+
+# ---------- utilities --------------------------------------------------
 
 def verify_sig(sig: str | None, body: bytes, secret: str) -> bool:
     if not sig:
