@@ -70,8 +70,10 @@ const styles_index = StyleSheet.create({
   sectionMyOffer: {
     marginBottom: 8,
     backgroundColor: '#DFF1FF',
-    borderRadius: 8,
-    padding: 8,
+    borderRadius: 0,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    marginHorizontal: -16,
   },
   sectionHeader: {
     flexDirection: 'row',

@@ -33,6 +33,20 @@ export default function BusinessHomeScreen() {
     router.push('../business-management/add-offer');
   };
 
+  const navigateToEditOffer = (voucher: VoucherTemplate) => {
+    router.push({
+      pathname: '../business-management/edit-offer',
+      params: {
+        id: voucher.id,
+        title: voucher.title,
+        description: voucher.description,
+        points_required: voucher.points_required.toString(),
+        expiry_days: voucher.expiry_days.toString(),
+        quantity: voucher.quantity?.toString() || '1',
+      }
+    });
+  };
+
   const handleStopPromo = async (id: string) => {
     try {
       await deleteVoucherTemplate(id);
@@ -172,7 +186,7 @@ export default function BusinessHomeScreen() {
                     <View style={styles.buttonGroup}>
                       <TouchableOpacity 
                         style={styles.editButton}
-                        onPress={() => {/* Handle edit */}}
+                        onPress={() => navigateToEditOffer(item)}
                       >
                         <ThemedText style={styles.editButtonText}>Edit promo</ThemedText>
                       </TouchableOpacity>

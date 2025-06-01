@@ -653,3 +653,48 @@ const business_profile_styles = StyleSheet.create({
 });
 
 export default business_profile_styles;
+
+export const updateVoucherTemplate = async (id: string, data: {
+  title: string;
+  description: string;
+  points_required: number;
+  expiry_days: number;
+  quantity: number;
+  is_active: boolean;
+}): Promise<VoucherTemplate> => {
+  console.log(`🔄 [API] Starting updateVoucherTemplate for ID: ${id}`);
+  console.log(`📍 [API] Endpoint: ${API_BASE_URL}/voucher_templates/${id}`);
+  
+  try {
+    const authStatus = await checkAuthStatus();
+    console.log(`🔐 [AUTH] Status:`, authStatus);
+    
+    if (!authStatus.hasToken) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${API_BASE_URL}/voucher_templates/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authStatus.token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    console.log(`📡 [API] Response status: ${response.status}`);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
+    }
+
+    const updatedVoucher = await response.json();
+    console.log(`✅ [API] updateVoucherTemplate successful`);
+    return updatedVoucher;
+
+  } catch (error) {
+    console.error(`❌ [API] updateVoucherTemplate failed:`, error);
+    throw error;
+  }
+};
