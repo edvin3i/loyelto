@@ -16,15 +16,14 @@ export default function MainSectionMobile() {
             display: { sm: 'none', xs: 'flex' },
             justifyContent: 'center',
             alignItems: 'center',
-            height: 866
+            minHeight: 866
         }}>
             <Box sx={{
                 backgroundColor: theme.palette.secondary.main,
-
                 borderRadius: 5,
                 minHeight: 518,
-
-                paddingX: 2
+                paddingX: 2, 
+                boxSizing: 'border-box'
             }}>
                 <Stack spacing={3} sx={{paddingTop: 4}}>
                     <Image src='landing_swapping_cutout.png' sx={{
