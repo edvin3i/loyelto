@@ -2,8 +2,7 @@ from __future__ import annotations
 import httpx, base64, hmac, hashlib
 from typing import Any
 from pydantic import BaseModel
-import jwt
-
+from jose import jwt
 
 class PrivyUser(BaseModel):
     id: str
