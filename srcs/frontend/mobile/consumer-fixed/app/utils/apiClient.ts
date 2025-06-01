@@ -124,10 +124,6 @@ class ApiClient {
     return this.patch(`/users/${userId}`, userData);
   }
 
-  async getCurrentUser() {
-    return this.get('/users/me');
-  }
-
   // Business endpoints
   async getBusinesses(start = 0, limit = 10) {
     return this.get(`/businesses?start=${start}&limit=${limit}`);

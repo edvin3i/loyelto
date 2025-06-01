@@ -211,33 +211,34 @@ export const testAuthentication = async (): Promise<{
   };
   
   try {
-    // Check if we have a token
     const authStatus = await checkAuthStatus();
     result.hasToken = authStatus.hasToken;
-    
-    console.log(`🔐 [AUTH-TEST] Token status:`, {
-      hasToken: authStatus.hasToken,
-      tokenLength: authStatus.tokenLength,
-    });
     
     if (!authStatus.hasToken) {
       console.warn(`🔐 [AUTH-TEST] No authentication token found`);
       return result;
     }
     
-    // Test with a simple protected endpoint
-    console.log(`🔐 [AUTH-TEST] Testing protected endpoint: /users/me`);
+    // ✅ Test with handshake instead of /users/me
+    console.log(`🔐 [AUTH-TEST] Testing protected endpoint: /auth/handshake`);
     try {
-      await apiClient.getCurrentUser();
-      result.canAccessProtectedEndpoint = true;
-      console.log(`✅ [AUTH-TEST] Authentication working - can access protected endpoints`);
+      const response = await fetch(`${API_BASE_URL}/auth/handshake`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authStatus.token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        result.canAccessProtectedEndpoint = true;
+        console.log(`✅ [AUTH-TEST] Authentication working`);
+      } else {
+        throw new Error(`HTTP ${response.status}`);
+      }
     } catch (error) {
       result.error = error;
       console.error(`❌ [AUTH-TEST] Cannot access protected endpoints:`, error);
-      
-      if (error?.status === 401) {
-        console.error(`🔐 [AUTH-TEST] Token is invalid or expired`);
-      }
     }
     
   } catch (error) {

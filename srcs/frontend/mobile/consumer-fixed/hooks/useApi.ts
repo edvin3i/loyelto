@@ -18,13 +18,13 @@ export const queryKeys = {
 };
 
 // User Hooks
-export function useCurrentUser() {
-  return useQuery({
-    queryKey: queryKeys.currentUser(),
-    queryFn: () => apiClient.getCurrentUser(),
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
-}
+// export function useCurrentUser() {
+//   return useQuery({
+//     queryKey: queryKeys.currentUser(),
+//     queryFn: () => apiClient.getCurrentUser(),
+//     staleTime: 1000 * 60 * 5,
+//   });
+// }
 
 export function useUser(userId: string) {
   return useQuery({
@@ -135,4 +135,8 @@ export function usePrivyHandshake() {
   return useMutation({
     mutationFn: (privyToken: string) => apiClient.privyHandshake(privyToken),
   });
-} 
+}
+
+// ✅ If needed, get user data from authStore instead:
+// import { useAuthStore } from '../utils/providers/stores/authStore';
+// const { user } = useAuthStore(); 
