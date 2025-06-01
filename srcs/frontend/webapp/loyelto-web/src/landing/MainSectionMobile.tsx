@@ -22,11 +22,13 @@ export default function MainSectionMobile() {
                 backgroundColor: theme.palette.secondary.main,
                 borderRadius: 5,
                 minHeight: 518,
-                paddingX: 2, 
+                paddingX: 2,
+                paddingBottom: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                overflow: 'auto', // Ensures children can't overflow the Box
             }}>
                 <Stack spacing={3} sx={{paddingTop: 4}}>
                     <Image src='landing_swapping_cutout.png' sx={{
@@ -50,8 +52,8 @@ export default function MainSectionMobile() {
                         }}
                     >
                         Swap & Save: <br /> {t('mainHeading')}
-                  
                     </Typography>
+                    {/* <Typography variant="h2">Bababa bububu</Typography> */}
                     <Button
                         fullWidth
                         variant="contained"
@@ -66,7 +68,6 @@ export default function MainSectionMobile() {
                             borderRadius: 4,
                             textTransform: 'none',
                             fontSize: '1.2rem',
-                            marginX: 1, 
                             boxShadow: 'none'
                         }}>
                         {t('joinLoyeltoButton')}
