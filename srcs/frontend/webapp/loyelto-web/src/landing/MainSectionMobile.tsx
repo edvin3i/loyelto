@@ -22,7 +22,7 @@ export default function MainSectionMobile() {
                 backgroundColor: theme.palette.secondary.main,
 
                 borderRadius: 5,
-                height: 518,
+                minHeight: 518,
 
                 paddingX: 2
             }}>
