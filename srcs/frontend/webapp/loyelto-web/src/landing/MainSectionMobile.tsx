@@ -23,6 +23,9 @@ export default function MainSectionMobile() {
                 borderRadius: 5,
                 minHeight: 518,
                 paddingX: 2, 
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
                 boxSizing: 'border-box'
             }}>
                 <Stack spacing={3} sx={{paddingTop: 4}}>
