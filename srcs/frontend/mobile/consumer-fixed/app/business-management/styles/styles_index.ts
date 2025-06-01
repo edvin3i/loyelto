@@ -215,12 +215,18 @@ const styles_index = StyleSheet.create({
   },
   pizzaImageContainer: {
     backgroundColor: '#FFEBEE',
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 90,
+    height: 90,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
     marginBottom: 8,
+  },
+  pizzaImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 8,
   },
   pointsBadge: {
     alignItems: 'center',

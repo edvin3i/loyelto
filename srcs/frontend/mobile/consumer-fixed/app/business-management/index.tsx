@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
@@ -158,10 +158,10 @@ export default function BusinessHomeScreen() {
                     {/* Right side with just the image */}
                     <View style={styles.rightContent}>
                       <View style={styles.pizzaImageContainer}>
-                        <FontAwesome 
-                          name={item.title.toLowerCase().includes('pizza') ? "cutlery" : "gift"} 
-                          size={40} 
-                          color="#C62828" 
+                        <Image 
+                          source={{ uri: 'https://img.freepik.com/photos-gratuite/pizza-pizza-remplie-tomates-salami-olives_140725-1200.jpg?semt=ais_hybrid&w=740' }}
+                          style={styles.pizzaImage}
+                          resizeMode="cover"
                         />
                       </View>
                     </View>
