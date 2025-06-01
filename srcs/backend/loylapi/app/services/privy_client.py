@@ -99,12 +99,8 @@ class PrivyClient:
         return debug_info
 
     async def get_user_by_token(self, id_token: str) -> PrivyUser:
-        """Return user info from JWT and try to fetch additional data from Privy API.
-        
-        Falls back to JWT-only data if Privy API fails.
-        """
         try:
-            # Step 1: Always decode JWT first to get basic user ID
+            # Step 1: Decode JWT to check ALL claims
             import json
             import base64
             
@@ -122,7 +118,26 @@ class PrivyClient:
             if not privy_id:
                 raise ValueError("Privy ID not found in token.")
                 
+            # Log FULL JWT payload to see all claims
             print(f"✅ [PRIVY-CLIENT] Successfully decoded JWT for user: {privy_id}")
+            print(f"🔍 [PRIVY-CLIENT] FULL JWT payload: {decoded_token}")
+            
+            # Check for email/phone in JWT claims
+            jwt_email = decoded_token.get("email") or decoded_token.get("email_address") or decoded_token.get("user_email")
+            jwt_phone = decoded_token.get("phone") or decoded_token.get("phone_number") or decoded_token.get("user_phone")
+            
+            print(f"🔍 [PRIVY-CLIENT] JWT email claims: {jwt_email}")
+            print(f"🔍 [PRIVY-CLIENT] JWT phone claims: {jwt_phone}")
+            
+            # If we have email/phone in JWT, use it directly
+            if jwt_email or jwt_phone:
+                print(f"✅ [PRIVY-CLIENT] Found user data in JWT, skipping API call")
+                return PrivyUser(
+                    id=privy_id,
+                    embedded_wallet=None,
+                    email=jwt_email,
+                    phone=jwt_phone
+                )
             
             # Step 2: Try to fetch additional data from Privy API
             try:
