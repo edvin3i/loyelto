@@ -136,34 +136,59 @@ export default function BusinessHomeScreen() {
             <View style={styles.offersList}>
               {vouchers.map((item) => (
                 <ThemedView key={item.id} style={styles.offerCard}>
-                  <View style={styles.offerContent}>
-                    <View>
-                      <ThemedText type="subtitle">{item.title}</ThemedText>
+                  <View style={styles.cardHeader}>
+                    <View style={styles.leftContent}>
+                      <ThemedText type="subtitle" style={styles.offerTitle}>{item.title}</ThemedText>
                       <ThemedText style={styles.offerDescription}>
                         {item.description}
                       </ThemedText>
-                      <ThemedText style={styles.offerStatus}>
-                        Expires after: <ThemedText style={styles.greenText}>{item.expiry_days} days</ThemedText>
+                      
+                      {/* Quantity left indicator */}
+                      <View style={styles.quantityContainer}>
+                        <ThemedText style={styles.quantityText}>
+                          <ThemedText style={styles.quantityGreen}>150</ThemedText>/300 left
+                        </ThemedText>
+                      </View>
+                      
+                      <ThemedText style={styles.expiryText}>
+                        Expires after: <ThemedText style={styles.expiryGreen}>{item.expiry_days} days</ThemedText>
                       </ThemedText>
                     </View>
-                    <View style={styles.pizzaIcon}>
-                      <FontAwesome 
-                        name={item.title.toLowerCase().includes('pizza') ? "cutlery" : "gift"} 
-                        size={32} 
-                        color="#C62828" 
-                      />
+                    
+                    {/* Right side with just the image */}
+                    <View style={styles.rightContent}>
+                      <View style={styles.pizzaImageContainer}>
+                        <FontAwesome 
+                          name={item.title.toLowerCase().includes('pizza') ? "cutlery" : "gift"} 
+                          size={40} 
+                          color="#C62828" 
+                        />
+                      </View>
                     </View>
                   </View>
-                  <View style={styles.offerFooter}>
-                    <TouchableOpacity 
-                      style={styles.stopButton}
-                      onPress={() => handleStopPromo(item.id)}
-                    >
-                      <ThemedText style={styles.stopButtonText}>Edit promo</ThemedText>
-                    </TouchableOpacity>
-                    <View style={styles.pointsContainer}>
-                      <ThemedText style={styles.pointsValue}>{item.points_required}</ThemedText>
-                      <ThemedText style={styles.smallPointsLabel}>points</ThemedText>
+                  
+                  {/* Action buttons with points badge on the right */}
+                  <View style={styles.actionButtons}>
+                    <View style={styles.buttonGroup}>
+                      <TouchableOpacity 
+                        style={styles.editButton}
+                        onPress={() => {/* Handle edit */}}
+                      >
+                        <ThemedText style={styles.editButtonText}>Edit promo</ThemedText>
+                      </TouchableOpacity>
+                      
+                      <TouchableOpacity 
+                        style={styles.deleteButton}
+                        onPress={() => handleStopPromo(item.id)}
+                      >
+                        <FontAwesome name="trash" size={18} color="black" />
+                      </TouchableOpacity>
+                    </View>
+                    
+                    {/* Points badge moved here */}
+                    <View style={styles.pointsBadge}>
+                      <ThemedText style={styles.pointsNumber}>{item.points_required}</ThemedText>
+                      <ThemedText style={styles.pointsLabel}>points</ThemedText>
                     </View>
                   </View>
                 </ThemedView>
