@@ -2,6 +2,7 @@ from __future__ import annotations
 import httpx, base64, hmac, hashlib
 from typing import Any
 from pydantic import BaseModel
+import jwt
 
 
 class PrivyUser(BaseModel):
@@ -60,29 +61,50 @@ class PrivyClient:
         r = await self._req("POST", f"{self.base}/wallets/{wallet_address}/rpc", json=payload)
         return r.json()["result"]["signedTransaction"]  # full tx b64
 
+
     async def get_user_by_token(self, id_token: str) -> PrivyUser:
         """Return the currently‑authenticated user (email & phone) using an **idToken**.
 
-        This avoids the paid webhooks – we hit `/users/me` with the bearer idToken
-        and immediately get profile data on the free tier.
+               This avoids the paid webhooks – we hit `/users/id` with the bearer idToken
+               and immediately get profile data on the free tier.
         """
-        headers = {
-            **self._hdr,
-            "Authorization": f"Bearer {id_token}",
-        }
-        async with httpx.AsyncClient(timeout=20) as client:
-            r = await client.get(f"{self.base}/users/me", headers=headers)
-            r.raise_for_status()
-            data: dict[str, Any] = r.json()
+        try:
+            decoded_token = jwt.decode(id_token,
+                                       options={"verify_signature": False})
+            privy_id = decoded_token.get("sub")
+            if not privy_id:
+                raise ValueError("Privy ID not found in token.")
+        except Exception as e:
+            raise ValueError(f"Failed to decode id_token: {str(e)}")
 
-        wallets = data.get("wallets", {}).get("solana", [])
+        # Fetch user data using the Privy DID
+        r = await self._req("GET", f"{self.base}/users/{privy_id}")
+        d: dict[str, Any] = r.json()
+        wallets = d.get("wallets", {}).get("solana", [])
         embedded = wallets[0]["address"] if wallets else None
         return PrivyUser(
-            id=data["id"],
+            id=d["id"],
             embedded_wallet=embedded,
-            email=data.get("email") or "",
-            phone=data.get("phone") or "",
+            email=d.get("email"),
+            phone=d.get("phone")
         )
+
+    async def get_user_by_did(did: str, app_id: str, app_secret: str):
+        url = f"https://auth.privy.io/api/v1/users/{did}"
+        credentials = f"{app_id}:{app_secret}"
+        headers = {
+            "Authorization": f"Basic {base64.b64encode(credentials.encode()).decode()}",
+            "privy-app-id": app_id
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise Exception(
+                f"Failed to fetch user: {response.status_code} - {response.text}")
 
 
 # ---------- utilities --------------------------------------------------

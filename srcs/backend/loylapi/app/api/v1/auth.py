@@ -18,69 +18,82 @@ privy_rest = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
 # FastAPI security scheme (no auto‑error so we can 401 manually)
 auth_scheme = HTTPBearer(auto_error=False)
 
-
-@router.post("/handshake", status_code=204, dependencies=[])
+@router.post("/handshake", status_code=204)
 async def privy_handshake(
     creds: HTTPAuthorizationCredentials = Depends(auth_scheme),
     db: AsyncSession = Depends(get_db),
 ):
+
     """Single round‑trip login:
     1. Validate *id_token* (JWT) locally
-    2. Fetch profile via Privy *GET /users/me*  – works on free tier
+    2. Fetch profile via Privy *GET /users/id*  – works on free tier
     3. Upsert user; back‑fill e‑mail / phone if newly available
     4. Ensure embedded Solana wallet exists (create if absent)
     """
 
     logger.info("🔄 [HANDSHAKE] Starting Privy handshake")
 
-    # --- 1) Credential presence check --------------------------------------
-    if not creds:
-        logger.warning("🚫 [HANDSHAKE] Missing Authorization header")
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-
-    id_token = creds.credentials
-
-    # --- 2) Verify JWT signature & claims ----------------------------------
     try:
-        claims = verify_privy_token(id_token)  # -> did, sid
-    except Exception as e:  # noqa: BLE001
-        logger.error("❌ [HANDSHAKE] Token verification failed: %s", e)
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        # Step 1: Check credentials
+        if not creds:
+            logger.warning("🚫 [HANDSHAKE] No credentials provided")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-    logger.info("✅ [HANDSHAKE] Token OK for did=%s", claims.did)
+        id_token = creds.credentials
+        logger.info(f"🔑 [HANDSHAKE] Received id_token: {id_token[:20]}...")
 
-    # --- 3) Pull profile (email / phone) – free‑tier compatible ------------
-    try:
-        profile = await privy_rest.get_user_by_token(id_token)
-    except Exception as e:  # noqa: BLE001
-        logger.error("❌ [HANDSHAKE] Failed to fetch /users/me: %s", e)
-        raise HTTPException(status_code=502, detail="Privy API unavailable")
+        # Step 2: Fetch user data from Privy
+        try:
+            user_data = await PrivyClient.get_user_by_token(id_token)
+            logger.info(f"✅ [HANDSHAKE] Retrieved user data for Privy ID: {user_data.id}")
+        except Exception as e:
+            logger.error(f"❌ [HANDSHAKE] Failed to retrieve user data: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Invalid id_token: {str(e)}"
+            )
 
-    # --- 4) Upsert user -----------------------------------------------------
-    user = await user_service.create_or_get(
-        db,
-        privy_id=claims.did,
-        email=profile.email,
-        phone=profile.phone,
-    )
-    logger.info("👤 [HANDSHAKE] User ready: %s", user.id)
+        # Step 3: Create or get user
+        try:
+            logger.info(f"👤 [HANDSHAKE] Creating/getting user for privy_id: {user_data.id}")
+            user = await user_service.create_or_get(
+                db,
+                privy_id=user_data.id,
+                email=user_data.email,
+                phone=user_data.phone,
+            )
+            logger.info(f"✅ [HANDSHAKE] User found/created: {user.id}")
+        except Exception as e:
+            logger.error(f"❌ [HANDSHAKE] User creation/retrieval failed: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"User service error: {str(e)}"
+            )
 
-    # --- 5) Wallet guarantee ------------------------------------------------
-    try:
-        # Prefer embedded wallet if already present
-        wallet_addr = profile.embedded_wallet
-        if wallet_addr:
-            await wallet_service.add_if_missing(db, user, wallet_addr)
-        else:
-            # No wallet yet – create one via Privy REST (still free)
-            wallet_addr = await privy_rest.create_wallets(claims.did)
-            await wallet_service.add_if_missing(db, user, wallet_addr)
-        logger.info("💰 [HANDSHAKE] Wallet ensured: %s", wallet_addr)
-    except Exception as e:  # noqa: BLE001
-        logger.error("⚠️ [HANDSHAKE] Wallet ensure failed: %s – continuing", e)
+        # Step 4: Handle wallet creation if needed
+        try:
+            if not user.wallets and user_data.embedded_wallet:
+                logger.info(f"💰 [HANDSHAKE] Adding wallet for user: {user.id}")
+                await wallet_service.add_if_missing(db, user, user_data.embedded_wallet)
+                logger.info(f"✅ [HANDSHAKE] Wallet added to user: {user.id}")
+            else:
+                logger.info(f"✅ [HANDSHAKE] User already has {len(user.wallets)} wallet(s)")
+        except Exception as e:
+            logger.error(f"❌ [HANDSHAKE] Wallet addition failed: {e}")
+            logger.warning(f"⚠️ [HANDSHAKE] Continuing without wallet (development mode)")
 
-    logger.info("✅ [HANDSHAKE] Completed for did=%s", claims.did)
-    return  # 204 No Content
+        logger.info("✅ [HANDSHAKE] Handshake completed successfully")
+        return  # 204
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"💥 [HANDSHAKE] Unexpected error: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}"
+        )
+
 
 
 # --- callback & webhook unchanged (kept for Pro tier) ----------------------
