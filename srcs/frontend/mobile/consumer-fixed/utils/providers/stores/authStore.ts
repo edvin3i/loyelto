@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import * as Keychain from 'react-native-keychain';
 import NetInfo from '@react-native-community/netinfo';
 import { API_BASE_URL } from '../../../app/config/environment';
+import { usePrivy } from '@privy-io/expo';
 
 // Updated User interface to match backend model
 export interface User {
@@ -191,7 +192,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      // Logout
+      // Logout (keep it simple - only handle app state)
       logout: async () => {
         try {
           await SecureStore.deleteItemAsync('privy_token');

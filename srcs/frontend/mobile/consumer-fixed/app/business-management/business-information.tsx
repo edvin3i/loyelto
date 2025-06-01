@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ScrollView, TouchableOpacity, View, ActivityIndicator, TextInput } from 'react-native';
+import { ScrollView, TouchableOpacity, View, ActivityIndicator, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
@@ -8,9 +8,13 @@ import { ThemedView } from '../../components/ThemedView';
 import { getBusinessProfile, updateBusinessProfile, Business, BusinessUpdate } from '../utils/business_profile';
 import BusinessNavBar from './components/BusinessNavBar';
 import styles from './styles/styles_business_information';
+import { useAuthStore } from '../../utils/providers/stores/authStore';
+import { usePrivy } from '@privy-io/expo';
 
 export default function BusinessInformationScreen() {
   const router = useRouter();
+  const { logout } = useAuthStore();
+  const { logout: privyLogout } = usePrivy();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [business, setBusiness] = useState<Business | null>(null);
@@ -60,6 +64,42 @@ export default function BusinessInformationScreen() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleLogout = async () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              console.log('🔄 [LOGOUT] Starting complete logout...');
+              
+              // 1. Logout from Privy first
+              console.log('🔄 [LOGOUT] Logging out from Privy...');
+              await privyLogout();
+              
+              // 2. Clear app state
+              console.log('🔄 [LOGOUT] Clearing app authentication state...');
+              await logout();
+              
+              console.log('✅ [LOGOUT] Complete logout successful');
+              router.replace('/login-choice');
+            } catch (error) {
+              console.error('❌ [LOGOUT] Logout failed:', error);
+              Alert.alert('Error', 'Failed to logout. Please try again.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.loadingContainer} edges={['top']}>
@@ -77,44 +117,55 @@ export default function BusinessInformationScreen() {
         }}
       />
       <ScrollView style={styles.container}>
-        {/* Page Header with Edit Button */}
+        {/* Page Header with Edit and Logout Buttons */}
         <View style={styles.pageHeader}>
           <ThemedText type="title" style={styles.pageTitle}>
             Profile
           </ThemedText>
-          {isEditing ? (
-            <View style={styles.editActions}>
-              <TouchableOpacity 
-                style={styles.cancelButton} 
-                onPress={() => setIsEditing(false)}
-              >
-                <FontAwesome name="times" size={18} color="#666" />
-                <ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.saveButton} 
-                onPress={handleUpdateProfile}
-                disabled={saving}
-              >
-                {saving ? (
-                  <ActivityIndicator size="small" color="#fff" />
-                ) : (
-                  <>
-                    <FontAwesome name="check" size={18} color="#fff" />
-                    <ThemedText style={styles.saveButtonText}>Save</ThemedText>
-                  </>
-                )}
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity 
-              style={styles.editButton} 
-              onPress={() => setIsEditing(true)}
-            >
-              <FontAwesome name="edit" size={18} color="#4CAF50" />
-              <ThemedText style={styles.editButtonText}>Edit</ThemedText>
-            </TouchableOpacity>
-          )}
+          <View style={styles.headerActions}>
+            {isEditing ? (
+              <View style={styles.editActions}>
+                <TouchableOpacity 
+                  style={styles.cancelButton} 
+                  onPress={() => setIsEditing(false)}
+                >
+                  <FontAwesome name="times" size={18} color="#666" />
+                  <ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.saveButton} 
+                  onPress={handleUpdateProfile}
+                  disabled={saving}
+                >
+                  {saving ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <>
+                      <FontAwesome name="check" size={18} color="#fff" />
+                      <ThemedText style={styles.saveButtonText}>Save</ThemedText>
+                    </>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.headerActions}>
+                <TouchableOpacity 
+                  style={styles.editButton} 
+                  onPress={() => setIsEditing(true)}
+                >
+                  <FontAwesome name="edit" size={18} color="#4CAF50" />
+                  <ThemedText style={styles.editButtonText}>Edit</ThemedText>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.logoutButton} 
+                  onPress={handleLogout}
+                >
+                  <FontAwesome name="sign-out" size={18} color="#FF4444" />
+                  <ThemedText style={styles.logoutButtonText}>Logout</ThemedText>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
         </View>
 
         {/* Dashboard Button */}

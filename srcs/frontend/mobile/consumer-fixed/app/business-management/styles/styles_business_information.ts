@@ -133,6 +133,27 @@ const styles_business_information = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#4CAF50',
   },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: '#FFF5F5',
+    borderWidth: 1,
+    borderColor: '#FF4444',
+  },
+  logoutButtonText: {
+    color: '#FF4444',
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 6,
+  },
 });
 
 export default styles_business_information;

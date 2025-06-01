@@ -61,32 +61,116 @@ class PrivyClient:
         return r.json()["result"]["signedTransaction"]  # full tx b64
 
 
-    async def get_user_by_token(self, id_token: str) -> PrivyUser:
-        """Return the currently‑authenticated user (email & phone) using an **idToken**.
+    async def debug_privy_connection(self) -> dict:
+        """Debug helper to test Privy API connection and credentials."""
+        debug_info = {
+            "app_id": self.app_id,
+            "base_url": self.base,
+            "api_key_length": len(self.api_key) if self.api_key else 0,
+            "api_key_prefix": self.api_key[:10] + "..." if self.api_key else "None",
+        }
+        
+        try:
+            # Test basic API connectivity
+            print(f"🔍 [DEBUG] Testing Privy API connectivity...")
+            print(f"🔍 [DEBUG] App ID: {self.app_id}")
+            print(f"🔍 [DEBUG] Base URL: {self.base}")
+            print(f"🔍 [DEBUG] API Key: {debug_info['api_key_prefix']}")
+            
+            # Try to make a simple request (this might also fail, but will give us more info)
+            async with httpx.AsyncClient(timeout=20) as client:
+                response = await client.get(
+                    f"{self.base}/users",  # Try listing users endpoint
+                    auth=self._auth,
+                    headers=self._hdr
+                )
+                
+            debug_info["api_test"] = {
+                "status": response.status_code,
+                "headers": dict(response.headers)
+            }
+            
+            print(f"✅ [DEBUG] API test successful: {response.status_code}")
+            
+        except Exception as e:
+            debug_info["api_test_error"] = str(e)
+            print(f"❌ [DEBUG] API test failed: {e}")
+        
+        return debug_info
 
-               This avoids the paid webhooks – we hit `/users/id` with the bearer idToken
-               and immediately get profile data on the free tier.
+    async def get_user_by_token(self, id_token: str) -> PrivyUser:
+        """Return user info from JWT and try to fetch additional data from Privy API.
+        
+        Falls back to JWT-only data if Privy API fails.
         """
         try:
-            # Use get_unverified_claims instead of decode when we don't want to verify signature
-            decoded_token = jwt.get_unverified_claims(id_token)
+            # Step 1: Always decode JWT first to get basic user ID
+            import json
+            import base64
+            
+            parts = id_token.split('.')
+            if len(parts) != 3:
+                raise ValueError("Invalid JWT format")
+            
+            # Decode payload
+            payload = parts[1]
+            payload += '=' * (4 - len(payload) % 4)
+            decoded_payload = base64.urlsafe_b64decode(payload)
+            decoded_token = json.loads(decoded_payload)
+            
             privy_id = decoded_token.get("sub")
             if not privy_id:
                 raise ValueError("Privy ID not found in token.")
+                
+            print(f"✅ [PRIVY-CLIENT] Successfully decoded JWT for user: {privy_id}")
+            
+            # Step 2: Try to fetch additional data from Privy API
+            try:
+                print(f"🔄 [PRIVY-CLIENT] Attempting to fetch user data from Privy API...")
+                print(f"🔍 [PRIVY-CLIENT] URL: {self.base}/users/{privy_id}")
+                print(f"🔍 [PRIVY-CLIENT] Auth: {self.app_id}:{self.api_key[:10]}...")
+                
+                r = await self._req("GET", f"{self.base}/users/{privy_id}")
+                d: dict[str, Any] = r.json()
+                
+                print(f"✅ [PRIVY-CLIENT] Successfully fetched user data from Privy API")
+                print(f"🔍 [PRIVY-CLIENT] User data keys: {list(d.keys())}")
+                
+                # Extract wallet and contact info
+                wallets = d.get("wallets", {}).get("solana", [])
+                embedded = wallets[0]["address"] if wallets else None
+                
+                return PrivyUser(
+                    id=d["id"],
+                    embedded_wallet=embedded,
+                    email=d.get("email"),
+                    phone=d.get("phone")
+                )
+                
+            except Exception as api_error:
+                print(f"⚠️ [PRIVY-CLIENT] Failed to fetch from Privy API: {api_error}")
+                print(f"🔍 [PRIVY-CLIENT] Error type: {type(api_error).__name__}")
+                
+                # Check if it's a 404 specifically
+                if hasattr(api_error, 'response') and api_error.response.status_code == 404:
+                    print(f"❌ [PRIVY-CLIENT] User not found in Privy (404) - using JWT data only")
+                elif hasattr(api_error, 'response'):
+                    print(f"❌ [PRIVY-CLIENT] HTTP {api_error.response.status_code} error from Privy API")
+                else:
+                    print(f"❌ [PRIVY-CLIENT] Network/other error: {api_error}")
+                
+                # Step 3: Fallback to JWT-only data
+                print(f"🔄 [PRIVY-CLIENT] Falling back to JWT-only user data")
+                return PrivyUser(
+                    id=privy_id,
+                    embedded_wallet=None,  # Will be created later if needed
+                    email=None,            # Can be updated via webhooks or user input
+                    phone=None             # Can be updated via webhooks or user input
+                )
+                
         except Exception as e:
+            print(f"💥 [PRIVY-CLIENT] Failed to process id_token: {e}")
             raise ValueError(f"Failed to decode id_token: {str(e)}")
-
-        # Fetch user data using the Privy DID
-        r = await self._req("GET", f"{self.base}/users/{privy_id}")
-        d: dict[str, Any] = r.json()
-        wallets = d.get("wallets", {}).get("solana", [])
-        embedded = wallets[0]["address"] if wallets else None
-        return PrivyUser(
-            id=d["id"],
-            embedded_wallet=embedded,
-            email=d.get("email"),
-            phone=d.get("phone")
-        )
 
     async def get_user_by_did(did: str, app_id: str, app_secret: str):
         url = f"https://auth.privy.io/api/v1/users/{did}"
