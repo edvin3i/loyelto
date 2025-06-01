@@ -68,8 +68,8 @@ class PrivyClient:
                and immediately get profile data on the free tier.
         """
         try:
-            decoded_token = jwt.decode(id_token,
-                                       options={"verify_signature": False})
+            # Use get_unverified_claims instead of decode when we don't want to verify signature
+            decoded_token = jwt.get_unverified_claims(id_token)
             privy_id = decoded_token.get("sub")
             if not privy_id:
                 raise ValueError("Privy ID not found in token.")
