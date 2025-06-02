@@ -7,6 +7,8 @@ from typing import Any, Dict
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
 
+import logging
+logger = logging.getLogger(__name__)
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -92,3 +94,4 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+logger.info(f"→ [DEBUG] database_url = {settings.database_url}")
