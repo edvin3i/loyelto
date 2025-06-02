@@ -12,7 +12,7 @@ def transfer_earn_task(
     Celery wrapper for business → user transfer.
     """
     try:
-        earn_token(business_kp_b58, mint, user_pubkey, amount)
+        earn_token(mint, user_pubkey, business_kp_b58, amount)
     except Exception as exc:
         raise self.retry(exc=exc, countdown=10)
 
@@ -26,6 +26,6 @@ def transfer_redeem_task(
     Celery wrapper for user → business transfer.
     """
     try:
-        redeem_token(user_pubkey, mint, business_pubkey, amount)
+        redeem_token(mint, user_pubkey, business_pubkey, amount)
     except Exception as exc:
         raise self.retry(exc=exc, countdown=10)
