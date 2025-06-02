@@ -34,7 +34,7 @@ const styles_index = StyleSheet.create({
   },
   balanceCaption: {
     color: '#666',
-    fontSize: 14,
+    fontSize: 16,
   },
   coinIcon: {
     marginLeft: 4,
@@ -46,7 +46,7 @@ const styles_index = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 12,
     paddingVertical: 12,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
     borderRadius: 8,
   },
   pillContainer: {
@@ -62,15 +62,14 @@ const styles_index = StyleSheet.create({
     fontSize: 16,
   },
   section: {
-    marginBottom: 8,
+    marginBottom: 4,
     backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 8,
+    padding: 12,
   },
   sectionMyOffer: {
     marginBottom: 8,
     backgroundColor: '#DFF1FF',
-    borderRadius: 0,
+    borderRadius: 20,
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginHorizontal: -16,
@@ -96,13 +95,13 @@ const styles_index = StyleSheet.create({
     marginBottom: 8,
   },
   pointsDisplay: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   pointsValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#0082FF',
+    color: 'black',
     marginRight: 4,
   },
   pointsLabel: {

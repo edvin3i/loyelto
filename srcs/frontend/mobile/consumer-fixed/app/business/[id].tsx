@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { IconSymbol } from '../../components/ui/IconSymbol';
 import { Colors } from '../../constants/Colors';
 import { useColorScheme } from '../../hooks/useColorScheme';
-import business_profile_styles from '../utils/business_profile';
+import business_profile_styles from '../utils/business_profile_styles';
 
 // Define types for our data
 interface BusinessOffer {
