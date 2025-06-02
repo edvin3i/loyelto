@@ -1,5 +1,5 @@
 import logging
-logger = logging.getLogger("__name__")
+logger = logging.getLogger(__name__)
 
 import app.models  # noqa: F401
 from pathlib import Path
@@ -18,6 +18,11 @@ from app.db.base import Base
 
 config = context.config
 fileConfig(config.config_file_name)
+
+config.set_main_option(
+    "sqlalchemy.url",
+    settings.database_url.replace("+asyncpg", "")
+)
 
 target_metadata = Base.metadata
 
