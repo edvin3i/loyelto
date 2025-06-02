@@ -5,8 +5,8 @@ from app.schemas.types import PhoneStr, PrivyIDStr
 
 class UserCreate(BaseSchema):
     privy_id: PrivyIDStr
-    phone: PhoneStr
-    email: EmailStr
+    phone: PhoneStr | None = None
+    email: EmailStr | None = None
 
 
 class UserUpdate(BaseSchema):
