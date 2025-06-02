@@ -24,7 +24,7 @@ def ensure_extensions(sync_conn):
     Runs ONLY on PostgreSQL back-ends; silently skips others.
     """
     if sync_conn.dialect.name == "postgresql":
-        for ext in ("pgcrypto", "citext", "moddatetime"):
+        for ext in ("pgcrypto", "citext"):
             # AUTOCOMMIT, чтобы не открыть транзакцию
             sync_conn.exec_driver_sql(
                 f"CREATE EXTENSION IF NOT EXISTS {ext}",

@@ -242,28 +242,42 @@ def upgrade() -> None:
     sa.UniqueConstraint('template_id', 'asset_id', name='uq_template_asset')
     )
 
-    op.execute("""
-    DO $$
-    DECLARE
+    op.execute(
+        """
+        CREATE
+        OR REPLACE FUNCTION set_updated_at()
+        RETURNS TRIGGER AS $$
+        BEGIN
+            NEW.updated_at
+        := CURRENT_TIMESTAMP;
+        RETURN NEW;
+        END;
+        $$
+        LANGUAGE plpgsql;
+
+        DO
+        $$
+        DECLARE
         r record;
-    BEGIN
+        BEGIN
         FOR r IN
-            SELECT table_name
-            FROM information_schema.columns
-            WHERE column_name = 'updated_at'
-              AND table_schema = 'public'
-        LOOP
-            EXECUTE format(
-                $$CREATE TRIGGER trg_%I_updated
-                  BEFORE UPDATE ON %I
-                  FOR EACH ROW
-                  EXECUTE FUNCTION moddatetime(updated_at);$$,
-                r.table_name, r.table_name
-            );
+        SELECT table_name
+        FROM information_schema.columns
+        WHERE column_name = 'updated_at'
+          AND table_schema = 'public' LOOP
+                EXECUTE format(
+                    'CREATE TRIGGER trg_%I_updated
+                       BEFORE UPDATE ON %I
+                       FOR EACH ROW
+                       EXECUTE FUNCTION set_updated_at();',
+                    r.table_name,
+                    r.table_name
+                );
         END LOOP;
-    END;
-    $$;
-    """)
+        END;
+        $$;
+        """
+    )
 
     # ### end Alembic commands ###
 
@@ -329,22 +343,6 @@ def downgrade() -> None:
     op.execute("DROP TYPE IF EXISTS voucher_status_enum CASCADE")
     op.execute("DROP TYPE IF EXISTS promo_type_enum CASCADE")
 
-    op.execute("""
-    DO $$
-    DECLARE
-        r record;
-    BEGIN
-        FOR r IN
-            SELECT tgname, relname
-            FROM pg_trigger t
-            JOIN pg_class c ON c.oid = t.tgrelid
-            WHERE tgname LIKE 'trg_%_updated'
-              AND NOT t.tgisinternal
-        LOOP
-            EXECUTE format('DROP TRIGGER IF EXISTS %I ON %I;', r.tgname, r.relname);
-        END LOOP;
-    END;
-    $$;
-    """)
+    op.execute("DROP FUNCTION IF EXISTS set_updated_at() CASCADE;")
 
     # ### end Alembic commands ###
