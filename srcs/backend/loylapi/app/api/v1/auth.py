@@ -44,7 +44,7 @@ async def privy_handshake(
 
         # Step 2: Fetch user data from Privy
         try:
-            user_data = await privy_rest.get_user_by_token(id_token)
+            user_data = await PrivyClient.get_user_by_token(id_token)
             logger.info(f"✅ [HANDSHAKE] Retrieved user data for Privy ID: {user_data.id}")
         except Exception as e:
             logger.error(f"❌ [HANDSHAKE] Failed to retrieve user data: {e}")

@@ -61,45 +61,8 @@ class PrivyClient:
         return r.json()["result"]["signedTransaction"]  # full tx b64
 
 
-    async def debug_privy_connection(self) -> dict:
-        """Debug helper to test Privy API connection and credentials."""
-        debug_info = {
-            "app_id": self.app_id,
-            "base_url": self.base,
-            "api_key_length": len(self.api_key) if self.api_key else 0,
-            "api_key_prefix": self.api_key[:10] + "..." if self.api_key else "None",
-        }
-        
-        try:
-            # Test basic API connectivity
-            print(f"🔍 [DEBUG] Testing Privy API connectivity...")
-            print(f"🔍 [DEBUG] App ID: {self.app_id}")
-            print(f"🔍 [DEBUG] Base URL: {self.base}")
-            print(f"🔍 [DEBUG] API Key: {debug_info['api_key_prefix']}")
-            
-            # Try to make a simple request (this might also fail, but will give us more info)
-            async with httpx.AsyncClient(timeout=20) as client:
-                response = await client.get(
-                    f"{self.base}/users",  # Try listing users endpoint
-                    auth=self._auth,
-                    headers=self._hdr
-                )
-                
-            debug_info["api_test"] = {
-                "status": response.status_code,
-                "headers": dict(response.headers)
-            }
-            
-            print(f"✅ [DEBUG] API test successful: {response.status_code}")
-            
-        except Exception as e:
-            debug_info["api_test_error"] = str(e)
-            print(f"❌ [DEBUG] API test failed: {e}")
-        
-        return debug_info
-
     async def get_user_by_token(self, id_token: str) -> PrivyUser:
-        """Return the currently‑authenticated user (email & phone) using an **idToken**.More actions
+        """Return the currently‑authenticated user (email & phone) using an **idToken**.
 
                This avoids the paid webhooks – we hit `/users/id` with the bearer idToken
                and immediately get profile data on the free tier.
@@ -107,8 +70,6 @@ class PrivyClient:
         try:
             decoded_token = jwt.decode(id_token,
                                        options={"verify_signature": False})
-            # Use get_unverified_claims instead of decode when we don't want to verify signature
-            decoded_token = jwt.get_unverified_claims(id_token)
             privy_id = decoded_token.get("sub")
             if not privy_id:
                 raise ValueError("Privy ID not found in token.")
