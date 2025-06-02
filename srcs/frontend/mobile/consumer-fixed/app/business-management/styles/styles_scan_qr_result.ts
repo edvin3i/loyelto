@@ -43,8 +43,14 @@ const styles_scan_qr_result = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  customerInfo: {
+  cardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  customerInfo: {
+    flex: 1,
+    alignItems: 'flex-start',
   },
   customerName: {
     fontSize: 24,
@@ -59,6 +65,7 @@ const styles_scan_qr_result = StyleSheet.create({
   pointsContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
+    justifyContent: 'flex-end',
   },
   pointsValue: {
     fontSize: 28,
@@ -73,47 +80,110 @@ const styles_scan_qr_result = StyleSheet.create({
     fontSize: 16,
   },
   actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     width: '100%',
     marginBottom: 24,
+    gap: 12,
   },
   addPointsButton: {
-    backgroundColor: '#0082FF',
+    backgroundColor: '#ABE7B2',
     padding: 14,
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    marginRight: 8,
+    width: '100%',
   },
   redeemButton: {
-    backgroundColor: '#5C6BC0',
+    backgroundColor: '#F6CCCA',
     padding: 14,
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    marginLeft: 8,
+    width: '100%',
   },
   buttonText: {
-    color: '#fff',
+    color: 'black',
     fontWeight: 'bold',
     marginRight: 8,
   },
-  scanAgainButton: {
+  vouchersSection: {
+    width: '100%',
+    marginTop: 8,
+  },
+  vouchersHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  vouchersTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000',
+    marginRight: 8,
+  },
+  vouchersBadge: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    minWidth: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  vouchersBadgeText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  voucherCard: {
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#0082FF',
-    borderRadius: 8,
-    width: '100%',
-    alignItems: 'center',
+    borderColor: '#E5E5E5',
   },
-  scanAgainText: {
-    color: '#0082FF',
+  voucherContent: {
+    flexDirection: 'row',
+    marginBottom: 12,
+  },
+  voucherInfo: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  voucherTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 6,
+  },
+  voucherDescription: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
+  },
+  voucherImageContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  voucherImage: {
+    width: 60,
+    height: 60,
+  },
+  useVoucherButton: {
+    backgroundColor: '#B3D9FF',
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  useVoucherText: {
+    color: '#0066CC',
     fontWeight: '600',
+    fontSize: 16,
   },
 });
 

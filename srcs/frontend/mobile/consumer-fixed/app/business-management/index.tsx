@@ -91,14 +91,24 @@ export default function BusinessHomeScreen() {
           <View style={styles.pillContainer}>
             <ThemedText style={styles.pillText}>386</ThemedText>
           </View>
-          <FontAwesome name="info-circle" size={18} color="#999" />
+          <FontAwesome 
+            name="info-circle" 
+            size={18} 
+            color="#999" 
+            style={{ marginLeft: 'auto' }}
+          />
         </ThemedView>
 
         {/* Loyalty Program */}
         <ThemedView style={styles.section}>
           <View style={styles.sectionHeader}>
             <ThemedText type="subtitle">My loyalty program</ThemedText>
-            <FontAwesome name="info-circle" size={18} color="#999" style={{ marginHorizontal: 4 }} />
+            <FontAwesome 
+              name="info-circle" 
+              size={18} 
+              color="#999" 
+              style={{ marginLeft: 'auto' }}
+            />
           </View>
           
           <ThemedView style={styles.ruleCard}>

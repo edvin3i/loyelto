@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
@@ -32,18 +32,15 @@ export default function ScanQRResultScreen() {
         <ThemedView style={{ flex: 1 }}>
 
         <ThemedView style={styles_scan_qr_result.content}>
-          <View style={styles_scan_qr_result.successIcon}>
-            <FontAwesome name="check-circle" size={64} color="#0082FF" />
-          </View>
-          
-          <ThemedText style={styles_scan_qr_result.successText}>Customer identified!</ThemedText>
-          
           <ThemedView style={styles_scan_qr_result.customerCard}>
-            <View style={styles_scan_qr_result.customerInfo}>
-              <ThemedText style={styles_scan_qr_result.customerName}>{name}</ThemedText>
-              <ThemedText style={styles_scan_qr_result.customerId}>ID: {customerId}</ThemedText>
+            <View style={styles_scan_qr_result.cardContent}>
+              <View style={styles_scan_qr_result.customerInfo}>
+                <ThemedText style={styles_scan_qr_result.customerName}>{name}</ThemedText>
+                <ThemedText style={styles_scan_qr_result.customerId}>ID: {customerId}</ThemedText>
+              </View>
+              
               <View style={styles_scan_qr_result.pointsContainer}>
-                <ThemedText style={[styles_scan_qr_result.pointsValue]}>
+                <ThemedText style={styles_scan_qr_result.pointsValue}>
                   {points}
                 </ThemedText>
                 <ThemedText style={styles_scan_qr_result.pointsLabel}>points</ThemedText>
@@ -57,24 +54,53 @@ export default function ScanQRResultScreen() {
               onPress={handleAddPoints}
             >
               <ThemedText style={styles_scan_qr_result.buttonText}>Add Points</ThemedText>
-              <FontAwesome name="plus" size={16} color="#fff" />
+              <FontAwesome name="plus" size={16} color="black" />
             </TouchableOpacity>
             
             <TouchableOpacity 
               style={styles_scan_qr_result.redeemButton}
               onPress={() => alert('Redeem offer feature would open here')}
             >
-              <ThemedText style={styles_scan_qr_result.buttonText}>Redeem Offer</ThemedText>
-              <FontAwesome name="gift" size={16} color="#fff" />
+              <ThemedText style={styles_scan_qr_result.buttonText}>Redeem points</ThemedText>
+              <FontAwesome name="minus" size={16} color="black" />
             </TouchableOpacity>
           </View>
           
-          <TouchableOpacity
-            style={styles_scan_qr_result.scanAgainButton}
-            onPress={handleBackToScan}
-          >
-            <ThemedText style={styles_scan_qr_result.scanAgainText}>Scan Another Code</ThemedText>
-          </TouchableOpacity>
+          {/* Available Vouchers Section */}
+          <View style={styles_scan_qr_result.vouchersSection}>
+            <View style={styles_scan_qr_result.vouchersHeader}>
+              <ThemedText style={styles_scan_qr_result.vouchersTitle}>Available vouchers</ThemedText>
+              <View style={styles_scan_qr_result.vouchersBadge}>
+                <ThemedText style={styles_scan_qr_result.vouchersBadgeText}>1</ThemedText>
+              </View>
+            </View>
+            
+            <View style={styles_scan_qr_result.voucherCard}>
+              <View style={styles_scan_qr_result.voucherContent}>
+                <View style={styles_scan_qr_result.voucherInfo}>
+                  <ThemedText style={styles_scan_qr_result.voucherTitle}>Free Pizza Margarita</ThemedText>
+                  <ThemedText style={styles_scan_qr_result.voucherDescription}>
+                    Classic pizza with tomato sauce, mozzarella, and fresh basil
+                  </ThemedText>
+                </View>
+                
+                <View style={styles_scan_qr_result.voucherImageContainer}>
+                  <Image 
+                    source={{ uri: 'https://img.freepik.com/photos-gratuite/pizza-pizza-remplie-tomates-salami-olives_140725-1200.jpg?semt=ais_hybrid&w=740' }}
+                    style={styles_scan_qr_result.voucherImage}
+                    resizeMode="cover"
+                  />
+                </View>
+              </View>
+              
+              <TouchableOpacity
+                style={styles_scan_qr_result.useVoucherButton}
+                onPress={() => alert('Use voucher feature would open here')}
+              >
+                <ThemedText style={styles_scan_qr_result.useVoucherText}>Use voucher</ThemedText>
+              </TouchableOpacity>
+            </View>
+          </View>
         </ThemedView>
         <BusinessNavBar />
         </ThemedView>
