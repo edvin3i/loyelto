@@ -1,3 +1,5 @@
+print("DEBUG: THIS IS MY ALEMBIC ENV!!!")
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -15,6 +17,9 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import pool, text
 from app.core.settings import settings
 from app.db.base import Base
+
+print("DEBUG: settings.database_url =", settings.database_url)
+
 
 config = context.config
 fileConfig(config.config_file_name)
