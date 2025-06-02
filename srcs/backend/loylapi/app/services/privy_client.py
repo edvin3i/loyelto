@@ -60,16 +60,15 @@ class PrivyClient:
         r = await self._req("POST", f"{self.base}/wallets/{wallet_address}/rpc", json=payload)
         return r.json()["result"]["signedTransaction"]  # full tx b64
 
-
     async def get_user_by_token(self, id_token: str) -> PrivyUser:
         """Return the currently‑authenticated user (email & phone) using an **idToken**.
 
-               This avoids the paid webhooks – we hit `/users/id` with the bearer idToken
-               and immediately get profile data on the free tier.
+        This avoids the paid webhooks – we hit `/users/id` with the bearer idToken
+        and immediately get profile data on the free tier.
         """
         try:
-            decoded_token = jwt.decode(id_token,
-                                       options={"verify_signature": False})
+            # Декодируем токен без проверки подписи для получения privy_id
+            decoded_token = jwt.get_unverified_claims(id_token)
             privy_id = decoded_token.get("sub")
             if not privy_id:
                 raise ValueError("Privy ID not found in token.")
@@ -77,16 +76,7 @@ class PrivyClient:
             raise ValueError(f"Failed to decode id_token: {str(e)}")
 
         # Fetch user data using the Privy DID
-        r = await self._req("GET", f"{self.base}/users/{privy_id}")
-        d: dict[str, Any] = r.json()
-        wallets = d.get("wallets", {}).get("solana", [])
-        embedded = wallets[0]["address"] if wallets else None
-        return PrivyUser(
-            id=d["id"],
-            embedded_wallet=embedded,
-            email=d.get("email"),
-            phone=d.get("phone")
-        )
+        return await self.get_user(privy_id)
 
     async def get_user_by_did(did: str, app_id: str, app_secret: str):
         url = f"https://auth.privy.io/api/v1/users/{did}"

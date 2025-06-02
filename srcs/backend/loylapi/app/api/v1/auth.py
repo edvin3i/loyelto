@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.services.user import user_service
 from app.services.wallet import wallet_service
-from app.core.security import verify_privy_token
+from app.schemas.user import UserUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -42,10 +42,16 @@ async def privy_handshake(
         id_token = creds.credentials
         logger.info(f"🔑 [HANDSHAKE] Received id_token: {id_token[:20]}...")
 
-        # Step 2: Fetch user data from Privy
+        # Step 2: Verify token and get privy_id
         try:
-            user_data = await PrivyClient.get_user_by_token(id_token)
-            logger.info(f"✅ [HANDSHAKE] Retrieved user data for Privy ID: {user_data.id}")
+            from app.core.security import verify_privy_token
+            claims = verify_privy_token(id_token)
+            privy_id = claims.did
+
+            # Step 3: Fetch user data from Privy
+            user_data = await privy_rest.get_user(privy_id)
+            logger.info(
+                f"✅ [HANDSHAKE] Retrieved user data for Privy ID: {user_data.id}")
         except Exception as e:
             logger.error(f"❌ [HANDSHAKE] Failed to retrieve user data: {e}")
             raise HTTPException(
@@ -53,7 +59,7 @@ async def privy_handshake(
                 detail=f"Invalid id_token: {str(e)}"
             )
 
-        # Step 3: Create or get user
+        # Step 3.5: Create or get user
         try:
             logger.info(f"👤 [HANDSHAKE] Creating/getting user for privy_id: {user_data.id}")
             user = await user_service.create_or_get(
@@ -95,7 +101,6 @@ async def privy_handshake(
         )
 
 
-
 # --- callback & webhook unchanged (kept for Pro tier) ----------------------
 @router.get("/callback")
 async def privy_callback(code: str, db: AsyncSession = Depends(get_db)):
@@ -107,19 +112,19 @@ async def privy_callback(code: str, db: AsyncSession = Depends(get_db)):
     return RedirectResponse(url="/")
 
 
-@router.post("/webhook")
-async def privy_webhook(request: Request, db: AsyncSession = Depends(get_db)):
-    sig = request.headers.get("privy-signature")
-    body = await request.body()
-    if not verify_sig(sig, body, settings.PRIVY_API_SECRET):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-
-    event = await request.json()
-    if event["type"] == "user.updated":
-        privy_id = event["data"]["id"]
-        email = event["data"].get("email")
-        phone = event["data"].get("phone")
-        user = await user_service.get_by_privy(db, privy_id)
-        if user:
-            await user_service.update(db, user, UserUpdate(email=email, phone=phone))  # type: ignore[arg-type]
-    return {"ok": True}
+# @router.post("/webhook")
+# async def privy_webhook(request: Request, db: AsyncSession = Depends(get_db)):
+#     sig = request.headers.get("privy-signature")
+#     body = await request.body()
+#     if not verify_sig(sig, body, settings.PRIVY_API_SECRET):
+#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+#
+#     event = await request.json()
+#     if event["type"] == "user.updated":
+#         privy_id = event["data"]["id"]
+#         email = event["data"].get("email")
+#         phone = event["data"].get("phone")
+#         user = await user_service.get_by_privy(db, privy_id)
+#         if user:
+#             await user_service.update(db, user, UserUpdate(email=email, phone=phone))  # type: ignore[arg-type]
+#     return {"ok": True}
