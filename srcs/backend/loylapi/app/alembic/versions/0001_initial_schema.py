@@ -22,7 +22,6 @@ def _create_extensions(conn):
     if conn.dialect.name == "postgresql":
         conn.execute(text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
         conn.execute(text("CREATE EXTENSION IF NOT EXISTS citext"))
-        conn.execute(sa.text("CREATE EXTENSION IF NOT EXISTS moddatetime"))
 
 
 def upgrade() -> None:
@@ -244,13 +243,11 @@ def upgrade() -> None:
 
     op.execute(
         """
-        CREATE
-        OR REPLACE FUNCTION set_updated_at()
+        CREATE OR REPLACE FUNCTION set_updated_at()
         RETURNS TRIGGER AS $$
         BEGIN
-            NEW.updated_at
-        := CURRENT_TIMESTAMP;
-        RETURN NEW;
+            NEW.updated_at := CURRENT_TIMESTAMP;
+            RETURN NEW;
         END;
         $$
         LANGUAGE plpgsql;

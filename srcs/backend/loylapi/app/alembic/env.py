@@ -1,5 +1,4 @@
 import logging
-
 logger = logging.getLogger("__name__")
 
 import app.models  # noqa: F401
@@ -29,7 +28,7 @@ def ensure_extensions(sync_conn):
     """
     if sync_conn.dialect.name == "postgresql":
         for ext in ("pgcrypto", "citext"):
-            # AUTOCOMMIT, чтобы не открыть транзакцию
+            # AUTOCOMMIT
             sync_conn.exec_driver_sql(
                 f"CREATE EXTENSION IF NOT EXISTS {ext}",
                 execution_options={"isolation_level": "AUTOCOMMIT"},
