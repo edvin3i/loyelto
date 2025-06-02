@@ -9,7 +9,7 @@ import asyncio
 from logging.config import fileConfig
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy import pool
+from sqlalchemy import pool, text
 from app.core.settings import settings
 from app.db.base import Base
 
@@ -17,6 +17,15 @@ config = context.config
 fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
+
+def ensure_extensions(sync_conn):
+    """
+    Create Postgres extensions required by the models.
+    Runs ONLY on PostgreSQL back-ends; silently skips others.
+    """
+    if sync_conn.dialect.name == "postgresql":
+        sync_conn.execute(text("CREATE EXTENSION IF NOT EXISTS citext"))
+
 
 down_revision = None
 
@@ -46,17 +55,22 @@ async def run_migrations_online() -> None:
         settings.database_url, future=True, poolclass=pool.NullPool
     )
     async with connectable.connect() as connection:
+        # 1) configuring Alembic
         await connection.run_sync(
             lambda sync_conn: context.configure(
                 connection=sync_conn,
                 target_metadata=target_metadata,
                 render_as_batch=True,
-                # compare_type=True,
                 compare_type=(sync_conn.dialect.name != "sqlite"),
             )
         )
+        # 2) creating extention (citext)
+        await connection.run_sync(ensure_extensions)
+
+        # 3) runining migrations
         async with connection.begin():
-            await connection.run_sync(lambda sync_conn: context.run_migrations())
+            await connection.run_sync(
+                lambda sync_conn: context.run_migrations())
     await connectable.dispose()
 
 
