@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger("__name__")
+
 import app.models  # noqa: F401
 from pathlib import Path
 from dotenv import load_dotenv
@@ -56,15 +60,20 @@ async def run_migrations_online() -> None:
         Migrations over asyncio engine
         :return:
     """
+    logger.info(f"🔗 Connecting to database: {settings.database_url}")
     connectable = create_async_engine(
         settings.database_url,
         poolclass=pool.NullPool,
     )
 
     async with connectable.connect() as connection:
+        logger.info("✅ Connected to database")
         await connection.run_sync(ensure_extensions)
+        logger.info("✅ Extensions loaded")
+
 
         def do_migrations(sync_conn):
+            logger.info("🚀 Starting migrations...")
             context.configure(
                 connection=sync_conn,
                 target_metadata=target_metadata,
@@ -74,8 +83,10 @@ async def run_migrations_online() -> None:
             )
             with context.begin_transaction():
                 context.run_migrations()
+                logger.info("✅ Migrations completed")
 
         await connection.run_sync(do_migrations)
+        logger.info("✅ All migrations applied")
 
     await connectable.dispose()
 

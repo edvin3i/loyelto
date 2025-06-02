@@ -22,7 +22,8 @@ fi
 
 
 echo "⚡️ Apply Alembic migrations..."
-PYTHONPATH=/app uv run python -m alembic upgrade head
+PYTHONPATH=/app uv run python -m alembic upgrade head || { echo "❌ Migration failed"; exit 1; }
+sleep 5
 
 echo "🚀 Starting FastAPI over Uvicorn..."
 exec "$@"
