@@ -107,4 +107,4 @@ def run() -> None:
         asyncio.run(run_migrations_online())
 
 
-run()
+# run()
