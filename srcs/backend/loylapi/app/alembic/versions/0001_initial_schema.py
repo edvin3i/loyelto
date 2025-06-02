@@ -254,26 +254,30 @@ def upgrade() -> None:
         END;
         $$
         LANGUAGE plpgsql;
+        """
+    )
 
-        DO
-        $$
+    op.execute(
+        """
+        DO $$
         DECLARE
-        r record;
+            r record;
         BEGIN
-        FOR r IN
-        SELECT table_name
-        FROM information_schema.columns
-        WHERE column_name = 'updated_at'
-          AND table_schema = 'public' LOOP
+            FOR r IN
+                SELECT table_name
+                FROM information_schema.columns
+                WHERE column_name = 'updated_at'
+                  AND table_schema = 'public'
+            LOOP
                 EXECUTE format(
                     'CREATE TRIGGER trg_%I_updated
-                       BEFORE UPDATE ON %I
-                       FOR EACH ROW
-                       EXECUTE FUNCTION set_updated_at();',
+                     BEFORE UPDATE ON %I
+                     FOR EACH ROW
+                     EXECUTE FUNCTION set_updated_at();',
                     r.table_name,
                     r.table_name
                 );
-        END LOOP;
+            END LOOP;
         END;
         $$;
         """
