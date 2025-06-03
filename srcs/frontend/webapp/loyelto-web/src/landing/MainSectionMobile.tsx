@@ -28,23 +28,21 @@ export default function MainSectionMobile() {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 boxSizing: 'border-box',
-                overflow: 'auto', // Ensures children can't overflow the Box
+                overflow: 'hidden'
             }}>
                 <Stack spacing={3} sx={{paddingTop: 4}}>
                     <Image src='landing_swapping_cutout.png' sx={{
                         borderRadius: 3
                     }} />
+                    {/* <Typography variant="h2" color="initial">bababababba bubububu</Typography> */}
                     <Typography
                         variant="h1"
                         color="initial"
                         gutterBottom
                         sx={{
                             fontSize: (() => {
-                                // Get the translated text and count line breaks
                                 const heading = `Swap & Save: \n${t('mainHeading')}`;
                                 const letterCount = heading.length;
-                                console.log(letterCount)
-                                // If more than 2 lines, reduce font size
                                 return letterCount > 43 ? 36 : 44;
                             })(),
                             fontWeight: 600,
@@ -53,7 +51,7 @@ export default function MainSectionMobile() {
                     >
                         Swap & Save: <br /> {t('mainHeading')}
                     </Typography>
-                    {/* <Typography variant="h2">Bababa bububu</Typography> */}
+                    {/* <Typography variant="h2">Bababa bububu</Typography> */} 
                     <Button
                         fullWidth
                         variant="contained"
