@@ -16,9 +16,9 @@ class PrivyClient:
 
     def __init__(self, app_id: str, api_key: str, cluster: str = "testnet"):
         self.app_id, self.api_key, self.cluster = app_id, api_key, cluster
-        self.base = f"https://auth.privy.io/api/v1/apps/{app_id}"
+        self.base = f"https://auth.privy.io/v1/apps/{app_id}"
         self._auth = httpx.BasicAuth(app_id, api_key)
-        self._hdr = {"privy-app-id": app_id}
+        self._hdr = {"Privy-App-Id": app_id}
 
     # ---------- helpers -------------------------------------------------
     async def _req(self, method: str, url: str, **kw) -> httpx.Response:
