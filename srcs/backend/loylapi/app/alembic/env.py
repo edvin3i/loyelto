@@ -19,7 +19,6 @@ from app.db.base import Base
 
 print("DEBUG: settings.database_url =", settings.database_url)
 
-
 config = context.config
 fileConfig(config.config_file_name)
 
@@ -49,7 +48,7 @@ def run_migrations_offline() -> None:
     :return:
     """
 
-    url = settings.database_url
+    url = url = settings.database_url.replace("+asyncpg", "")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -86,6 +85,7 @@ def run_migrations_online() -> None:
             render_as_batch=(connection.dialect.name == "sqlite"),
             compare_type=(connection.dialect.name != "sqlite"),
             compare_server_default=True,
+            **{"raiseerr": True},
             )
         with context.begin_transaction():
             context.run_migrations()
@@ -102,4 +102,4 @@ def run() -> None:
         run_migrations_online()
 
 
-# run()
+run()
