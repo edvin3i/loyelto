@@ -1,3 +1,5 @@
+print("DEBUG: THIS IS MY ALEMBIC ENV!!!")
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -8,20 +10,22 @@ from dotenv import load_dotenv
 root = Path(__file__).parent.parent.parent.parent.parent.parent
 load_dotenv(root / ".env")
 
-import asyncio
 from logging.config import fileConfig
 from alembic import context
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy import pool
+from sqlalchemy import create_engine
+from sqlalchemy import pool, text
 from app.core.settings import settings
 from app.db.base import Base
+
+print("DEBUG: settings.database_url =", settings.database_url)
 
 config = context.config
 fileConfig(config.config_file_name)
 
-target_metadata = Base.metadata
+real_sync_url = settings.database_url.replace("+asyncpg", "")
+config.set_main_option("sqlalchemy.url", real_sync_url)
 
-down_revision = None
+target_metadata = Base.metadata
 
 def ensure_extensions(sync_conn):
     """
@@ -44,7 +48,7 @@ def run_migrations_offline() -> None:
     :return:
     """
 
-    url = settings.database_url
+    url = url = settings.database_url.replace("+asyncpg", "")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -55,48 +59,47 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-async def run_migrations_online() -> None:
+def run_migrations_online() -> None:
     """
-    Migrations over asyncio engine
-    :return:
+        Migrations over sync engine
+        :return:
     """
     logger.info(f"🔗 Connecting to database: {settings.database_url}")
-    connectable = create_async_engine(
-        settings.database_url, future=True, poolclass=pool.NullPool
+    url = config.get_main_option("sqlalchemy.url")
+    connectable = create_engine(
+        url,
+        poolclass=pool.NullPool,
     )
-    async with connectable.connect() as connection:
+
+    with connectable.connect() as connection:
         logger.info("✅ Connected to database")
+        ensure_extensions(connection)
+        logger.info("✅ Extensions loaded")
+
 
 
         logger.info("🚀 Starting migrations...")
-        await connection.run_sync(
-            lambda sync_conn: (
-                ensure_extensions(sync_conn),
-                context.configure(
-                connection=sync_conn,
-                target_metadata=target_metadata,
-                render_as_batch=True,
-                # compare_type=True,
-                compare_type=(sync_conn.dialect.name != "sqlite"),
-                **{"raiseerr": True},
-                ),
-                context.run_migrations()
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            render_as_batch=(connection.dialect.name == "sqlite"),
+            compare_type=(connection.dialect.name != "sqlite"),
+            compare_server_default=True,
+            **{"raiseerr": True},
             )
-        )
-        await connection.commit()
-
-        async with connection.begin():
-            await connection.run_sync(lambda sync_conn: context.run_migrations())
+        with context.begin_transaction():
+            context.run_migrations()
             logger.info("✅ Migrations completed")
         logger.info("✅ All migrations applied")
-    await connectable.dispose()
+
+    connectable.dispose()
 
 
 def run() -> None:
     if context.is_offline_mode():
         run_migrations_offline()
     else:
-        asyncio.run(run_migrations_online())
+        run_migrations_online()
 
 
 run()
