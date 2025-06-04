@@ -85,6 +85,7 @@ def upgrade() -> None:
     sa.Column('email', postgresql.CITEXT(), nullable=True),
     sa.Column('phone', sa.String(length=32), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
     sa.CheckConstraint("email <> ''", name='ck_users_email_not_empty'),
     sa.CheckConstraint("phone <> ''", name='ck_users_phone_not_empty'),
     sa.CheckConstraint('(email IS NOT NULL OR phone IS NOT NULL)', name='ck_users_contact_present'),
