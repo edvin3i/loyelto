@@ -105,9 +105,26 @@ export const useAuthStore = create<AuthState>()(
             throw new Error(`Authentication failed: ${response.status} - ${errorBody}`);
           }
 
-          // ✅ NEW: Get user data directly from handshake response
-          const userData = await response.json();
-          console.log('👤 [AUTH-STORE] Received user data from handshake:', userData);
+          // ✅ FIX: Handle 204 No Content response correctly
+          let userData = null;
+          if (response.status === 204) {
+            console.log('✅ [AUTH-STORE] Handshake successful (204 No Content)');
+            // Create minimal user data since backend doesn't return user info
+            userData = {
+              id: 'backend_user',
+              privy_id: 'from_jwt', // Will be updated if needed
+              email: '', // Will be updated from Privy user data if available
+              phone: '',
+              created_at: new Date().toISOString(),
+            };
+          } else {
+            // Try to parse JSON if there's content
+            const responseText = await response.text();
+            if (responseText.trim()) {
+              userData = JSON.parse(responseText);
+              console.log('👤 [AUTH-STORE] Received user data from handshake:', userData);
+            }
+          }
 
           // Store token securely
           console.log('💾 [AUTH-STORE] Storing token in SecureStore...');
