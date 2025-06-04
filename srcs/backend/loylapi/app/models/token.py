@@ -62,7 +62,7 @@ class Token(Base):
         BigInteger,
         nullable=False,
         default=0,
-        comment="Current totalSupply (base-units)",
+        comment="Current totalSupply (base_url-units)",
     )
 
     business: Mapped["Business"] = relationship(

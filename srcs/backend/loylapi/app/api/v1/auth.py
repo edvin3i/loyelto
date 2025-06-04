@@ -1,4 +1,5 @@
 import logging
+from jose import jwt
 from fastapi import APIRouter, Depends, Request, HTTPException, status
 from starlette.responses import RedirectResponse
 from app.core.settings import settings
@@ -13,55 +14,72 @@ from app.schemas.user import UserUpdate
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-privy_rest = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
+privy_client = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
 
 # FastAPI security scheme (no auto‑error so we can 401 manually)
 auth_scheme = HTTPBearer(auto_error=False)
 
+
 @router.post("/handshake", status_code=204)
 async def privy_handshake(
-    creds: HTTPAuthorizationCredentials = Depends(auth_scheme),
-    db: AsyncSession = Depends(get_db),
+        request: Request,
+        creds: HTTPAuthorizationCredentials = Depends(auth_scheme),
+        db: AsyncSession = Depends(get_db),
 ):
-
-    """Single round‑trip login:
-    1. Validate *id_token* (JWT) locally
-    2. Fetch profile via Privy *GET /users/id*  – works on free tier
-    3. Upsert user; back‑fill e‑mail / phone if newly available
-    4. Ensure embedded Solana wallet exists (create if absent)
+    """Single round-trip login:
+    1. Validate JWT token (access or identity)
+    2. Fetch user profile if needed
+    3. Upsert user with email/phone
+    4. Ensure embedded wallet exists
     """
-
     logger.info("🔄 [HANDSHAKE] Starting Privy handshake")
 
     try:
-        # Step 1: Check credentials
+        # Check for credentials
         if not creds:
-            logger.warning("🚫 [HANDSHAKE] No credentials provided")
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+            # Try to get identity token from header
+            id_token = request.headers.get("privy-id-token")
+            if not id_token:
+                logger.warning("🚫 [HANDSHAKE] No credentials provided")
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+            token_to_verify = id_token
+            is_id_token = True
+        else:
+            token_to_verify = creds.credentials
+            is_id_token = False
 
-        id_token = creds.credentials
-        logger.info(f"🔑 [HANDSHAKE] Received id_token: {id_token[:20]}...")
+        logger.info(
+            f"🔑 [HANDSHAKE] Received {'identity' if is_id_token else 'access'} token")
 
-        # Step 2: Verify token and get privy_id
+        # Verify token and get user data
         try:
             from app.core.security import verify_privy_token
-            claims = verify_privy_token(id_token)
-            privy_id = claims.did
 
-            # Step 3: Fetch user data from Privy
-            user_data = await privy_rest.get_user(privy_id)
+            if is_id_token:
+                # For identity tokens, decode to get privy_id then fetch user
+                unverified = jwt.get_unverified_claims(token_to_verify)
+                privy_id = unverified.get("sub", "").replace("did:privy:", "")
+                user_data = await privy_client.get_user(f"did:privy:{privy_id}")
+            else:
+                # For access tokens, verify then fetch user
+                claims = verify_privy_token(token_to_verify)
+                privy_id = claims.privy_id
+                user_data = await privy_client.get_user(claims.did)
+
             logger.info(
                 f"✅ [HANDSHAKE] Retrieved user data for Privy ID: {user_data.id}")
+
         except Exception as e:
-            logger.error(f"❌ [HANDSHAKE] Failed to retrieve user data: {e}")
+            logger.error(f"❌ [HANDSHAKE] Token verification failed: {e}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Invalid id_token: {str(e)}"
+                detail=f"Invalid token: {str(e)}"
             )
 
-        # Step 3.5: Create or get user
+        # Create or update user
         try:
-            logger.info(f"👤 [HANDSHAKE] Creating/getting user for privy_id: {user_data.id}")
+            logger.info(
+                f"👤 [HANDSHAKE] Creating/getting user for privy_id: {user_data.id}")
             user = await user_service.create_or_get(
                 db,
                 privy_id=user_data.id,
@@ -76,17 +94,20 @@ async def privy_handshake(
                 detail=f"User service error: {str(e)}"
             )
 
-        # Step 4: Handle wallet creation if needed
+        # Handle wallet creation if needed
         try:
             if not user.wallets and user_data.embedded_wallet:
                 logger.info(f"💰 [HANDSHAKE] Adding wallet for user: {user.id}")
-                await wallet_service.add_if_missing(db, user, user_data.embedded_wallet)
+                await wallet_service.add_if_missing(db, user,
+                                                    user_data.embedded_wallet)
                 logger.info(f"✅ [HANDSHAKE] Wallet added to user: {user.id}")
             else:
-                logger.info(f"✅ [HANDSHAKE] User already has {len(user.wallets)} wallet(s)")
+                logger.info(
+                    f"✅ [HANDSHAKE] User already has {len(user.wallets)} wallet(s)")
         except Exception as e:
             logger.error(f"❌ [HANDSHAKE] Wallet addition failed: {e}")
-            logger.warning(f"⚠️ [HANDSHAKE] Continuing without wallet (development mode)")
+            # Don't fail handshake if wallet creation fails
+            logger.warning(f"⚠️ [HANDSHAKE] Continuing without wallet")
 
         logger.info("✅ [HANDSHAKE] Handshake completed successfully")
         return  # 204
@@ -99,7 +120,6 @@ async def privy_handshake(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Internal server error: {str(e)}"
         )
-
 
 # --- callback & webhook unchanged (kept for Pro tier) ----------------------
 @router.get("/callback")

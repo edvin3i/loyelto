@@ -130,7 +130,7 @@ def upgrade() -> None:
     sa.Column('rate_loyl', sa.Numeric(precision=18, scale=6), nullable=False),
     sa.Column('min_rate', sa.Numeric(precision=18, scale=6), nullable=True),
     sa.Column('max_rate', sa.Numeric(precision=18, scale=6), nullable=True),
-    sa.Column('total_supply', sa.BigInteger(), nullable=False, comment='Current totalSupply (base-units)'),
+    sa.Column('total_supply', sa.BigInteger(), nullable=False, comment='Current totalSupply (base_url-units)'),
     sa.CheckConstraint('decimals BETWEEN 0 AND 9', name='check_decimals_range'),
     # sa.CheckConstraint('min_rate <= max_rate', name='check_min_le_max_rate'),
     sa.CheckConstraint('(min_rate IS NULL OR max_rate IS NULL OR min_rate <= max_rate)', name = 'check_min_le_max_rate'),

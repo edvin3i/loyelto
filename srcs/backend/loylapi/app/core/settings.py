@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     PRIVY_APP_ID: str = Field(...)
     PRIVY_API_KEY: str = Field(...)
     PRIVY_API_SECRET: str = Field(default="stub")
+
     @property
     def privy_jwks_url(self) -> str:
         return f"https://auth.privy.io/api/v1/apps/{self.PRIVY_APP_ID}/jwks.json"
