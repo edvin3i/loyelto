@@ -35,8 +35,8 @@ const theme = createTheme({
     },
     neutral: {
       main: '#f0ffda',
-      // light: '#A0AEC0',
-      // dark: '#1A202C',
+      light: '#dff1ff', //light blue in business main
+      dark: '#bee2ff', //light blue button in business main
       contrastText: '#ffffff',
     },
     info: {

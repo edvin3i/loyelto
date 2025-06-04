@@ -78,6 +78,10 @@ export default function BusinessMain() {
                 sx={{
                     marginTop: 4,
                     marginX: 2,
+                    backgroundColor: theme.palette.neutral.light,
+                    boxSizing: 'border-box',
+                    padding: 2,
+                    borderRadius: 3
                 }}>
                 <Box sx={{
 
