@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.services.user import user_service
 from app.services.wallet import wallet_service
-from app.schemas.user import UserUpdate
+from app.schemas.user import UserUpdate, UserOut
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ privy_client = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
 auth_scheme = HTTPBearer(auto_error=False)
 
 
-@router.post("/handshake", status_code=204)
+@router.post("/handshake", response_model=UserOut)
 async def privy_handshake(
         request: Request,
         creds: HTTPAuthorizationCredentials = Depends(auth_scheme),
@@ -118,7 +118,7 @@ async def privy_handshake(
         logger.info("✅ [HANDSHAKE] Handshake completed successfully")
         logger.info(
             f"✅ [HANDSHAKE] Success for user: {user.id}, token_type: {'identity' if is_id_token else 'access'}")
-        return  # 204
+        return  user
 
     except HTTPException:
         raise
