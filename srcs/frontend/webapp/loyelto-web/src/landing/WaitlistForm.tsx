@@ -106,6 +106,7 @@ export default function WaitlistForm() {
           <TextField
             fullWidth
             name="enterprise"
+            type="text"
             value={formData.enterprise}
             onChange={handleChange}
             variant="outlined"
@@ -121,6 +122,7 @@ export default function WaitlistForm() {
           <TextField
             fullWidth
             name="phone"
+            type="tel"
             value={formData.phone}
             onChange={handleChange}
             variant="outlined"
@@ -136,6 +138,7 @@ export default function WaitlistForm() {
           <TextField
             fullWidth
             name="email"
+            type="email"
             value={formData.email}
             onChange={handleChange}
             variant="outlined"
