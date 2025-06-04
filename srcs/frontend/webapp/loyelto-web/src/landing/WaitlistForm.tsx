@@ -109,6 +109,7 @@ export default function WaitlistForm() {
             onChange={handleChange}
             variant="outlined"
             sx={{ bgcolor: "white" }}
+            required
           />
         </Box>
         
@@ -123,6 +124,7 @@ export default function WaitlistForm() {
             onChange={handleChange}
             variant="outlined"
             sx={{ bgcolor: "white" }}
+            required
           />
         </Box>
         
@@ -137,6 +139,7 @@ export default function WaitlistForm() {
             onChange={handleChange}
             variant="outlined"
             sx={{ bgcolor: "white" }}
+            required
           />
         </Box>
         

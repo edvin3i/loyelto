@@ -22,16 +22,24 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: '#a3d5ff',
-      light: '#fff',
+      main: '#a3d5ff', //Join LoyelTo button
+      light: '#fff', //the background of the navbar
       dark: 'rgb(20, 100, 200)',
       contrastText: '#000',
     },
     secondary: {
-      main: '#d7ffce',
-      light: '#e3fbf7',
+      main: '#d7ffce', //at the moment it's our green background for the divs
+      light: '#e3fbf7', //bg of the business slogans
       dark: 'rgb(200, 20, 80)',
       contrastText: '#000',
+    },
+    success: {
+      main: '#abe7b2', //green add button in business main
+      contrastText: "#000"
+    },
+    error: {
+      main: '#f6ccca', //pink delete button in business main
+      contrastText: "#000"
     },
     neutral: {
       main: '#f0ffda',

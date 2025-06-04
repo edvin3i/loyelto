@@ -11,8 +11,8 @@ function App() {
     <>
       <ThemeProvider theme={theme} defaultMode='light'>
         <CssBaseline />
-        {/* <LandingPage /> */}
-        <BusinessMain />
+        <LandingPage />
+        {/* <BusinessMain /> */}
       </ThemeProvider>
     </>
   )
