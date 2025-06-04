@@ -57,9 +57,15 @@ async def privy_handshake(
 
             if is_id_token:
                 # For identity tokens, decode to get privy_id then fetch user
-                unverified = jwt.get_unverified_claims(token_to_verify)
-                privy_id = unverified.get("sub", "").replace("did:privy:", "")
-                user_data = await privy_client.get_user(f"did:privy:{privy_id}")
+                try:
+                    unverified = jwt.get_unverified_claims(token_to_verify)
+                    privy_id = unverified.get("sub", "").replace("did:privy:", "")
+                    if not privy_id:
+                        raise ValueError("No subject in identity token")
+                    user_data = await privy_client.get_user(
+                        f"did:privy:{privy_id}")
+                except jwt.JWTError as e:
+                    raise ValueError(f"Invalid identity token format: {e}")
             else:
                 # For access tokens, verify then fetch user
                 claims = verify_privy_token(token_to_verify)
@@ -110,6 +116,8 @@ async def privy_handshake(
             logger.warning(f"⚠️ [HANDSHAKE] Continuing without wallet")
 
         logger.info("✅ [HANDSHAKE] Handshake completed successfully")
+        logger.info(
+            f"✅ [HANDSHAKE] Success for user: {user.id}, token_type: {'identity' if is_id_token else 'access'}")
         return  # 204
 
     except HTTPException:

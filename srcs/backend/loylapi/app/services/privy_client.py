@@ -86,7 +86,7 @@ class PrivyClient:
         clean_id = privy_id.replace("did:privy:", "")
 
         response = await self._request("GET", f"/users/{clean_id}")
-        if not response:
+        if response is None:
             raise ValueError(f"User {privy_id} not found")
 
         data = response.json()
