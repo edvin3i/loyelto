@@ -12,10 +12,25 @@ from app.services.exchange_client import ExchangeClient
 bearer = HTTPBearer(auto_error=False)
 
 
+async def get_current_user_from_token(creds=Depends(bearer)):
+    """Extract user claims from verified token"""
+    if not creds:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    try:
+        claims = verify_privy_token(creds.credentials)
+        return claims
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
+
 def current_user(creds=Depends(bearer)):
     if not creds:
         raise HTTPException(status_code=401)
-    return verify_privy_token(creds.credentials)
+    try:
+        return verify_privy_token(creds.credentials)
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
 
 
 app = FastAPI(**settings.fastapi_kwargs)
