@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import UUID
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, Mapped
 
 
