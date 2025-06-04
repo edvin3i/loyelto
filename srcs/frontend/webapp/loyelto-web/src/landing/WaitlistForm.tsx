@@ -11,8 +11,8 @@ export default function WaitlistForm() {
     phone: "",
     email: ""
   });
-  const {t} = useTranslation();
-  
+  const { t } = useTranslation();
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -29,10 +29,9 @@ export default function WaitlistForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     // Make sure to use the correct public key format
-    emailjs.init("50jVmxtdntqkpgv22");
-    
+    emailjs.init("0MSYJSYKK43wKxqnU");
+
     // Make sure these parameter names EXACTLY match your EmailJS template variables
     const templateParams = {
       enterprise_name: formData.enterprise,
@@ -41,32 +40,32 @@ export default function WaitlistForm() {
       message: `New waitlist signup from enterprise ${formData.enterprise}. Phone ${formData.phone}. Email: ${formData.email}`, // Add a message field
       // Include any other fields your template might be expecting
     };
-    
+
     console.log("Sending with params:", templateParams); // Debug log
-    
+
     emailjs.send(
-      'service_kq8lk8e',
-      'template_0qgzw6y',
+      'service_vf5seeb',
+      'template_mpdnwfa',
       templateParams
     )
-    .then((response) => {
-      console.log('Email sent successfully:', response);
-      setSnackbar({
-        open: true,
-        message: 'Formulaire envoyé avec succès!',
-        severity: 'success'
+      .then((response) => {
+        console.log('Email sent successfully:', response);
+        setSnackbar({
+          open: true,
+          message: 'Formulaire envoyé avec succès!',
+          severity: 'success'
+        });
+        // Reset form after successful submission
+        setFormData({ enterprise: "", phone: "", email: "" });
+      })
+      .catch((error) => {
+        console.error('Email sending failed:', error);
+        setSnackbar({
+          open: true,
+          message: 'Échec de l\'envoi du formulaire. Veuillez réessayer.',
+          severity: 'error'
+        });
       });
-      // Reset form after successful submission
-      setFormData({ enterprise: "", phone: "", email: "" });
-    })
-    .catch((error) => {
-      console.error('Email sending failed:', error);
-      setSnackbar({
-        open: true,
-        message: 'Échec de l\'envoi du formulaire. Veuillez réessayer.',
-        severity: 'error'
-      });
-    });
   };
 
   const handleCloseSnackbar = () => {
@@ -80,22 +79,23 @@ export default function WaitlistForm() {
         bgcolor: theme.palette.secondary.main, // Light green background similar to your screenshot
         padding: 4,
         borderRadius: 6,
-         width: '100%',
+        width: '100%',
         // marginX: {sm:'auto', xs: 0},
         my: 4,
         textAlign: "center"
       }}
     >
-      <Typography variant="h4" gutterBottom sx={{fontWeight: 'bold'}}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
         {t('waitListFormHeading')}
       </Typography>
-      
-      <Box 
-        component="form" 
-        onSubmit={handleSubmit} 
-        sx={{ 
+
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+  
+        sx={{
           mt: 3,
-          width: {sm: 600},// Constrain the form fields for better readability
+          width: { sm: 600 },// Constrain the form fields for better readability
           mx: "auto" // Center the form within the full-width container
         }}
       >
@@ -104,6 +104,7 @@ export default function WaitlistForm() {
             {t('waitListFormCompany')}:
           </Typography>
           <TextField
+            required
             fullWidth
             name="enterprise"
             type="text"
@@ -111,15 +112,16 @@ export default function WaitlistForm() {
             onChange={handleChange}
             variant="outlined"
             sx={{ bgcolor: "white" }}
-            required
+
           />
         </Box>
-        
+
         <Box sx={{ mb: 2, textAlign: "left" }}>
           <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
             {t('waitListFormPhone')}:
           </Typography>
           <TextField
+            required
             fullWidth
             name="phone"
             type="tel"
@@ -127,15 +129,16 @@ export default function WaitlistForm() {
             onChange={handleChange}
             variant="outlined"
             sx={{ bgcolor: "white" }}
-            required
+
           />
         </Box>
-        
+
         <Box sx={{ mb: 3, textAlign: "left" }}>
           <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
             {t('waitListFormEmail')}:
           </Typography>
           <TextField
+            required
             fullWidth
             name="email"
             type="email"
@@ -143,10 +146,10 @@ export default function WaitlistForm() {
             onChange={handleChange}
             variant="outlined"
             sx={{ bgcolor: "white" }}
-            required
+
           />
         </Box>
-        
+
         <Button
           type="submit"
           fullWidth
@@ -165,15 +168,15 @@ export default function WaitlistForm() {
           {t('waitListFormButton')}
         </Button>
       </Box>
-      
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={6000} 
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
+        <Alert
+          onClose={handleCloseSnackbar}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
         >
