@@ -55,7 +55,7 @@ class LoyaltyService:
         if purchase_amount <= 0:
             raise ValueError("purchase_amount must be positive")
 
-        # 2) Compute points in base units
+        # 2) Compute points in base_url units
         raw_units = (purchase_amount / business.rate_loyl).quantize(
             Decimal("1"), rounding=ROUND_DOWN
         )

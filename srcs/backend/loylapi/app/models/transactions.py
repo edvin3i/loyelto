@@ -40,7 +40,7 @@ class PointTx(Base):
         ForeignKey("wallets.id", ondelete="SET NULL"),
         index=True,
     )
-    token_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tokens.id"))
+    token_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tokens.id"), index=True, nullable=False)
     tx_type: Mapped[TxType] = mapped_column(PgEnum(TxType, name="tx_type_enum"))
     amount: Mapped[int] = mapped_column(BigInteger)
     fee_bps: Mapped[int | None]
@@ -64,8 +64,8 @@ class SwapTx(Base):
         ForeignKey("users.id", ondelete="SET NULL"),
         index=True,
     )
-    from_token_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tokens.id"))
-    to_token_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tokens.id"))
+    from_token_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tokens.id"), index=True, nullable=False)
+    to_token_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tokens.id"), index=True, nullable=False)
     from_amount: Mapped[int] = mapped_column(BigInteger)
     to_amount: Mapped[int] = mapped_column(BigInteger)
     fee_bps: Mapped[int]

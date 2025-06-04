@@ -20,5 +20,11 @@ class WalletService(BaseService[Wallet, WalletCreate, WalletUpdate]):
         payload = WalletCreate(user_id=user.id, pubkey=pubkey)
         return await self.create(db, payload)
 
+    async def get_by_pubkey(self, db: AsyncSession, pubkey: str) -> Wallet | None:
+        """Get wallet by public key"""
+        q = select(Wallet).where(Wallet.pubkey == pubkey)
+        res = await db.execute(q)
+        return res.scalar_one_or_none()
+
 
 wallet_service = WalletService(crud_wallet)

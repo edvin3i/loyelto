@@ -17,11 +17,13 @@ from app.api.v1 import (
     biz_rate,
     reviews,
     loyalty,
+    business_onboarding,
+    token_minting,
 )
 
 
 router = APIRouter()
-router.include_router(auth)
+# router.include_router(auth)
 router.include_router(users)
 router.include_router(businesses)
 router.include_router(tokens)
@@ -38,3 +40,5 @@ router.include_router(voucher_mint)
 router.include_router(biz_rate)
 router.include_router(reviews)
 router.include_router(loyalty)
+# router.include_router(business_onboarding)
+router.include_router(token_minting)

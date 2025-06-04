@@ -1,6 +1,8 @@
 from __future__ import annotations
 import uuid
 from datetime import datetime
+from operator import index
+
 from app.db.base import Base
 from app.models import Wallet
 from app.models import Token
@@ -19,10 +21,12 @@ class Balance(Base):
 
     id: Mapped[uuid.UUID] = uuid_pk()
     wallet_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("wallets.id", ondelete="CASCADE"),  # maybe need to add index
+        ForeignKey("wallets.id", ondelete="CASCADE"),
+        index=True, nullable=False
     )
     token_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("tokens.id", ondelete="CASCADE"),  # maybe need to add index
+        ForeignKey("tokens.id",ondelete="CASCADE"),
+        index=True, nullable=False
     )
     amount: Mapped[int] = mapped_column(BigInteger)
 

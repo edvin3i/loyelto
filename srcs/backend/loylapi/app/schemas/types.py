@@ -13,7 +13,7 @@ def ExactLenStr(length: int = 64):
     return constr(min_length=length, max_length=length)
 
 
-PrivyIDStr = ExactLenStr(64)
+PrivyIDStr = LimitedStr(min_length=1, max_length=64)
 MediumStr = LimitedStr(1, 128)
 PhoneStr = LimitedStr(5, 32)
 NameStr = LimitedStr(1, 128)

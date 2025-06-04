@@ -80,7 +80,8 @@ export default function WaitlistForm() {
         bgcolor: theme.palette.secondary.main, // Light green background similar to your screenshot
         padding: 4,
         borderRadius: 6,
-        width: '100%', // Full width
+         width: '100%',
+        // marginX: {sm:'auto', xs: 0},
         my: 4,
         textAlign: "center"
       }}
@@ -94,7 +95,7 @@ export default function WaitlistForm() {
         onSubmit={handleSubmit} 
         sx={{ 
           mt: 3,
-          maxWidth: "600px", // Constrain the form fields for better readability
+          width: {sm: 600},// Constrain the form fields for better readability
           mx: "auto" // Center the form within the full-width container
         }}
       >
@@ -153,8 +154,6 @@ export default function WaitlistForm() {
             borderRadius: 3,
             fontWeight: 'bold',
             textTransform: 'none',
-           // bgcolor: "#a6d4fa", // Light blue button color
-            // color: "black",
             "&:hover": {
               bgcolor: "#7ac0fa"
             }

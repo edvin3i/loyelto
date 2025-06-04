@@ -4,7 +4,9 @@ import { socialLinks } from "./links";
 
 export default function SocialLinks() {
   return (
-    <Box sx={{my: 3, pb: 4 }}>
+    <Box sx={{ pb: 4, 
+    // maxWidth: {xs: 375, sm: 1280}, 
+    marginX: 'auto'  }}>
       <Typography variant="body1">
         Follow us on{" "}
         {socialLinks.map((l, index) => (
@@ -13,25 +15,6 @@ export default function SocialLinks() {
             {index < socialLinks.length - 1 && ", "}
           </span>
         ))}
-        {/* <Link 
-          href="https://linkedin.com/company/loyelto" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          color="inherit"
-          sx={{ fontWeight: "bold"}}
-        >
-          LinkedIn
-        </Link>
-        ,{" "}
-        <Link 
-          href="https://t.me/loyelto" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          color="inherit"
-          sx={{ fontWeight: "bold"}}
-        >
-          Telegram
-        </Link> */}
       </Typography>
     </Box>
   );

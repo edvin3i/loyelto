@@ -8,7 +8,7 @@ services:
       - traefik.http.routers.landing-stage.entrypoints=websecure
       - traefik.http.routers.landing-stage.tls.certresolver=le
       - traefik.http.services.landing-stage.loadbalancer.server.port=80
-    networks: [tnet]
+    networks: [tnet-stage]
   fastapi:
     image: edvin3i/loyelto-fastapi:stage
     restart: unless-stopped
@@ -18,14 +18,17 @@ services:
       - traefik.http.routers.fastapi-stage.entrypoints=websecure
       - traefik.http.routers.fastapi-stage.tls.certresolver=le
       - traefik.http.services.fastapi-stage.loadbalancer.server.port=8000
+      - env=stage
+      - project=loyelto
     volumes:
       - ./out/idl:/app/anchor/idl
       - ./out/so:/app/anchor/so
     environment:
+      ENV: ${ENV:-stage}
       DOMAIN_NAME: ${DOMAIN_NAME:-stage.loyel.to}
-      DB_USER: ${DB_USER:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      DB_NAME: ${DB_NAME:-loyelto_stage}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-loyelto_stage}
       DB_HOST: ${DB_HOST:-postgres}
       DB_PORT: ${DB_PORT:-5432}
       REDIS_HOST: ${REDIS_HOST:-redis}
@@ -40,26 +43,26 @@ services:
       EXCHANGE_PROGRAM_ID: ${EXCHANGE_PROGRAM_ID:-}
       EXCHANGE_IDL_PATH: /app/anchor/target/idl/exchange.json
       LOYL_TOKEN_PROGRAM_ID: ${LOYL_TOKEN_PROGRAM_ID:-}
-      LOYALTY_IDL_PATH: /app/anchor/target/idl/loyalty_token.json
-      BIZ_FACTORY_PROGRAM_ID: ${BIZ_FACTORY_PROGRAM_ID:-}
-      BIZ_FACTORY_IDL_PATH: /app/anchor/target/idl/business_factory.json
-    networks: [tnet]
-  anchor:
-    image: edvin3i/loyelto-anchor:stage
-    entrypoint: ["/bin/bash", "-c"]
-    command: >
-       "avm use 0.29.0 &&
-        cd /anchor &&
-        anchor build &&
-        anchor deploy --provider.cluster testnet"
-    environment:
-      - ANCHOR_WALLET=/root/.config/solana/id.json
-      - SOLANA_URL=https://api.testnet.solana.com
-    volumes:
-      # - ./srcs/backend/anchor/target/idl:/app/anchor/target/idl:ro
-      # - ./srcs/backend/anchor/target/deploy:/app/anchor/target/deploy:ro
-      - ~/.config/solana/id.json:/root/.config/solana/id.json:ro
-    networks: [tnet]
+      LOYL_IDL_PATH: /app/anchor/target/idl/loyl_token.json
+      LOYL_SETTLEMENT_PROGRAM_ID: ${LOYL_SETTLEMENT_PROGRAM_ID:-}
+      LOYL_SETTLEMENT_IDL_PATH: /app/anchor/target/idl/loyl_settlement.json
+    networks: [tnet-stage]
+  # anchor:
+  #   image: edvin3i/loyelto-anchor:stage
+  #   entrypoint: ["/bin/bash", "-c"]
+  #   command: >
+  #      "avm use 0.29.0 &&
+  #       cd /anchor &&
+  #       anchor build &&
+  #       anchor deploy --provider.cluster testnet"
+  #   environment:
+  #     - ANCHOR_WALLET=/root/.config/solana/id.json
+  #     - SOLANA_URL=https://api.testnet.solana.com
+    # volumes:
+    #   - ./srcs/backend/anchor/target/idl:/app/anchor/target/idl:ro
+    #   - ./srcs/backend/anchor/target/deploy:/app/anchor/target/deploy:ro
+    #   - ~/.config/solana/id.json:/root/.config/solana/id.json:ro
+    # networks: [tnet-stage]
 
   worker:
     build: ../containers/worker
@@ -69,7 +72,7 @@ services:
     environment:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/1
-    networks: [tnet]
+    networks: [tnet-stage]
 
   beat:
     build: ../containers/beat
@@ -79,4 +82,8 @@ services:
     environment:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/1
-    networks: [tnet]
+    networks: [tnet-stage]
+
+networks:
+  tnet-stage:
+    external: true

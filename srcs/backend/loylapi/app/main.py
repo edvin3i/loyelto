@@ -12,13 +12,45 @@ from app.services.exchange_client import ExchangeClient
 bearer = HTTPBearer(auto_error=False)
 
 
+async def get_current_user_from_token(creds=Depends(bearer)):
+    """Extract user claims from verified token"""
+    if not creds:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    try:
+        claims = verify_privy_token(creds.credentials)
+        return claims
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
+
 def current_user(creds=Depends(bearer)):
     if not creds:
         raise HTTPException(status_code=401)
-    return verify_privy_token(creds.credentials)
+    try:
+        return verify_privy_token(creds.credentials)
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
 
 
 app = FastAPI(**settings.fastapi_kwargs)
+
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = [
+    "http://localhost:8080",
+    "https://stage.loyel.to",
+    "https://api.stage.loyel.to",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # 1) public endpoints ver 1
 public_v1 = APIRouter(prefix="/api/v1")
@@ -36,7 +68,8 @@ app.include_router(ws_router)
 
 # initializationn of Anchor client
 root = Path(__file__).parent.parent.parent
-idl_path = root / "anchor" / "target" / "idl" / "exchange.json"
+# print(f"==================== {root} ====================")
+idl_path = root / "app" / "anchor" / "target" / "idl" / "exchange.json"
 
 # print(idl_path.exists(), idl_path.read_text()[:200])
 

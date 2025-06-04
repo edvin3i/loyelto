@@ -7,6 +7,8 @@ from typing import Any, Dict
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
 
+import logging
+logger = logging.getLogger(__name__)
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -19,28 +21,32 @@ class Settings(BaseSettings):
     )
 
     ROOT: Path = Path(__file__).resolve().parent.parent.parent
-    print(f"============= {ROOT} =============")
-    ENV: str = Field("dev")
+    # print(f"============= {ROOT} =============")
+    ENV: str = Field(default="dev")
     SQLITE_PATH: str = Field(default="sqlite+aiosqlite:///./dev.db")
 
     DB_HOST: str | None = Field(default=None)
     DB_PORT: int | None = Field(default=None)
-    DB_NAME: str | None = Field(default=None)
-    DB_USER: str | None = Field(default=None)
-    DB_PASSWORD: str | None = Field(default=None)
+    POSTGRES_DB: str | None = Field(default="loyelto_stage")
+    POSTGRES_USER: str | None = Field(default="pgdbuser")
+    POSTGRES_PASSWORD: str | None = Field(default=None)
 
     TREASURY_KEYPAIR: str = Field(...)
-    SOLANA_RPC_URL: str = Field("https://api.devnet.solana.com")
+    SOLANA_RPC_URL: str = Field("https://api.test.solana.com")
     EXCHANGE_PROGRAM_ID: str = Field(...)
-    EXCHANGE_IDL_PATH: str = Field("anchor/target/idl/exchange.json")
-    LOYL_TOKEN_PROGRAM_ID: str = Field(...)
-    LOYALTY_IDL_PATH: str = Field("anchor/target/idl/loyalty_token.json")
-    BIZ_FACTORY_PROGRAM_ID: str = Field(...)
-    BIZ_FACTORY_IDL_PATH: str = Field("anchor/target/idl/business_factory.json")
+    EXCHANGE_IDL_PATH: str = Field("/app/anchor/target/idl/exchange.json")
+    LOYL_TOKEN_PROGRAM_ID: str = Field(default="stub")
+    LOYL_IDL_PATH: str = Field("/app/anchor/target/idl/loyl_token.json")
+    LOYL_SETTLEMENT_PROGRAM_ID: str = Field(default="stub")
+    LOYL_SETTLEMENT_IDL_PATH: str = Field("/app/anchor/target/idl/loyl_settlement.json")
 
     PRIVY_APP_ID: str = Field(...)
     PRIVY_API_KEY: str = Field(...)
-    PRIVY_API_SECRET: str = Field(...)
+    PRIVY_API_SECRET: str = Field(default="stub")
+
+    @property
+    def privy_jwks_url(self) -> str:
+        return f"https://auth.privy.io/api/v1/apps/{self.PRIVY_APP_ID}/jwks.json"
 
     CELERY_BROKER: str = Field(...)
     CELERY_BACKEND: str = Field(...)
@@ -54,8 +60,8 @@ class Settings(BaseSettings):
         if self.ENV == "dev":
             return self.SQLITE_PATH
         return (
-            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.POSTGRES_DB}"
         )
 
     @property
@@ -89,3 +95,4 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+logger.info(f"→ [DEBUG] database_url = {settings.database_url}")

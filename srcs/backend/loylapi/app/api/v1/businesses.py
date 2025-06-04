@@ -13,4 +13,12 @@ router = APIRouter(prefix="/businesses", tags=["businesses"])
 async def create_business(
     payload: BusinessCreate, db: Annotated[AsyncSession, Depends(get_db)]
 ):
+    """
+    Onboard a new business:
+    1. Create the business record
+    2. Generate Solana keypair
+    3. Trigger token minting and pool initialization
+
+    The token minting process happens asynchronously via Celery.
+    """
     return await business_service.create(db, payload)

@@ -1,0 +1,119 @@
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="utf-8" />
+	<title>Loyelto API Tester</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
+	<style>
+		html,body{height:100%;margin:0;font-family:system-ui,sans-serif;background:#f8f9fa}
+		#loginBar{
+		position:fixed;top:0;left:0;right:0;height:42px;display:flex;align-items:center;gap:8px;
+		padding:0 12px;background:#0b0c10;color:#fff;z-index:9999
+		}
+		#loginBar button{
+		margin-left:8px;padding:6px 10px;border:none;border-radius:4px;background:#1982ff;color:#fff;cursor:pointer
+		}
+		#swagger-ui{
+		position:absolute !important;top:42px !important;left:0;right:0;bottom:0;
+		}
+		.topbar{display:none}
+		.swagger-ui .topbar-wrapper
+		{
+			pointer-events:none;   /* делает «плёнку» прозрачной для мыши  */
+		}
+	</style>
+	</head>
+	<body>
+	<div id="loginBar">
+		<span id="loginStatus">Not authenticated</span>
+		<button id="btnLogin" data-privy-login-button>Login with Privy</button>
+		<button id="btnLogout" style="display:none;">Logout</button>
+	</div>
+	<div id="swagger-ui"></div>
+
+	<script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+	<script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+	<script src="https://unpkg.com/privy-sdk"></script>
+	<script>
+		/* ---------- Config -------------------------------------------------- */
+		// Replace the values below for your environment
+		const APP_ID      = 'cmaisgjg700a7l20m3bydnz79';   // Privy App ID
+		const API_BASE    = 'https://api.stage.loyel.to';   // API endpoint (no trailing slash)
+		const STORAGE_KEY = 'loyelto_privy_jwt';            // Key for localStorage
+		/* -------------------------------------------------------------------- */
+
+		/* ---------- Privy initialisation ------------------------------------ */
+		Privy.init({ merchantKey: APP_ID, dev: false });
+
+		/* ---------- Swagger UI ---------------------------------------------- */
+		const swaggerUI = SwaggerUIBundle({
+		url: `${API_BASE}/openapi.json`,
+		dom_id: '#swagger-ui',
+		presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+		layout: 'BaseLayout',
+		requestInterceptor: req => {
+			const jwt = localStorage.getItem(STORAGE_KEY);
+			if (jwt) req.headers['Authorization'] = 'Bearer ' + jwt;
+			return req;
+		}
+		});
+
+		/* ---------- Helpers -------------------------------------------------- */
+		function updateUi(did){
+		const loginStatus = document.getElementById('loginStatus');
+		const btnLogin    = document.getElementById('btnLogin');
+		const btnLogout   = document.getElementById('btnLogout');
+
+		if (did){
+			loginStatus.textContent = 'Connected as ' + did.slice(0,10) + '…';
+			btnLogin.style.display  = 'none';
+			btnLogout.style.display = '';
+		} else {
+			loginStatus.textContent = 'Not authenticated';
+			btnLogin.style.display  = '';
+			btnLogout.style.display = 'none';
+		}
+		// Reload OpenAPI to ensure interceptor runs with new header
+		swaggerUI.specActions.updateUrl(`${API_BASE}/openapi.json`);
+		swaggerUI.specActions.download();
+		}
+
+		async function sendHandshake(idToken){
+		await fetch(`${API_BASE}/api/v1/auth/handshake`,{
+			method:'POST',
+			headers:{ 'Authorization':'Bearer ' + idToken }
+		});
+		}
+
+		/* ---------- Privy event handlers ------------------------------------ */
+		Privy.on('login', async ({ idToken, did })=>{
+		localStorage.setItem(STORAGE_KEY,idToken);
+		try{ await sendHandshake(idToken); }catch(e){ console.error(e); }
+		updateUi(did);
+		});
+
+		Privy.on('logout', ()=>{
+		localStorage.removeItem(STORAGE_KEY);
+		updateUi(null);
+		});
+
+		/* ---------- Buttons -------------------------------------------------- */
+		// document.getElementById('btnLogin').addEventListener('click', ()=>Privy.login());
+		document.getElementById('btnLogout').addEventListener('click', ()=>Privy.logout());
+
+		/* ---------- Auto-restore session ------------------------------------ */
+		(function(){
+		const jwt = localStorage.getItem(STORAGE_KEY);
+		if (!jwt) return;
+		try{
+			const payload = JSON.parse(atob(jwt.split('.')[1]));
+			if (payload && payload.sub) updateUi(payload.sub);
+		}catch(e){
+			console.warn('Invalid cached JWT', e);
+			localStorage.removeItem(STORAGE_KEY);
+		}
+		})();
+	</script>
+	</body>
+	</html>

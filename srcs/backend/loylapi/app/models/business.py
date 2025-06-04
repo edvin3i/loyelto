@@ -4,8 +4,8 @@ from decimal import Decimal
 from typing import TYPE_CHECKING, List
 from sqlalchemy.ext.hybrid import hybrid_property
 from app.db.base import Base
-# from app.models import VoucherTemplate, Token
 from app.utils import uuid_pk
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy import (
     CheckConstraint,
@@ -24,8 +24,9 @@ from sqlalchemy.orm import (
 
 
 if TYPE_CHECKING:
-    from app.models.voucher import VoucherTemplate
-    from app.models.token import Token
+    from app.models import User
+    from app.models import Token
+    from app.models import VoucherTemplate
 
 class BusinessReview(Base):
     __tablename__ = "business_reviews"
@@ -33,20 +34,50 @@ class BusinessReview(Base):
         CheckConstraint("score >= 1 AND score <= 5", name="check_score_range"),
     )
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    business_id: Mapped[int] = mapped_column(ForeignKey("business.id", ondelete="CASCADE"))
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        nullable=False,
+        comment="Primary key UUID"
+    )
+
+    business_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("businesses.id", ondelete="CASCADE"),
+        nullable=False,
+        comment="Link on business"
+    )
     business: Mapped[Business] = relationship(
         "Business",
         back_populates="reviews",
         lazy="joined",
     )
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        comment="Link on user"
+    )
+
+    user: Mapped[User] = relationship(
+        "User",
+        back_populates="reviews",
+        lazy="joined",
+    )
+
     score: Mapped[Decimal] = mapped_column(
         Numeric(3, 2),
         nullable=False,
         comment="Score from 1.00 to 5.00",
     )
-    review_text: Mapped[str] = mapped_column(String(512))
+
+    review_text: Mapped[str] = mapped_column(
+        String(512),
+        nullable=True,
+        comment="Text of review",
+    )
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
