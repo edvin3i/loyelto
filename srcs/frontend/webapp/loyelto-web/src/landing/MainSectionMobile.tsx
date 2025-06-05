@@ -16,31 +16,33 @@ export default function MainSectionMobile() {
             display: { sm: 'none', xs: 'flex' },
             justifyContent: 'center',
             alignItems: 'center',
-            height: 866
+            minHeight: 866
         }}>
             <Box sx={{
                 backgroundColor: theme.palette.secondary.main,
-
                 borderRadius: 5,
-                height: 518,
-
-                paddingX: 2
+                minHeight: 518,
+                paddingX: 2,
+                paddingBottom: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                boxSizing: 'border-box',
+                overflow: 'hidden'
             }}>
                 <Stack spacing={3} sx={{paddingTop: 4}}>
                     <Image src='landing_swapping_cutout.png' sx={{
                         borderRadius: 3
                     }} />
+                    {/* <Typography variant="h2" color="initial">bababababba bubububu</Typography> */}
                     <Typography
                         variant="h1"
                         color="initial"
                         gutterBottom
                         sx={{
                             fontSize: (() => {
-                                // Get the translated text and count line breaks
                                 const heading = `Swap & Save: \n${t('mainHeading')}`;
                                 const letterCount = heading.length;
-                                console.log(letterCount)
-                                // If more than 2 lines, reduce font size
                                 return letterCount > 43 ? 36 : 44;
                             })(),
                             fontWeight: 600,
@@ -48,8 +50,8 @@ export default function MainSectionMobile() {
                         }}
                     >
                         Swap & Save: <br /> {t('mainHeading')}
-                  
                     </Typography>
+                    {/* <Typography variant="h2">Bababa bububu</Typography> */} 
                     <Button
                         fullWidth
                         variant="contained"
@@ -64,7 +66,6 @@ export default function MainSectionMobile() {
                             borderRadius: 4,
                             textTransform: 'none',
                             fontSize: '1.2rem',
-                            marginX: 1, 
                             boxShadow: 'none'
                         }}>
                         {t('joinLoyeltoButton')}

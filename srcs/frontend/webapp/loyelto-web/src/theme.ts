@@ -4,12 +4,28 @@ declare module '@mui/material/styles' {
   interface Palette {
     neutral: {
       main: string;
+      light: string;
+      dark: string;
+      contrastText: string;
+    };
+    custom: {
+      main: string;
+      light: string;
+      dark: string;
       contrastText: string;
     };
   }
   interface PaletteOptions {
     neutral?: {
       main: string;
+      light: string;
+      dark: string;
+      contrastText: string;
+    };
+    custom?: {
+      main: string;
+      light: string;
+      dark: string;
       contrastText: string;
     };
   }
@@ -54,8 +70,8 @@ const theme = createTheme({
       contrastText: '#000',
     },
     custom: {
-      light: 'rgb(179, 229, 252)',
       main: '#f6ccca',
+      light: 'rgb(179, 229, 252)',
       dark: 'rgb(1, 87, 155)',
       contrastText: '#000',
     },

@@ -29,6 +29,7 @@ export default function WaitlistForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     // Make sure to use the correct public key format
     emailjs.init("0MSYJSYKK43wKxqnU");
 
@@ -90,9 +91,9 @@ export default function WaitlistForm() {
       </Typography>
 
       <Box
+        id="WaitlistFormBox"
         component="form"
         onSubmit={handleSubmit}
-  
         sx={{
           mt: 3,
           width: { sm: 600 },// Constrain the form fields for better readability
@@ -107,6 +108,7 @@ export default function WaitlistForm() {
             required
             fullWidth
             name="enterprise"
+            id="EnrepriseField"
             type="text"
             value={formData.enterprise}
             onChange={handleChange}
@@ -124,6 +126,7 @@ export default function WaitlistForm() {
             required
             fullWidth
             name="phone"
+            id="PhoneField"
             type="tel"
             value={formData.phone}
             onChange={handleChange}
@@ -140,8 +143,9 @@ export default function WaitlistForm() {
           <TextField
             required
             fullWidth
-            name="email"
             type="email"
+            name="email"
+            id="EmailField"
             value={formData.email}
             onChange={handleChange}
             variant="outlined"
