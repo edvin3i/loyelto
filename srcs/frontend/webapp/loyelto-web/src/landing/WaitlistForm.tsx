@@ -67,24 +67,6 @@ export default function WaitlistForm() {
           severity: 'error'
         });
       });
-      .then((response) => {
-        console.log('Email sent successfully:', response);
-        setSnackbar({
-          open: true,
-          message: 'Formulaire envoyé avec succès!',
-          severity: 'success'
-        });
-        // Reset form after successful submission
-        setFormData({ enterprise: "", phone: "", email: "" });
-      })
-      .catch((error) => {
-        console.error('Email sending failed:', error);
-        setSnackbar({
-          open: true,
-          message: 'Échec de l\'envoi du formulaire. Veuillez réessayer.',
-          severity: 'error'
-        });
-      });
   };
 
   const handleCloseSnackbar = () => {
@@ -123,7 +105,6 @@ export default function WaitlistForm() {
             {t('waitListFormCompany')}:
           </Typography>
           <TextField
-            required
             required
             fullWidth
             name="enterprise"
