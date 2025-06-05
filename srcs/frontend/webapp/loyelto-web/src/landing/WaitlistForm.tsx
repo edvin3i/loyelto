@@ -30,7 +30,7 @@ export default function WaitlistForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Make sure to use the correct public key format
-    emailjs.init("0MSYJSYKK43wKxqnU");
+    emailjs.init("0MSYJSYKK43wKxqnU");//Sveta Vydrina's credentials
 
     // Make sure these parameter names EXACTLY match your EmailJS template variables
     const templateParams = {
