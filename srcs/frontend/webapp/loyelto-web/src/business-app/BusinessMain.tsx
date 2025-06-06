@@ -113,8 +113,9 @@ export default function BusinessMain() {
                 </Box>
                 <Grid container spacing={1}>
                     <Grid size={{ xs: 12, sm: 6 }}    >
-                        <PromoCard name='Pizza Margarita' description='Blabla Pizza Margarita' amount={15} outOf={300} points={15} />
+                        <PromoCard name='Free Pizza Margarita' description='Classic  pizza with tomato sauce, mozzarella, and fresh basil' amount={15} outOf={300} points={15} />
                     </Grid>
+                   
                     <Grid size={{ xs: 12, sm: 6 }}    >
                         <Card variant='outlined' sx={{ padding: 1, borderRadius: 2 }}>
                             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -123,7 +124,7 @@ export default function BusinessMain() {
                                         sx={{ fontWeight: '600', fontSize: '1.3rem' }}
                                     >Free Pizza Margarita</Typography>
                                     <Typography variant="body2" gutterBottom sx={{ color: 'text.secondary' }}>
-                                        Classic pizza with tomato sauce, mozzarella, and fresh basil</Typography>
+                                        Classic  pizza with tomato sauce, mozzarella, and fresh basil</Typography>
                                     <Typography variant='h6' gutterBottom sx={{ fontSize: '1rem', fontWeight: 700 }}>
                                         <span style={{ color: 'green' }}>150</span>/300 left
                                     </Typography>
@@ -152,28 +153,25 @@ export default function BusinessMain() {
                             </Box>
                         </Card>
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}    >
+                   <Grid size={{ xs: 12, sm: 6 }}    >
                         <Card variant='outlined' sx={{ padding: 1, borderRadius: 2 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Stack direction="column" sx={{ paddingRight: 3, flexGrow: 1 }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                <Stack direction="column" sx={{ paddingRight: 3 }}>
                                     <Typography variant="h5" color="initial" gutterBottom
                                         sx={{ fontWeight: '600', fontSize: '1.3rem' }}
                                     >Free Pizza Margarita</Typography>
                                     <Typography variant="body2" gutterBottom sx={{ color: 'text.secondary' }}>
-                                        Classic pizza with tomato sauce, mozzarella, and fresh basil</Typography>
+                                        Classic  pizza with tomato sauce, mozzarella, and fresh basil</Typography>
                                     <Typography variant='h6' gutterBottom sx={{ fontSize: '1rem', fontWeight: 700 }}>
                                         <span style={{ color: 'green' }}>150</span>/300 left
                                     </Typography>
-                                    <Stack direction="row" spacing={1}>
-                                        <Button fullWidth variant='contained' color='neutral'
-                                            sx={{
-                                                textTransform: 'none',
-                                                fontWeight: 700,
-                                                fontSize: '1rem',
-                                                borderRadius: 2
-                                            }}>Stop promo</Button>
-                                        <Button variant="contained" size='large' color='error'><DeleteOutlineIcon /></Button>
-                                    </Stack>
+                                    <Button fullWidth variant='contained' color='error'
+                                        sx={{
+                                            textTransform: 'none',
+                                            fontWeight: 700,
+                                            fontSize: '1rem',
+                                            borderRadius: 2
+                                        }}>Stop promo</Button>
                                 </Stack>
                                 <Stack direction="column" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <Box sx={{ backgroundColor: theme.palette.info.light, borderRadius: 1 }}>

@@ -1,6 +1,7 @@
-import { Card, Box, Stack, Typography, CardMedia, Button, Grid } from "@mui/material";
+import { Card, Box, Stack, Typography, CardMedia, Button, Grid, IconButton } from "@mui/material";
 import { useTheme, Theme } from '@mui/material/styles'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { error } from "console";
 
 interface PromoCardProps {
     name: string;
@@ -30,12 +31,14 @@ export default function PromoCard({ name, description, amount, outOf, points }: 
                                 textTransform: 'none',
                                 fontWeight: 600,
                                 fontSize: '1rem',
-                                borderRadius: 2
+                                borderRadius: 2,
+                                boxShadow: 'none'
                             }}>Edit promo</Button>
 
-                        <Button variant="contained" size='small' color='error' sx={{paddingX: 0}}>
+                        {/* <Button variant="contained" size='small' color='error' sx={{paddingX: 0}}>
                             <DeleteOutlineIcon />
-                            </Button>
+                            </Button> */}
+                            <IconButton sx={{backgroundColor: theme.palette.error.main, borderRadius: 2, color: theme.palette.error.contrastText}} > <DeleteOutlineIcon /></IconButton>
                     </Stack>
                 </Stack>
                 <Stack direction="column" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
