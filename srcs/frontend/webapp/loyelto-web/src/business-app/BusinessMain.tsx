@@ -6,7 +6,7 @@ import ProgramElement from './ProgramElement';
 import CustomersOrOffersHeading from './CustomersOrOffersHeading';
 import AddIcon from '@mui/icons-material/Add';
 import PromoCard from './PromoCard';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import BusinessWebBar from './BusinessWebBar';
 
 const Image = styled('img')({
     width: '100%',
@@ -146,6 +146,7 @@ export default function BusinessMain() {
                     </Grid>
                 </Box>
             </Box>
+            <BusinessWebBar />
         </>
     )
 }

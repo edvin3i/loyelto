@@ -44,13 +44,15 @@ const theme = createTheme({
       contrastText: '#000',
     },
     secondary: {
-      main: '#d7ffce', //at the moment it's our green background for the divs
+      main: '#fff',// I think 'secondary' should be the color of the navbars
       light: '#e3fbf7', //bg of the business slogans
       dark: 'rgb(200, 20, 80)',
       contrastText: '#000',
     },
     success: {
       main: '#abe7b2', //green add button in business main
+      light: '#d7ffce', //now it's the green in the waitlist and landing's main section background
+      dark: '',
       contrastText: "#000"
     },
     error: {

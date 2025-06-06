@@ -19,7 +19,7 @@ export default function MainSectionMobile() {
             minHeight: 866
         }}>
             <Box sx={{
-                backgroundColor: theme.palette.secondary.main,
+                backgroundColor: theme.palette.success.light,
                 borderRadius: 5,
                 minHeight: 518,
                 paddingX: 2,

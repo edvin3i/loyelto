@@ -77,7 +77,7 @@ export default function WaitlistForm() {
     <Box
       id="join-waitlist"
       sx={{
-        bgcolor: theme.palette.secondary.main, // Light green background similar to your screenshot
+        bgcolor: theme.palette.success.light, // Light green background similar to your screenshot
         padding: 4,
         borderRadius: 6,
         width: '100%',

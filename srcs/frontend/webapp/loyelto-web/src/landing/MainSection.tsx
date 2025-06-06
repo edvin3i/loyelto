@@ -68,7 +68,7 @@ export default function MainSection() {
                     // maxWidth: 740,
                     width: "59%",
                     height: 380,
-                    backgroundColor: theme.palette.secondary.main,
+                    backgroundColor: theme.palette.success.light,
                     borderRadius: 7
                 }}>
                 <Stack direction="row" sx={{ height: '100%' }}>

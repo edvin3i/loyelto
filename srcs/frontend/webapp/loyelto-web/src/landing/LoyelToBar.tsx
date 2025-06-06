@@ -40,7 +40,8 @@ export default function LoyelToBar(props: Props) {
 
     return (
         <ElevationScroll {...props}>
-            <AppBar position='fixed' sx={{
+            <AppBar position='fixed' 
+            sx={{
                 zIndex: 10,
                 backgroundColor: theme.palette.primary.light,
                 left: 0,
