@@ -4,6 +4,7 @@ import { ButtonPropsColorOverrides } from "@mui/material/Button";
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
     custom: true;
+    neutral: true;
   }
 }
 declare module '@mui/material/styles' {

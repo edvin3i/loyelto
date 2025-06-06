@@ -40,7 +40,7 @@ const theme = createTheme({
     primary: {
       main: '#a3d5ff', //Join LoyelTo button
       light: '#fff', //the background of the navbar
-      dark: 'rgb(20, 100, 200)',
+      dark: '#7ac0fa', //the main button when hovered
       contrastText: '#000',
     },
     secondary: {
@@ -58,10 +58,10 @@ const theme = createTheme({
       contrastText: "#000"
     },
     neutral: {
-      main: '#f0ffda',
+      main: '#bee2ff', //think this wil just be the edit promo button
       light: '#dff1ff', //light blue in business main
-      dark: '#bee2ff', //light blue button in business main
-      contrastText: '#ffffff',
+      dark: '#bee2ff', //light blue button in business main '#f0ffda', fk knows which one this is
+      contrastText: '#000',
     },
     info: {
       main: '#abe7b2', //green in the business main page

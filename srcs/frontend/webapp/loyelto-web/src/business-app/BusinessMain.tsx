@@ -5,6 +5,8 @@ import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import ProgramElement from './ProgramElement';
 import CustomersOrOffersHeading from './CustomersOrOffersHeading';
 import AddIcon from '@mui/icons-material/Add';
+import PromoCard from './PromoCard';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const Image = styled('img')({
     width: '100%',
@@ -18,7 +20,7 @@ export default function BusinessMain() {
             <CssBaseline />
             {/* <Stack id="upperSectionBusinessMain" direction={{ xs: 'column', sm: 'row' }}> */}
             <Grid container spacing={1}>
-                <Grid size={{ xs: 12, sm: 3 }}>
+                <Grid size={{ xs: 12, sm: 4 }}>
                     <Box component="header" sx={{
                         display: 'flex',
                         flexDirection: "column",
@@ -51,7 +53,7 @@ export default function BusinessMain() {
 
                     </Box>
                 </Grid>
-                <Grid size={{ xs: 12, sm: 3 }}>
+                <Grid size={{ xs: 12, sm: 4 }}>
                     <Box component="section" sx={{
                         margin: 2,
                         display: "flex",
@@ -63,7 +65,7 @@ export default function BusinessMain() {
                         </IconButton>
                     </Box>
                 </Grid>
-                <Grid size={{ xs: 12, sm: 3 }}    >
+                <Grid size={{ xs: 12, sm: 4 }}    >
                     <Box component="section" sx={{ marginX: 2 }}>
                         <Box sx={{
                             display: "flex",
@@ -111,41 +113,7 @@ export default function BusinessMain() {
                 </Box>
                 <Grid container spacing={1}>
                     <Grid size={{ xs: 12, sm: 6 }}    >
-                        <Card variant='outlined' sx={{ padding: 1, borderRadius: 2 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Stack direction="column" sx={{ paddingRight: 3 }}>
-                                    <Typography variant="h5" color="initial" gutterBottom
-                                        sx={{ fontWeight: '600', fontSize: '1.3rem' }}
-                                    >Free Pizza Margarita</Typography>
-                                    <Typography variant="body2" gutterBottom sx={{ color: 'text.secondary' }}>
-                                        Classic pizza with tomato sauce, mozzarella, and fresh basil</Typography>
-                                    <Typography variant='h6' gutterBottom sx={{ fontSize: '1rem', fontWeight: 700 }}>
-                                        <span style={{ color: 'green' }}>150</span>/300 left
-                                    </Typography>
-                                    <Button fullWidth variant='contained' color='error'
-                                        sx={{
-                                            textTransform: 'none',
-                                            fontWeight: 700,
-                                            fontSize: '1rem',
-                                            borderRadius: 2
-                                        }}>Stop promo</Button>
-                                </Stack>
-                                <Stack direction="column" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Box sx={{ backgroundColor: theme.palette.info.light, borderRadius: 1 }}>
-                                        <CardMedia
-                                            component="img"
-                                            sx={{ width: 75 }}
-                                            image="pizza-nobg.png"
-                                            alt="Pizza Margarita campaign"
-                                        />
-                                    </Box>
-                                    <Stack direction="column" >
-                                        <Box sx={{ fontSize: '1.7rem', fontWeight: 700, display: 'flex', justifyContent: 'center', color: theme.palette.info.dark }}>15</Box>
-                                        <Box>points</Box>
-                                    </Stack>
-                                </Stack>
-                            </Box>
-                        </Card>
+                        <PromoCard name='Pizza Margarita' description='Blabla Pizza Margarita' amount={15} outOf={300} points={15} />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}    >
                         <Card variant='outlined' sx={{ padding: 1, borderRadius: 2 }}>
@@ -186,8 +154,8 @@ export default function BusinessMain() {
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}    >
                         <Card variant='outlined' sx={{ padding: 1, borderRadius: 2 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                <Stack direction="column" sx={{ paddingRight: 3 }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Stack direction="column" sx={{ paddingRight: 3, flexGrow: 1 }}>
                                     <Typography variant="h5" color="initial" gutterBottom
                                         sx={{ fontWeight: '600', fontSize: '1.3rem' }}
                                     >Free Pizza Margarita</Typography>
@@ -196,13 +164,16 @@ export default function BusinessMain() {
                                     <Typography variant='h6' gutterBottom sx={{ fontSize: '1rem', fontWeight: 700 }}>
                                         <span style={{ color: 'green' }}>150</span>/300 left
                                     </Typography>
-                                    <Button fullWidth variant='contained' color='error'
-                                        sx={{
-                                            textTransform: 'none',
-                                            fontWeight: 700,
-                                            fontSize: '1rem',
-                                            borderRadius: 2
-                                        }}>Stop promo</Button>
+                                    <Stack direction="row" spacing={1}>
+                                        <Button fullWidth variant='contained' color='neutral'
+                                            sx={{
+                                                textTransform: 'none',
+                                                fontWeight: 700,
+                                                fontSize: '1rem',
+                                                borderRadius: 2
+                                            }}>Stop promo</Button>
+                                        <Button variant="contained" size='large' color='error'><DeleteOutlineIcon /></Button>
+                                    </Stack>
                                 </Stack>
                                 <Stack direction="column" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <Box sx={{ backgroundColor: theme.palette.info.light, borderRadius: 1 }}>
