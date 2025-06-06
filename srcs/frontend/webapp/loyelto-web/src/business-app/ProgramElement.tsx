@@ -10,7 +10,10 @@ export default function ProgramElement({ condition, points }: ProgramElementProp
     const theme = useTheme<Theme>();
     return (
         <Paper elevation={0}
-            sx={{ backgroundColor: theme.palette.info.light, paddingY: 0.5, borderRadius: 2 }}>
+            sx={{ 
+                backgroundColor: {xs: theme.palette.info.light, sm: 'white'},
+                paddingY: 0.5, 
+                borderRadius: 2 }}>
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'space-between'

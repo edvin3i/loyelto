@@ -88,7 +88,7 @@ export default function BusinessMain() {
                             }}>
                                 <Box sx={{
                                     display: "flex",
-                                    justifyContent: 'space-between',
+                                    justifyContent: {xs: 'space-between', sm: 'center'},
 
                                 }}>
                                     <Typography variant="h5" color="initial" gutterBottom
