@@ -20,7 +20,7 @@ export default function BusinessMain() {
             <CssBaseline />
             {/* <Stack id="upperSectionBusinessMain" direction={{ xs: 'column', sm: 'row' }}> */}
             <Box sx={{ backgroundColor: { sm: theme.palette.info.light }, boxSizing: 'border-box' }}>
-                <Box component='section' sx={{ marginX: 2 }}>
+                <Box component='section' sx={{ marginX: {xs: 0, sm: 2} }}>
                     <Typography variant='h1' sx={{ display: { xs: 'none', sm: 'block' }, fontSize: '3rem', paddingY: 4, fontWeight: 600 }}>Welcome to your LoyelTo space </Typography>
                     <Grid container spacing={1}>
                         <Grid size={{ xs: 12, sm: 4 }}
@@ -80,7 +80,7 @@ export default function BusinessMain() {
                         <Grid size={{ xs: 12, sm: 4 }} sx={{
                             borderRadius: 3,
                             backgroundColor: 'white',
-                            paddingY: 3
+                            paddingY: {xs: 0, sm: 3}
                             }}  >
                             <Box component="section" sx={{
                                 marginX: 2,
