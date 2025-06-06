@@ -18,14 +18,14 @@ export default function BusinessWebBar() {
         >
             <Toolbar sx={{ justifyContent: 'space-between' }}>
                 <Stack>
-                    <IconButton color="inherit" aria-label="open drawer">
+                    <IconButton color="inherit" aria-label="home button">
                         <HomeOutlinedIcon />
                     </IconButton>
                     <Typography variant='body2'>Home</Typography>
                 </Stack>
 
                 {/* <Box sx={{ flexGrow: 1 }} /> */}
-                <IconButton color="inherit">
+                <IconButton color="inherit" aria-label='q r code button'>
                     <QrCodeScannerOutlinedIcon />
                 </IconButton>
                 <IconButton color="inherit">
