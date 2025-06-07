@@ -1,38 +1,43 @@
-import { AppBar, IconButton, Toolbar, Stack, Typography } from '@mui/material';
+import {
+    AppBar, IconButton, Toolbar, Stack, Typography,
+    BottomNavigation,
+    BottomNavigationAction,
+    Paper
+} from '@mui/material';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import QrCodeScannerOutlinedIcon from '@mui/icons-material/QrCodeScannerOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import { useState } from 'react';
+import { useTheme, Theme } from '@mui/material/styles'
 
 export default function BusinessWebBar() {
+    const [value, setValue] = useState(0);
+        const theme = useTheme<Theme>();
     return (
-        <AppBar
-            position="fixed"
-            color="secondary"
-            sx={{
-                top: 'auto',
-                bottom: 0,
-                display: { xs: 'flex', sm: 'none' },
-                borderTopRightRadius: 20,
-                borderTopLeftRadius: 20
-            }}
-        >
-            <Toolbar sx={{ justifyContent: 'space-between' }}>
-                <Stack>
-                    <IconButton color="inherit" aria-label="home button">
-                        <HomeOutlinedIcon />
-                    </IconButton>
-                    <Typography variant='body2'>Home</Typography>
-                </Stack>
-
-                {/* <Box sx={{ flexGrow: 1 }} /> */}
-                <IconButton color="inherit" aria-label='q r code button'>
-                    <QrCodeScannerOutlinedIcon />
-                </IconButton>
-                <IconButton color="inherit">
-                    <PersonOutlineOutlinedIcon />
-                </IconButton>
-            </Toolbar>
-        </AppBar>
+        <Paper sx={{ 
+            position: 'fixed', 
+            bottom: 0, left: 1, right: 1,
+             display: {xs: 'block', sm: 'none'},
+             borderTopLeftRadius: 25,
+             borderTopRightRadius: 25
+           }} 
+           square={false}
+             elevation={5}>
+            <BottomNavigation
+                showLabels
+            
+                value={value}
+                onChange={(event, newValue) => {
+                    setValue(newValue);
+                }}
+                
+                sx={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}
+            >
+                <BottomNavigationAction label="Home" icon={<HomeOutlinedIcon />} sx={{color: theme.palette.secondary.contrastText}} />
+                <BottomNavigationAction  label="Scan QR" icon={<QrCodeScannerOutlinedIcon />} sx={{color: theme.palette.secondary.contrastText}}/>
+                <BottomNavigationAction label="Profile" icon={<PersonOutlineOutlinedIcon />}sx={{color: theme.palette.secondary.contrastText}} />
+            </BottomNavigation>
+        </Paper>
     )
 
 }
