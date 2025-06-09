@@ -2,6 +2,7 @@ import { Card, Box, Stack, Typography, CardMedia, Button, Grid, IconButton } fro
 import { useTheme, Theme } from '@mui/material/styles'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { error } from "console";
+import OfferImage from "./OfferImage";
 
 interface PromoCardProps {
     name: string;
@@ -41,15 +42,19 @@ export default function PromoCard({ name, description, amount, outOf, points }: 
                             <IconButton sx={{backgroundColor: theme.palette.error.main, borderRadius: 2, color: theme.palette.error.contrastText}} > <DeleteOutlineIcon /></IconButton>
                     </Stack>
                 </Stack>
-                <Stack direction="column" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box sx={{ backgroundColor: theme.palette.info.light, borderRadius: 1 }}>
+                <Stack direction="column" sx={{ display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center' 
+                    }}>
+                    {/* <Box sx={{ backgroundColor: theme.palette.info.light, borderRadius: 1 }}>
                         <CardMedia
                             component="img"
                             sx={{ width: 75 }}
                             image="pizza-nobg.png"
-                            alt="Pizza Margarita campaign"
+                            alt="Pizza Margarita image"
                         />
-                    </Box>
+                    </Box> */}
+                    <OfferImage url="pizza-nobg.png" />
                     <Stack direction="column" >
                         <Box sx={{ fontSize: '1.7rem', fontWeight: 700, display: 'flex', justifyContent: 'center', color: theme.palette.info.dark }}>
                             {points}
