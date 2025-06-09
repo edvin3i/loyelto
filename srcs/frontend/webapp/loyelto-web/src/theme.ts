@@ -36,6 +36,24 @@ const theme = createTheme({
     fontFamily: 
       "Inter",
   },
+  components: {
+    MuiBottomNavigationAction: {
+      styleOverrides: {
+        root: {
+          // Override color for selected state (icon and label)
+          color: '#000', // default color
+          '&.Mui-selected': {
+            color: '#0082ff', // selected color
+          },
+        },
+        label: {
+          '&.Mui-selected': {
+            color: '#0082ff',
+          },
+        },
+      },
+    },
+  },
   palette: {
     primary: {
       main: '#a3d5ff', //Join LoyelTo button
