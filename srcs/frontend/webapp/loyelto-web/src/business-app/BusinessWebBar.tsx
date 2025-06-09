@@ -33,9 +33,9 @@ export default function BusinessWebBar() {
                 
                 sx={{borderTopLeftRadius: 25, borderTopRightRadius: 25}}
             >
-                <BottomNavigationAction label="Home" icon={<HomeOutlinedIcon />} sx={{color: theme.palette.secondary.contrastText}} />
+                <BottomNavigationAction label="Home" icon={<HomeOutlinedIcon  />} sx={{color: theme.palette.secondary.contrastText, }} />
                 <BottomNavigationAction  label="Scan QR" icon={<QrCodeScannerOutlinedIcon />} sx={{color: theme.palette.secondary.contrastText}}/>
-                <BottomNavigationAction label="Profile" icon={<PersonOutlineOutlinedIcon />}sx={{color: theme.palette.secondary.contrastText}} />
+                <BottomNavigationAction label="Profile" icon={<PersonOutlineOutlinedIcon  />}sx={{color: theme.palette.secondary.contrastText}} />
             </BottomNavigation>
         </Paper>
     )

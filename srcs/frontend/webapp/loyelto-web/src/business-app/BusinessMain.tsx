@@ -19,8 +19,8 @@ export default function BusinessMain() {
         <>
             <CssBaseline />
             {/* <Stack id="upperSectionBusinessMain" direction={{ xs: 'column', sm: 'row' }}> */}
-            <Box sx={{ backgroundColor: { sm: theme.palette.info.light }, boxSizing: 'border-box', width: { xs: 375, sm: 1200 } }}>
-                <Box component='section' sx={{ marginX: { xs: 0, sm: 2 } }}>
+            <Box sx={{ backgroundColor: { sm: theme.palette.info.light }, boxSizing: 'border-box', width: { xs: '100vw', sm: 1200 }, alignSelf: 'center' }}>
+                <Box component='section' sx={{ marginX: { xs: 0, sm: 2 }, alignSelf: 'center' }}>
                     <Typography variant='h1' sx={{ display: { xs: 'none', sm: 'block' }, fontSize: '3rem', paddingY: 4, fontWeight: 600 }}>Welcome to your LoyelTo space </Typography>
                     <Grid container spacing={1} sx={{ width: '100%' }}>
                         <Grid size={{ xs: 12, sm: 4 }}
@@ -114,7 +114,9 @@ export default function BusinessMain() {
                         backgroundColor: theme.palette.neutral.light,
                         boxSizing: 'border-box',
                         padding: 2,
-                        borderRadius: 4
+                        borderRadius: 4,
+                        width:{xs: '100vw', sm: 'auto'},
+                        alignSelf: 'center'
                     }}>
                     <Box sx={{
 

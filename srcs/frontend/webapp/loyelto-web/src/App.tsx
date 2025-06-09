@@ -5,6 +5,7 @@ import theme from './theme'
 import { CssBaseline } from '@mui/material'
 import './i18n'
 import BusinessMain from './business-app/BusinessMain'
+import ClientPage from './business-app/ClientPage'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         {/* <CssBaseline /> */}
         {/* <LandingPage /> */}
         <BusinessMain />
+        {/* <ClientPage /> */}
       </ThemeProvider>
     </>
   )
