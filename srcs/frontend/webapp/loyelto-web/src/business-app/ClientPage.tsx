@@ -135,7 +135,7 @@ export default function ClientPage() {
             </Stack>
                      
         </Box >
-        <BusinessWebBar />
+        {/* <BusinessWebBar /> */}
         </>
         )
 }

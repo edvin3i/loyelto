@@ -148,7 +148,7 @@ export default function BusinessMain() {
                     </Grid>
                 </Box>
             </Box>
-            <BusinessWebBar />
+            {/* <BusinessWebBar /> */}
         </>
     )
 }

@@ -6,6 +6,8 @@ import { CssBaseline } from '@mui/material'
 import './i18n'
 import BusinessMain from './business-app/BusinessMain'
 import ClientPage from './business-app/ClientPage'
+import { Routes, Route, Link, Outlet } from 'react-router-dom';
+import MainLayout from './business-app/MainLayout'
 
 function App() {
   return (
@@ -14,8 +16,19 @@ function App() {
         {/* <CssBaseline /> */}
         {/* <LandingPage /> */}
         {/* <BusinessMain /> */}
-        <ClientPage />
+        {/* <ClientPage /> */}
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route element={<MainLayout />} >
+            <Route path="/client-page" element={<ClientPage />} />
+            <Route path="/business-main" element={<BusinessMain />} />
+          </Route>
+          {/* You can also add a 404 Not Found page */}
+          <Route path="*" element={<div><h1>404 - Page Not Found</h1></div>} />
+        </Routes>
+
       </ThemeProvider>
+
     </>
   )
 }
