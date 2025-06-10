@@ -16,7 +16,7 @@ export default function ClientPage() {
     const theme = useTheme<Theme>();
     return (
         <>
-        <Box sx={{ padding: 6, width: '100vw', boxSizing: 'border-box' }}>
+        <Box sx={{ paddingX: 2, paddingTop: 6, width: '100vw', boxSizing: 'border-box' }}>
             <Paper
                 sx={{
                     paddingX: 2,
@@ -65,25 +65,29 @@ export default function ClientPage() {
             <Stack id="AvailableVouchers" spacing={2} sx={{paddingY: 2}}>
                 <CustomersOrOffersHeading heading="Available vouchers" chipContent={1} />
                 <Stack direction="row">
-                    <Card variant="outlined" sx={{
-                        width: '74%',
-                        borderRightStyle: 'none',
-                        borderRadius: 3,
-                        // border: '1.5px 0px 1.5px 1.5px solid',
-                        borderColor: theme.palette.neutral.light,
-                        // borderColor: 'red',
-                        boxShadow: '-1px 0 3px 2px ' + theme.palette.neutral.light,
-                        // backdropFilter: 'blur(1px)',
-                        
-                    }}>
+                    <Card
+                        variant="outlined"
+                        sx={{
+                            width: '74%',
+                            // border: '2px solid',
+                            // borderColor: "#8dbce2",
+                            borderRightStyle: 'none',
+                            borderRadius: 3,
+                            boxShadow: '-1.5px 0 4px  ' + theme.palette.neutral.dark,
+                        }}
+                    >
                         <CardActionArea>
                             <CardContent>
-                                <Typography gutterBottom variant="h5" component="div"
+                                <Typography
+                                    gutterBottom
+                                    variant="h5"
+                                    component="div"
+                                    color="initial"
                                     sx={{
                                         fontSize: 20,
                                         fontWeight: 600,
-
-                                    }}>
+                                    }}
+                                >
                                     Free Pizza Margarita
                                 </Typography>
                                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -92,22 +96,35 @@ export default function ClientPage() {
                             </CardContent>
                         </CardActionArea>
                         <CardActions>
-                            <Button size="medium" color="primary" variant="contained" fullWidth disableElevation
+                            <Button
+                                size="medium"
+                                variant="contained"
+                                fullWidth
+                                disableElevation
                                 sx={{
                                     fontWeight: 600,
+                                    fontSize: 16,
                                     textTransform: 'none',
                                     marginRight: 3,
-                                    borderRadius: 2
-                                }}>
+                                    borderRadius: 2,
+                                }}
+                            >
                                 Use voucher
                             </Button>
                         </CardActions>
                     </Card>
                     <Card variant="outlined" sx={{ width: '26%', 
-                        borderLeftStyle: 'none', 
+                       
                         borderRadius: 2,
-                        borderColor: theme.palette.neutral.light,
-                        boxShadow: '3px 0 8px  ' + theme.palette.neutral.light, 
+                       
+                        // border: '2.5px solid',
+                          
+                        // borderColor: theme.palette.neutral.dark,
+                        boxShadow: '2px 0px 2px -1px ' + theme.palette.neutral.dark + ', 0px 2px 2px -1px ' + theme.palette.neutral.dark + ', 0px -1.5px 1.5px -1px ' + theme.palette.neutral.dark,
+                        borderLeft: 'none',
+                        //  backdropFilter: 'blur(1px)',
+                         borderLeftStyle: 'none',
+                         borderLeftWidth: 0
                         }}>
                         <CardActionArea sx={{ margin: 1 }}>
                             <OfferImage url="pizza-nobg.png" />

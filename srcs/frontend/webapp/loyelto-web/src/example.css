@@ -1,0 +1,33 @@
+box-shadow: 
+rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, 
+rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+
+box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
+
+box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+#37:
+box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+#38::after
+box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+#39:
+box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+47:
+box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+
+#54::after
+box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
+88::after
+box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
+64
+box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
+
+59
+box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+75
+box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+44
+box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px,
+ rgba(0, 0, 0, 0.09) 0px 4px 2px,
+  rgba(0, 0, 0, 0.09) 0px 8px 4px,
+   rgba(0, 0, 0, 0.09) 0px 16px 8px,
+    rgba(0, 0, 0, 0.09) 0px 32px 16px;

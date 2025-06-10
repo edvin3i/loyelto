@@ -80,7 +80,7 @@ const theme = createTheme({
     neutral: {
       main: '#bee2ff', //think this wil just be the edit promo button
       light: '#dff1ff', //light blue in business main
-      dark: '#bee2ff', //light blue button in business main '#f0ffda', fk knows which one this is
+      dark: '#8dbce2', //border of the coupon in the client's page
       contrastText: '#000',
     },
     info: {
