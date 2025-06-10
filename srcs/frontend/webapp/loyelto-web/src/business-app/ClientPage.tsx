@@ -121,7 +121,7 @@ export default function ClientPage() {
                           
                         // borderColor: theme.palette.neutral.dark,
                         // boxShadow: '2px 0px 2px -1px ' + theme.palette.neutral.dark + ', 0px 2px 2px -1px ' + theme.palette.neutral.dark + ', 0px -1.5px 1.5px -1px ' + theme.palette.neutral.dark,
-                       boxShadow: '-2px 0px white' + ', 2px 0px 6px ' + theme.palette.neutral.dark,
+                       boxShadow: '-2px 0px white' + ', 2px 0px 8px ' + theme.palette.neutral.dark,
                         borderLeft: 'none',
                         //  backdropFilter: 'blur(1px)',
                          borderLeftStyle: 'none',
