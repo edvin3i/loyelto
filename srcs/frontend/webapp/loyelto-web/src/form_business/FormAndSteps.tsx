@@ -12,6 +12,7 @@ export default function FormAndSteps() {
         <LoyelToBar/>
         <Toolbar/>
             <Box component="section"
+            id="StepsOuterBox"
             sx={{
                 marginTop: 20,
                 display: 'flex',

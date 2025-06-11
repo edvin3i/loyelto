@@ -1,7 +1,5 @@
 // import { Component } from 'react';
-import { Toolbar, Typography, Grid, Box, CssBaseline } from '@mui/material';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
+import { Toolbar, Box, CssBaseline } from '@mui/material';
 import { useTheme, Theme } from '@mui/material/styles'
 import LoyelToBar from './LoyelToBar';
 import MainSection from './MainSection';
