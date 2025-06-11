@@ -35,6 +35,8 @@ export default function LandingPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
+                    alignSelf: 'center',
+                    placeSelf: 'center',
                     width: { sm: 1200, xs: 340 }
                     // width: '100%',
 

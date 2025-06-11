@@ -18,8 +18,19 @@ export default function BusinessMain() {
     return (
         <>
             <CssBaseline />
-            <Box sx={{backgroundColor: { sm: theme.palette.info.light },  display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Box sx={{  boxSizing: 'border-box', width: { xs: '100vw', sm: 1200 }, alignSelf: 'center', marginBottom: 5 }}>
+            <Box component="main"
+                sx={{
+                    backgroundColor: { sm: theme.palette.info.light },
+                    boxSizing: 'border-box',
+                    margin: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    width: '100%',
+                   
+                   
+                }}>
+                <Box sx={{ boxSizing: 'border-box', width: { xs: '100vw', sm: 1200 }, alignSelf: 'center', marginBottom: 5 }}>
                     <Box component='section' sx={{ marginX: { xs: 0, sm: 2 }, alignSelf: 'center' }}>
                         <Typography variant='h1' sx={{ display: { xs: 'none', sm: 'block' }, fontSize: '3rem', paddingY: 4, fontWeight: 600 }}>Welcome to your LoyelTo space </Typography>
                         <Grid container spacing={1} sx={{ width: '100%' }}>
