@@ -8,6 +8,7 @@ import BusinessMain from './business-app/BusinessMain'
 import ClientPage from './business-app/ClientPage'
 import { Routes, Route, Link, Outlet } from 'react-router-dom';
 import MainLayout from './business-app/MainLayout'
+import FormAndSteps from './form_business/FormAndSteps'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/client-page" element={<ClientPage />} />
             <Route path="/business-main" element={<BusinessMain />} />
           </Route>
+          <Route path="/form" element={<FormAndSteps />} />
           {/* You can also add a 404 Not Found page */}
           <Route path="*" element={<div><h1>404 - Page Not Found</h1></div>} />
         </Routes>
