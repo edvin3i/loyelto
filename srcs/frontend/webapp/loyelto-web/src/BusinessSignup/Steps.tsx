@@ -1,21 +1,49 @@
-import { Stack, Box, Typography, TextField, Button } from "@mui/material";
+import { Stack, Box, Typography, TextField, Button, Stepper, Step } from "@mui/material";
 import { useState } from "react";
 import { useTheme, Theme } from '@mui/material/styles';
 import NameEmailForm from "./NameEmailForm";
 import FormInstance from "./FormInstance";
+import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
+import { styled } from '@mui/material/styles';
 
 const formProps = [
-        [
-            ["Name of your business", "text", "EntrepriseField", "name"],
-            ["Email", "email", "EmailField", "owner_email"]
-        ],
-        [
-            ["Country", "text", "CountryField", "country"],
-            ["City", "text", "CityField", "city"],
-            ["Address", "text", "AddressField", "address"],
-            ["Zip code", "number", "ZipCodeField", "zip_code"]
-        ]
+    [
+        ["Name of your business", "text", "EntrepriseField", "name"],
+        ["Email", "email", "EmailField", "owner_email"]
+    ],
+    [
+        ["Country", "text", "CountryField", "country"],
+        ["City", "text", "CityField", "city"],
+        ["Address", "text", "AddressField", "address"],
+        ["Zip code", "number", "ZipCodeField", "zip_code"]
+    ]
 ]
+
+const QontoConnector = styled(StepConnector)(({ theme }) => ({
+    [`&.${stepConnectorClasses.alternativeLabel}`]: {
+        top: 10,
+        left: 'calc(-50% + 16px)',
+        right: 'calc(50% + 16px)',
+    },
+    [`&.${stepConnectorClasses.active}`]: {
+        [`& .${stepConnectorClasses.line}`]: {
+            borderColor: '#784af4',
+        },
+    },
+    [`&.${stepConnectorClasses.completed}`]: {
+        [`& .${stepConnectorClasses.line}`]: {
+            borderColor: '#784af4',
+        },
+    },
+    [`& .${stepConnectorClasses.line}`]: {
+        borderColor: '#eaeaf0',
+        borderTopWidth: 3,
+        borderRadius: 1,
+        ...theme.applyStyles('dark', {
+            borderColor: theme.palette.grey[800],
+        }),
+    },
+}));
 
 export default function Steps() {
     const theme = useTheme<Theme>();
@@ -59,9 +87,9 @@ export default function Steps() {
         }));
     }
 
-    const handleGeography = (geography: string[]) : void =>{
-         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        console.log(`printing from handleNameEmail: ${geography}. Active step is: ${activeStep}`)
+    const handleGeography = (geography: string[]): void => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        console.log(`printing from handleGeography: ${geography}. Active step is: ${activeStep}`)
         setBusinessData((prevData) => ({
             ...prevData,
             "country": geography[0],
@@ -72,15 +100,23 @@ export default function Steps() {
     }
 
     const steps = [
-        {name: 'nameEmail', component: <FormInstance handleSubmit={handleNameEmail} fieldsAndParams={formProps[0]} />},
+        { name: 'nameEmail', component: <FormInstance handleSubmit={handleNameEmail} fieldsAndParams={formProps[0]} /> },
         // { name: 'nameEmail', component: <NameEmailForm handleSubmit={handleNameEmail} /> },
         { name: 'geography', component: <FormInstance handleSubmit={handleGeography} fieldsAndParams={formProps[1]} /> },
+        {name: 'blabla', component: <></>}
     ];
     return (
         <>
             {/* <FormInstance handleSubmit={handleNameEmail} fieldsAndParams={formProps[0]} /> */}
-            <FormInstance handleSubmit={handleGeography} fieldsAndParams={formProps[1]} />
-            
+            <Stack spacing={5}>
+                <Stepper alternativeLabel activeStep={activeStep + 1} connector={<QontoConnector />}>
+                    {steps.map((step) => (
+                        <Step key={step.name}></Step>
+                    ))}
+                </Stepper>
+                {steps[activeStep]?.component}
+                {/* <FormInstance handleSubmit={handleGeography} fieldsAndParams={formProps[1]} /> */}
+            </Stack>
         </>
     )
 }

@@ -93,7 +93,7 @@ export default function Steps() {
                     );
                 })}
             </Stepper>
-
+                <UploadLogo />
             {activeStep === steps.length && <SignupCompleted businessData={businessData} />}
             {/* <>
                 
