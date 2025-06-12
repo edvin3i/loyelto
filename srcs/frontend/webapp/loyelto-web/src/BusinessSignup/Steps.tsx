@@ -1,6 +1,21 @@
 import { Stack, Box, Typography, TextField, Button } from "@mui/material";
 import { useState } from "react";
 import { useTheme, Theme } from '@mui/material/styles';
+import NameEmailForm from "./NameEmailForm";
+import FormInstance from "./FormInstance";
+
+const formProps = [
+        [
+            ["Name of your business", "text", "EntrepriseField", "name"],
+            ["Email", "email", "EmailField", "owner_email"]
+        ],
+        [
+            ["Country", "text", "CountryField", "country"],
+            ["City", "text", "CityField", "city"],
+            ["Address", "text", "AddressField", "address"],
+            ["Zip code", "number", "ZipCodeField", "zip_code"]
+        ]
+]
 
 export default function Steps() {
     const theme = useTheme<Theme>();
@@ -24,17 +39,6 @@ export default function Steps() {
         description: null, rate_loyl: 0
     });
 
-
-    // const handleNext = (value: string) => {
-
-    //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    //     console.log(`printing from handleNext: ${value}. Active step is: ${activeStep}`)
-    //     setBusinessData((prevData) => ({
-    //         ...prevData,
-    //         [steps[activeStep].name]: value,
-    //     }));
-    // };
-
     const toSnakeCase = (str: string): string => {
         return str
             .trim()
@@ -44,102 +48,39 @@ export default function Steps() {
             .toLowerCase();
     }
 
-    // const handleSubmit(e)
-
-    const handleNameEmail = (nameEmail: [string, string]): void => {
+    const handleNameEmail = (nameEmail: string[]): void => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        console.log(`printing from handleNext: ${nameEmail}. Active step is: ${activeStep}`)
+        console.log(`printing from handleNameEmail: ${nameEmail}. Active step is: ${activeStep}`)
         setBusinessData((prevData) => ({
             ...prevData,
             "name": nameEmail[0],
             "owner_email": nameEmail[1],
             "slug": toSnakeCase(nameEmail[0])
-            // [steps[activeStep].name]: value,
         }));
     }
 
+    const handleGeography = (geography: string[]) : void =>{
+         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        console.log(`printing from handleNameEmail: ${geography}. Active step is: ${activeStep}`)
+        setBusinessData((prevData) => ({
+            ...prevData,
+            "country": geography[0],
+            "city": geography[1],
+            "address": geography[2],
+            "zip_code": geography[3]
+        }));
+    }
 
-    // const steps = [
-    //     { name: 'nameEmail', component: <FormText h='Votre nom et prénom' handleSubmit={handleNext} /> },
-    //     { name: 'geography', component: <FormEmail handleSubmit={handleNext} /> },
-    //     { name: "logoDescr", component: <FormText h="Nom de l'entreprise" handleSubmit={handleNext} /> },
-    //     { name: "loylRating", component: <></> }
-    // ];
+    const steps = [
+        {name: 'nameEmail', component: <FormInstance handleSubmit={handleNameEmail} fieldsAndParams={formProps[0]} />},
+        // { name: 'nameEmail', component: <NameEmailForm handleSubmit={handleNameEmail} /> },
+        { name: 'geography', component: <FormInstance handleSubmit={handleGeography} fieldsAndParams={formProps[1]} /> },
+    ];
     return (
         <>
-            <Stack component="form" justifyContent='space-between'
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    console.log("Form submitted");
-                    
-                    
-                    console.dir(e.target)
-                    const form = e.target as HTMLFormElement;
-                    const entrepriseInput = form.elements.namedItem("EntrepriseField") as HTMLInputElement;
-                    const emailInput = form.elements.namedItem("EmailField") as HTMLInputElement;
-                    handleNameEmail([entrepriseInput.value, emailInput.value])
-                    // const input = form.elements.entreprise;
-                    // console.log("tryna print form.elements:")
-                    // console.dir(form.elements)
-                    // console.log("input: ")
-                    // console.dir(input)
-                    // handleSubmit(input.value);
-                    // handleSubmit(e.target.value)
-                }}
-                sx={{
-                    backgroundColor: theme.palette.neutral.light,
-                    borderRadius: 10,
-                    width: '100vw',
-                    boxSizing: 'border-box',
-                    height: 587,
-                    paddingY: 3,
-                    paddingX: 2
-                }}>
-                <Stack id="formFieldsStack">
-                    <Box sx={{ mb: 2, textAlign: "left" }}>
-                        <Typography variant="h5" gutterBottom
-                         sx={{fontWeight: 600, fontSize: 20 }}
-                        >
-                            Name of your business
-                        </Typography>
-                        <TextField
-                            required
-                            fullWidth
-                            name="enterprise"
-                            id="EntrepriseField"
-                            type="text"
-                            // value={formData.enterprise}
-                            // onChange={handleChange}
-                            variant="outlined"
-                            sx={{ bgcolor: "white", }}
-
-                        />
-                    </Box>
-                    <Box sx={{ mb: 2, textAlign: "left" }}>
-                        <Typography variant="h5" gutterBottom
-                         sx={{fontWeight: 600, fontSize: 20 }}>
-                           Email
-                        </Typography>
-                        <TextField
-                            required
-                            fullWidth
-                            name="email"
-                            id="EmailField"
-                            type="email"
-                            // value={formData.enterprise}
-                            // onChange={handleChange}
-                            variant="outlined"
-                            sx={{ bgcolor: "white", }}
-
-                        />
-                    </Box>
-
-                </Stack>
-                <Button fullWidth disableElevation size="large" color="success" variant="contained" type="submit">
-                    Next
-                </Button>
-
-            </Stack>
+            {/* <FormInstance handleSubmit={handleNameEmail} fieldsAndParams={formProps[0]} /> */}
+            <FormInstance handleSubmit={handleGeography} fieldsAndParams={formProps[1]} />
+            
         </>
     )
 }
