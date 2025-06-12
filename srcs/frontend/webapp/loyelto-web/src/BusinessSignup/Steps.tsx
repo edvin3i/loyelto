@@ -5,7 +5,9 @@ import NameEmailForm from "./NameEmailForm";
 import FormInstance from "./FormInstance";
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { styled } from '@mui/material/styles';
-
+import LogoDescription from "./LogoDescription";
+import LoylRateForm from "./LoylRateForm";
+import SignupCompleted from "./SignupCompleted";
 const formProps = [
     [
         ["Name of your business", "text", "EntrepriseField", "name"],
@@ -99,11 +101,30 @@ export default function Steps() {
         }));
     }
 
+    const handleLogoDescription = (logoDescription: string[]): void => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+         setBusinessData((prevData) => ({
+            ...prevData,
+            "logo_url": logoDescription[0],
+            "description": logoDescription[1]
+        }));
+    }
+
+    const handleLoylRate = (rate: number): void => {
+         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+         setBusinessData((prevData) => ({
+            ...prevData,
+            "rate_loyl": rate
+        }));
+    }
+
     const steps = [
         { name: 'nameEmail', component: <FormInstance handleSubmit={handleNameEmail} fieldsAndParams={formProps[0]} /> },
         // { name: 'nameEmail', component: <NameEmailForm handleSubmit={handleNameEmail} /> },
-        { name: 'geography', component: <FormInstance handleSubmit={handleGeography} fieldsAndParams={formProps[1]} /> },
-        {name: 'blabla', component: <></>}
+        { name: 'geography', component: <FormInstance handleSubmit={handleGeography} fieldsAndParams={formProps[1]} />},
+        {name: 'logoDescription', component: <LogoDescription handleSubmit={handleLogoDescription} />},
+        {name: 'rate', component: <LoylRateForm handleSubmit={handleLoylRate} />},
+        {name: 'completed', component: <SignupCompleted businessData={businessData}/>}
     ];
     return (
         <>

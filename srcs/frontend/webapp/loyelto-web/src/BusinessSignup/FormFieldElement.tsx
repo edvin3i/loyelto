@@ -16,15 +16,20 @@ export default function FormFieldElement({ heading, type, fieldId, fieldName }: 
             >
             {heading}
             </Typography>
-                <TextField
-                required
-                fullWidth
-                name={fieldName}
-                id={fieldId}
-                type={type}
-                variant="outlined"
-                sx={{
-                    bgcolor: "white",
+            <TextField
+            required
+            fullWidth
+            name={fieldName}
+            id={fieldId}
+            type={type.toLowerCase() === "number" ? "text" : type}
+            inputProps={
+                type.toLowerCase() === "number"
+                ? { inputMode: "numeric", pattern: "[0-9]*" }
+                : undefined
+            }
+            variant="outlined"
+            sx={{
+                bgcolor: "white",
                 borderRadius: 3,
                 "& .MuiOutlinedInput-notchedOutline": {
                 border: "none"

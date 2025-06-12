@@ -5,7 +5,7 @@ import FormFieldElement from "./FormFieldElement";
 
 type FormInstanceProps = {
     handleSubmit: (values: string[]) => void;
-    fieldsAndParams: string[][];
+    fieldsAndParams: string[][] | null;
 };
 
 export default function FormInstance({ handleSubmit, fieldsAndParams }: FormInstanceProps) {
@@ -17,7 +17,7 @@ export default function FormInstance({ handleSubmit, fieldsAndParams }: FormInst
                 console.log("Form submitted");
                 let values: string[] = []
                 const form = e.target as HTMLFormElement;
-                fieldsAndParams.forEach((f) => {
+                fieldsAndParams && fieldsAndParams.forEach((f) => {
                     const input = form.elements.namedItem(f[2]) as HTMLInputElement;
                     values.push(input.value)
                 })
@@ -33,8 +33,8 @@ export default function FormInstance({ handleSubmit, fieldsAndParams }: FormInst
                 paddingY: 3,
                 paddingX: 2
             }}>
-            <Stack id="formFieldsStack" sx={{paddingY: 1}}>
-                {fieldsAndParams.map((f, i) => {
+            <Stack sx={{paddingY: 1}}>
+                {fieldsAndParams && fieldsAndParams.map((f, i) => {
                     console.dir(f)
                     return <FormFieldElement key={i} heading={f[0]} type={f[1]} fieldId={f[2]} fieldName={f[3]} />
                 })}
