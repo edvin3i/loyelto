@@ -26,8 +26,7 @@ export default function BusinessMain() {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    width: '100%',
-                   
+                    width: '100%', 
                    
                 }}>
                 <Box sx={{ boxSizing: 'border-box', width: { xs: '100vw', sm: 1200 }, alignSelf: 'center', marginBottom: 5 }}>
