@@ -5,6 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../../utils/providers/stores/authStore';
 import { useLoginWithEmail, usePrivy, PrivyUser } from '@privy-io/expo';
+import { getBusinessProfile, getBusinessProfileByEmail } from '../utils/business_profile';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -62,15 +63,37 @@ export default function LoginScreen() {
   // Handle authentication state changes using proper Privy pattern
   useEffect(() => {
     if (isReady && user) {
-      // User is authenticated, proceed with login flow
       console.log('User is authenticated, proceeding with handleSuccessfulAuth');
       handleSuccessfulAuth();
     } else if (isReady && !user) {
-      // User is not authenticated, stay on login screen
       console.log('User is not authenticated, staying on login screen');
     }
-    // If isReady is false, we're still initializing - do nothing
-  }, [isReady, user, selectedRole]);
+  }, [isReady, user]);
+
+  const checkBusinessExists = async () => {
+    try {
+      console.log('🔍 [BUSINESS] Checking if business profile exists...');
+      
+      // Get user email from Privy
+      const userEmail = getUserEmail(user);
+      if (!userEmail) {
+        console.error('❌ [BUSINESS] No email found for user');
+        router.replace('/business-management/business-onboarding');
+        return;
+      }
+      
+      console.log('📧 [BUSINESS] Checking business for email:', userEmail);
+      
+      // Check if business exists for this email
+      await getBusinessProfileByEmail(userEmail);
+      console.log('✅ [BUSINESS] Business profile found, navigating to dashboard');
+      router.replace('/business-management');
+    } catch (error) {
+      console.log('📝 [BUSINESS] No business profile found, navigating to onboarding');
+      console.error('Business check error:', error);
+      router.replace('/business-management/business-onboarding');
+    }
+  };
 
   const handleSuccessfulAuth = async () => {
     try {
@@ -104,7 +127,6 @@ export default function LoginScreen() {
             
             // Let's also test the token format
             try {
-              // Try to decode the JWT header to verify it's a valid JWT
               const parts = accessToken.split('.');
               if (parts.length === 3) {
                 const header = JSON.parse(atob(parts[0]));
@@ -135,6 +157,7 @@ export default function LoginScreen() {
               }
             } catch (jwtError) {
               console.error('❌ [AUTH] Failed to parse JWT:', jwtError);
+              // Continue with handshake anyway
             }
             
             await privyHandshake(accessToken);
@@ -176,7 +199,8 @@ export default function LoginScreen() {
       if (selectedRole === 'consumer') {
         router.replace('/(tabs)');
       } else if (selectedRole === 'business') {
-        router.replace('/business-management');
+        // Check if business profile exists before navigating
+        await checkBusinessExists();
       } else {
         router.replace('/login-choice');
       }
@@ -266,51 +290,6 @@ export default function LoginScreen() {
     } catch (error) {
       console.error('Logout error:', error);
       Alert.alert('Error', 'Failed to logout. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleTestLogin = async () => {
-    setIsLoading(true);
-    try {
-      // For demo purposes, we'll just set a mock token
-      const mockToken = 'mock_privy_token_' + Date.now();
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // For demo, we'll manually set authentication state
-      useAuthStore.setState({
-        isAuthenticated: true,
-        user: {
-          id: 'demo_user',
-          privy_id: 'demo_privy_id',
-          email: 'demo@loyelto.com',
-          phone: '+1234567890',
-          created_at: new Date().toISOString(),
-          role: selectedRole
-        },
-        privyToken: mockToken
-      });
-
-      // Set the user role if it was passed as parameter
-      if (selectedRole) {
-        setUserRole(selectedRole);
-      }
-
-      // Navigate based on role
-      if (selectedRole === 'consumer') {
-        router.replace('/(tabs)');
-      } else if (selectedRole === 'business') {
-        router.replace('/business-management');
-      } else {
-        router.replace('/login-choice');
-      }
-      
-    } catch (error) {
-      Alert.alert('Login Failed', 'Please try again');
-      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -437,23 +416,10 @@ export default function LoginScreen() {
           </View>
         )}
 
-        {/* Demo Login Option */}
-        <TouchableOpacity 
-          style={[styles.demoButton, isLoading && styles.buttonDisabled]}
-          onPress={handleTestLogin}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#0082FF" />
-          ) : (
-            <Text style={styles.demoButtonText}>Continue with Demo Login</Text>
-          )}
-        </TouchableOpacity>
-
         <Text style={styles.demoNote}>
           {isReady && user
             ? "You are already logged in. Choose to continue or logout and login with a different account."
-            : "Enter your email to receive a one-time password for secure login via Privy."
+            : "Enter your email to receive a one-time password for secure login."
           }
         </Text>
       </View>
@@ -589,22 +555,6 @@ const styles = StyleSheet.create({
     color: '#0082FF',
     fontSize: 16,
     fontWeight: '600',
-  },
-  demoButton: {
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#0082FF',
-    paddingVertical: 16,
-    paddingHorizontal: 40,
-    borderRadius: 12,
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  demoButtonText: {
-    color: '#0082FF',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   demoNote: {
     fontSize: 12,

@@ -69,6 +69,12 @@ const styles_business_information = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   textArea: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: '#F5F5F5',
     minHeight: 80,
     textAlignVertical: 'top',
   },
@@ -153,6 +159,131 @@ const styles_business_information = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 6,
+  },
+  
+  // New styles for business onboarding
+  pageSubtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  progressContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+    paddingHorizontal: 20,
+  },
+  progressBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  progressStep: {
+    width: 60,
+    height: 4,
+    borderRadius: 2,
+    marginHorizontal: 4,
+  },
+  progressStepActive: {
+    backgroundColor: '#4CAF50',
+  },
+  progressStepInactive: {
+    backgroundColor: '#E0E0E0',
+  },
+  progressText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  inputError: {
+    borderColor: '#FF4444',
+    backgroundColor: '#FFF5F5',
+  },
+  errorText: {
+    color: '#FF4444',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  helperText: {
+    color: '#999',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    marginTop: 16,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#DDD',
+  },
+  backButtonText: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  nextButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+    backgroundColor: '#4CAF50',
+    flex: 1,
+    marginLeft: 12,
+    justifyContent: 'center',
+  },
+  nextButtonFullWidth: {
+    marginLeft: 0,
+  },
+  nextButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 8,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  summaryContainer: {
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+    padding: 16,
+    marginTop: 16,
+  },
+  summaryTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#333',
+  },
+  summaryItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    color: '#666',
+    flex: 1,
+  },
+  summaryValue: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+    flex: 2,
+    textAlign: 'right',
   },
 });
 

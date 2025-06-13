@@ -51,6 +51,20 @@ export interface VoucherTemplateCreate {
   is_active: boolean;
 }
 
+// Add this interface if it doesn't exist
+export interface BusinessCreate {
+  name: string;
+  slug: string;
+  logo_url?: string | null;
+  owner_email: string;
+  description: string;
+  country: string;
+  city: string;
+  address: string;
+  zip_code: string;
+  rate_loyl: number;
+}
+
 // Enhanced authentication debugging helper
 const checkAuthStatus = async (): Promise<{
   hasToken: boolean;
@@ -250,54 +264,50 @@ export const testAuthentication = async (): Promise<{
 };
 
 // Business API functions with enhanced debugging
-export const getBusinessProfile = async (): Promise<Business> => {
-  const operation = 'getBusinessProfile';
-  await logNetworkCall(operation, '/businesses');
+export const getBusinessProfileByEmail = async (email: string): Promise<Business> => {
+  const operation = 'getBusinessProfileByEmail';
+  await logNetworkCall(operation, '/businesses/', { email });
   
   try {
-    const response = await apiClient.get<Business>('/businesses');
+    // Get all businesses and filter by email client-side
+    const response = await apiClient.get<Business[]>('/businesses/');
     logNetworkSuccess(operation, response);
-    return response;
-  } catch (error) {
-    logNetworkError(operation, error);
     
-    // Enhanced fallback with connectivity and auth test
-    console.log(`🔄 [API] Attempting diagnostics for ${operation}`);
-    const authTest = await testAuthentication();
+    // Filter businesses by owner_email
+    const userBusiness = response.find(business => business.owner_email === email);
     
-    if (!authTest.hasToken) {
-      console.warn(`🔐 [API] No authentication token - user needs to login`);
-    } else if (!authTest.canAccessProtectedEndpoint) {
-      console.warn(`🔐 [API] Authentication token invalid - user needs to re-login`);
+    if (!userBusiness) {
+      throw new Error(`No business found for email: ${email}`);
     }
     
-    // Return mock data as fallback
-    const mockData: Business = {
-      id: '1',
-      name: 'My Business',
-      slug: 'my-business',
-      logo_url: null,
-      owner_email: 'business@example.com',
-      description: 'A sample business description',
-      country: 'France',
-      city: 'Paris',
-      address: '123 Business St',
-      zip_code: '75001',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    console.log(`✅ [API] Found business for email ${email}:`, userBusiness);
+    return userBusiness;
+  } catch (error: any) {
+    logNetworkError(operation, error);
     
-    console.log(`🎭 [API] Returning mock data for ${operation}:`, mockData);
-    return mockData;
+    // If we get 405 Method Not Allowed, it means the GET endpoint doesn't exist
+    // This indicates no businesses exist yet (or endpoint not implemented)
+    if (error?.status === 405) {
+      console.log(`📝 [API] GET /businesses/ not implemented - assuming no business exists for email: ${email}`);
+      throw new Error(`No business found for email: ${email}`);
+    }
+    
+    // Enhanced error handling for other cases
+    if (error instanceof Error && error.message.includes('No business found')) {
+      console.log(`📝 [API] No business exists for email: ${email}`);
+    }
+    
+    // Don't return mock data - let the error propagate so onboarding is triggered
+    throw error;
   }
 };
 
 export const updateBusinessProfile = async (data: BusinessUpdate): Promise<Business> => {
   const operation = 'updateBusinessProfile';
-  logNetworkCall(operation, '/businesses', data);
+  logNetworkCall(operation, '/businesses/', data);
   
   try {
-    const response = await apiClient.put<Business>('/businesses', data);
+    const response = await apiClient.put<Business>('/businesses/', data);
     logNetworkSuccess(operation, response);
     return response;
   } catch (error) {
@@ -527,6 +537,21 @@ export const updateVoucherTemplate = async (id: string, data: {
 
   } catch (error) {
     console.error(`❌ [API] updateVoucherTemplate failed:`, error);
+    throw error;
+  }
+};
+
+// Also add a function to create business profile
+export const createBusinessProfile = async (data: BusinessCreate): Promise<Business> => {
+  const operation = 'createBusinessProfile';
+  logNetworkCall(operation, '/businesses/', data);
+  
+  try {
+    const response = await apiClient.post<Business>('/businesses/', data);
+    logNetworkSuccess(operation, response);
+    return response;
+  } catch (error) {
+    logNetworkError(operation, error);
     throw error;
   }
 };
