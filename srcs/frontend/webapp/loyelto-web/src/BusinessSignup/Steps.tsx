@@ -22,25 +22,26 @@ const formProps = [
 ]
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
+    
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
         top: 10,
-        left: 'calc(-50% + 16px)',
-        right: 'calc(50% + 16px)',
+        left: 'calc(-50% + 2px)',
+        right: 'calc(50% + 2px)',
     },
     [`&.${stepConnectorClasses.active}`]: {
         [`& .${stepConnectorClasses.line}`]: {
-            borderColor: '#784af4',
+            borderColor: '#90ceff',
         },
     },
     [`&.${stepConnectorClasses.completed}`]: {
         [`& .${stepConnectorClasses.line}`]: {
-            borderColor: '#784af4',
+            borderColor: '#90ceff',
         },
     },
     [`& .${stepConnectorClasses.line}`]: {
         borderColor: '#eaeaf0',
-        borderTopWidth: 3,
-        borderRadius: 1,
+        borderTopWidth: 8,
+        borderRadius: 3,
         ...theme.applyStyles('dark', {
             borderColor: theme.palette.grey[800],
         }),
@@ -135,6 +136,8 @@ export default function Steps() {
                         <Step key={step.name}></Step>
                     ))}
                 </Stepper>
+              {activeStep < steps.length -1 &&  <Typography variant="caption" gutterBottom sx={{textAlign: 'center'}}>
+                    Step {activeStep + 1} /4</Typography>}
                 {steps[activeStep]?.component}
                 {/* <FormInstance handleSubmit={handleGeography} fieldsAndParams={formProps[1]} /> */}
             </Stack>

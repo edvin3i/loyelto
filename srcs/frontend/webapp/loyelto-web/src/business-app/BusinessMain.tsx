@@ -29,7 +29,6 @@ export default function BusinessMain() {
                     width: '100%',
                     height: '100vh'
                    
-                   
                 }}>
                 <Box sx={{ boxSizing: 'border-box', width: { xs: '100vw', sm: 1200 }, alignSelf: 'center', marginBottom: 5 }}>
                     <Box component='section' sx={{ marginX: { xs: 0, sm: 2 }, alignSelf: 'center' }}>
