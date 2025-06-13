@@ -3,7 +3,7 @@ import { Typography, TextField, Box } from "@mui/material"
 interface FormFieldProps {
     heading: string,
     type: string,
-  
+
     fieldId: string,
     fieldName: string
 }
@@ -28,6 +28,8 @@ export default function FormFieldElement({ heading, type, fieldId, fieldName }: 
                 : undefined
             }
             variant="outlined"
+            defaultValue=""
+            key={fieldId}
             sx={{
                 bgcolor: "white",
                 borderRadius: 3,

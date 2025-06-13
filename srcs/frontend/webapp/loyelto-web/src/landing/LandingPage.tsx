@@ -25,6 +25,14 @@ export default function LandingPage() {
 
             <LoyelToBar />
             <Toolbar />
+            <Box sx={{
+                 boxSizing: 'border-box',
+                    margin: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    width: '100%',
+            }}>
             <Box component="main"
                 sx={{
                     padding: { sm: 5 },
@@ -45,6 +53,7 @@ export default function LandingPage() {
                 <SlogansSection forWhom={t('consumerSloganTitle')} bgcolor={theme.palette.neutral.main} slogans={consumerSlogans} />
                 <WaitlistForm />
                 <SocialLinks />
+            </Box>
             </Box>
 
 
