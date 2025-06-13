@@ -32,7 +32,7 @@ export default function LoylRateForm({ handleSubmit }: LoylRateProps) {
                 paddingX: 2
             }}>
             <Stack id="formFieldsStack">
-                <Stack direction="row" sx={{justifyContent: 'space-between', marginY: 3}}>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', marginY: 3 }}>
                     <Typography variant="h5" color="initial" gutterBottom
                         sx={{ fontWeight: '600', fontSize: '1.3rem' }}>My loyalty program</Typography>
                     <IconButton size="small">
@@ -40,14 +40,25 @@ export default function LoylRateForm({ handleSubmit }: LoylRateProps) {
                     </IconButton>
                 </Stack>
                 <Stack direction="row" spacing={2}>
-                    <Button disableElevation size="small" variant="contained"><RemoveIcon /></Button>
+                    <Button disableElevation size="small" variant="contained" color="info"><RemoveIcon /></Button>
                     <TextField
                         required
                         type="text"
                         id="AverageSpend"
-                        inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                        inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                            style: { textAlign: 'center', fontSize: 34, fontWeight: 600 }
+                        }}
+                        sx={{
+                            bgcolor: "white",
+                            
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                border: "none"
+                            }
+                        }}
                     />
-                    <Button disableElevation size="small" variant="contained"><AddIcon /></Button>
+                    <Button disableElevation size="small" variant="contained" color="info"><AddIcon /></Button>
 
                 </Stack>
 

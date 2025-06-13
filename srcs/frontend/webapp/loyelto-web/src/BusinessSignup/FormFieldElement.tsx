@@ -12,7 +12,7 @@ export default function FormFieldElement({ heading, type, fieldId, fieldName }: 
     return (
         <Box sx={{ mb: 2 }}>
             <Typography variant="h5" gutterBottom
-            sx={{ fontWeight: 600, fontSize: 20 }}
+            sx={{ fontWeight: 500, fontSize: 20 }}
             >
             {heading}
             </Typography>

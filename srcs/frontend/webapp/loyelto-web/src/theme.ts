@@ -84,7 +84,7 @@ const theme = createTheme({
       contrastText: '#000',
     },
     info: {
-      main: '#abe7b2', //green in the business main page
+      main: '#8ecdff', //blue in the business signup buttons
       light: '#f3f3f3', //grey in the business main
       dark: '#0082ff', //blue in the business main
       contrastText: '#000',

@@ -30,10 +30,11 @@ export default function FormInstance({ handleSubmit, fieldsAndParams }: FormInst
                 width: '100vw',
                 boxSizing: 'border-box',
                 height: 587,
-                paddingY: 3,
+                paddingTop: 4,
+                paddingBottom: 6,
                 paddingX: 2
             }}>
-            <Stack sx={{ paddingY: 1 }}>
+            <Stack sx={{ paddingY: 1 }} spacing={4}>
                 {fieldsAndParams && fieldsAndParams.map((f, i) => {
                     console.dir(f)
                     return <FormFieldElement key={i} heading={f[0]} type={f[1]} fieldId={f[2]} fieldName={f[3]} />
