@@ -33,6 +33,7 @@ export default function FormFieldElement({ heading, type, fieldId, fieldName }: 
             sx={{
                 bgcolor: "white",
                 borderRadius: 3,
+                height: 52,
                 "& .MuiOutlinedInput-notchedOutline": {
                 border: "none"
                 }

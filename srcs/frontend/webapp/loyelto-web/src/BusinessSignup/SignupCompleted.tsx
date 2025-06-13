@@ -48,7 +48,7 @@ export default function SignupCompleted({ businessData }: { businessData: Busine
         console.dir(stableBusinessData)
         const sendPostRequest = async (data: BusinessData) => {
             try {
-            const response = await fetch('/api/v1/businesses/', {
+            const response = await fetch('api.stage.loyel.to/v1/businesses/', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

@@ -40,7 +40,7 @@ const QontoConnector = styled(StepConnector)(({ theme }) => ({
     },
     [`& .${stepConnectorClasses.line}`]: {
         borderColor: '#eaeaf0',
-        borderTopWidth: 8,
+        borderTopWidth: 5,
         borderRadius: 3,
         ...theme.applyStyles('dark', {
             borderColor: theme.palette.grey[800],
@@ -130,13 +130,13 @@ export default function Steps() {
     return (
         <>
             {/* <FormInstance handleSubmit={handleNameEmail} fieldsAndParams={formProps[0]} /> */}
-            <Stack spacing={5}>
+            <Stack spacing={3}>
                 <Stepper alternativeLabel activeStep={activeStep + 1} connector={<QontoConnector />}>
                     {steps.map((step) => (
                         <Step key={step.name}></Step>
                     ))}
                 </Stepper>
-              {activeStep < steps.length -1 &&  <Typography variant="caption" gutterBottom sx={{textAlign: 'center'}}>
+              {activeStep < steps.length -1 &&  <Typography variant="caption" color="initial" gutterBottom sx={{textAlign: 'center'}}>
                     Step {activeStep + 1} /4</Typography>}
                 {steps[activeStep]?.component}
                 {/* <FormInstance handleSubmit={handleGeography} fieldsAndParams={formProps[1]} /> */}

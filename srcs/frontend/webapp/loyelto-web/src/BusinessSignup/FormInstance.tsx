@@ -21,7 +21,7 @@ export default function FormInstance({ handleSubmit, fieldsAndParams }: FormInst
                     const input = form.elements.namedItem(f[2]) as HTMLInputElement;
                     values.push(input.value)
                 })
-                
+
                 handleSubmit(values)
             }}
             sx={{
@@ -33,14 +33,21 @@ export default function FormInstance({ handleSubmit, fieldsAndParams }: FormInst
                 paddingY: 3,
                 paddingX: 2
             }}>
-            <Stack sx={{paddingY: 1}}>
+            <Stack sx={{ paddingY: 1 }}>
                 {fieldsAndParams && fieldsAndParams.map((f, i) => {
                     console.dir(f)
                     return <FormFieldElement key={i} heading={f[0]} type={f[1]} fieldId={f[2]} fieldName={f[3]} />
                 })}
-               
+
             </Stack>
-            <Button fullWidth disableElevation size="large" color="success" variant="contained" type="submit">
+            <Button fullWidth disableElevation size="large" color="success" variant="contained" type="submit"
+                sx={{
+                    fontSize: 16,
+                    fontWeight: 600, 
+                    textTransform: 'none',
+                    borderRadius: 2
+                }}
+            >
                 Next
             </Button>
 
