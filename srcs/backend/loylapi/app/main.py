@@ -13,6 +13,7 @@ from app.services.exchange_client import ExchangeClient
 from app.admin import setup_admin
 from app.db.session import engine
 
+
 bearer = HTTPBearer(auto_error=False)
 
 
@@ -38,8 +39,7 @@ def current_user(creds=Depends(bearer)):
 
 
 app = FastAPI(**settings.fastapi_kwargs)
-
-# app.state.settings = settings
+app.state.settings = settings          # type: ignore[attr-defined]
 
 from fastapi.middleware.cors import CORSMiddleware
 
