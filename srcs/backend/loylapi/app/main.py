@@ -47,7 +47,6 @@ app.state.settings = settings          # type: ignore[attr-defined]
 app.add_middleware(
     ProxyHeadersMiddleware, # type: ignore
     trusted_hosts="*",
-    trusted_ips="*",
 )
 
 app.add_middleware(
