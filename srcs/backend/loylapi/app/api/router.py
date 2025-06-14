@@ -19,6 +19,7 @@ from app.api.v1 import (
     loyalty,
     business_onboarding,
     token_minting,
+    admin_auth,
 )
 
 
@@ -42,3 +43,4 @@ router.include_router(reviews)
 router.include_router(loyalty)
 # router.include_router(business_onboarding)
 router.include_router(token_minting)
+router.include_router(admin_auth.router)
