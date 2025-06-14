@@ -24,6 +24,10 @@ dependencies = [
     "python-jose>=3.4.0",
     "redis>=6.1.0",
     "psycopg2-binary>=2.9.10",
+    "passlib>=1.7.4",
+    "qrcode[pil]>=8.2",
+    "pyotp>=2.9.0",
+    "sqladmin[full]>=0.20.1",
 ]
 
 [dependency-groups]
