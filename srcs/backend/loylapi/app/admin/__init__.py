@@ -11,7 +11,7 @@ from app.admin.views import (
 def setup_admin(app, engine):
     """Setting admin panel"""
 
-    # Add SessionMiddleware 
+    # Add SessionMiddleware
     # (SQLAdmin requires it for authentication)
     middleware_classes = [m.cls for m in app.middleware]
     if SessionMiddleware not in middleware_classes:

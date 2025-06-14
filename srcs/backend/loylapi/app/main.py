@@ -9,6 +9,10 @@ from app.api.router import router as v1_router
 from app.api.ws import router as ws_router
 from app.services.exchange_client import ExchangeClient
 
+# for admin panel
+from app.admin import setup_admin
+from app.db.session import engine
+
 bearer = HTTPBearer(auto_error=False)
 
 
@@ -34,6 +38,8 @@ def current_user(creds=Depends(bearer)):
 
 
 app = FastAPI(**settings.fastapi_kwargs)
+
+# app.state.settings = settings
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -89,3 +95,19 @@ def read_root():
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
+
+
+admin = setup_admin(app, engine)
+
+
+if __name__ == "__main__":
+    import click
+    from app.cli.admin import admin_cli
+
+    @click.group()
+    def cli():
+        pass
+
+    cli.add_command(admin_cli, name="admin")
+
+    cli()
