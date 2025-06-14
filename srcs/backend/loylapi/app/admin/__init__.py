@@ -21,7 +21,7 @@ def setup_admin(app, engine):
 
     # Add SessionMiddleware
     # (SQLAdmin requires it for authentication)
-    middleware_classes = [m.cls for m in app.middleware]
+    middleware_classes = [m.cls for m in app.user_middleware]
     if SessionMiddleware not in middleware_classes:
         app.add_middleware(
             SessionMiddleware, secret_key=app.state.settings.ADMIN_SECRET_KEY
