@@ -15,7 +15,6 @@ from app.schemas.types import (
 )
 
 
-
 class BusinessCreate(BaseSchema):
     name: NameStr
     slug: SlugStr

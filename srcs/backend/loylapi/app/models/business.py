@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from app.models import Token
     from app.models import VoucherTemplate
 
+
 class BusinessReview(Base):
     __tablename__ = "business_reviews"
     __table_args__ = (
@@ -39,14 +40,14 @@ class BusinessReview(Base):
         primary_key=True,
         default=uuid.uuid4,
         nullable=False,
-        comment="Primary key UUID"
+        comment="Primary key UUID",
     )
 
     business_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("businesses.id", ondelete="CASCADE"),
         nullable=False,
-        comment="Link on business"
+        comment="Link on business",
     )
     business: Mapped[Business] = relationship(
         "Business",
@@ -58,7 +59,7 @@ class BusinessReview(Base):
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
-        comment="Link on user"
+        comment="Link on user",
     )
 
     user: Mapped[User] = relationship(
@@ -84,6 +85,7 @@ class BusinessReview(Base):
         nullable=False,
     )
 
+
 class Business(Base):
     __tablename__ = "businesses"
     __table_args__ = (
@@ -95,7 +97,9 @@ class Business(Base):
     slug: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     logo_url: Mapped[str | None] = mapped_column(String(512))
     owner_email: Mapped[str] = mapped_column(String(320), index=True)
-    owner_pubkey:  Mapped[str] = mapped_column(String(44), nullable=False, unique=True, index=True)
+    owner_pubkey: Mapped[str] = mapped_column(
+        String(44), nullable=False, unique=True, index=True
+    )
     owner_privkey: Mapped[str] = mapped_column(String(88))
     description: Mapped[str] = mapped_column(String(512))
     country: Mapped[str] = mapped_column(String(64))
@@ -149,5 +153,3 @@ class Business(Base):
         .correlate_except(BusinessReview)
         .scalar_subquery()
     )
-
-

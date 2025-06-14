@@ -39,7 +39,9 @@ class RedeemResponse(BaseSchema):
     response_model=PointTxOut,
     status_code=status.HTTP_201_CREATED,
 )
-async def earn_points(biz_id: UUID, payload: EarnRequest, db: AsyncSession = Depends(get_db)):
+async def earn_points(
+    biz_id: UUID, payload: EarnRequest, db: AsyncSession = Depends(get_db)
+):
     biz = await business_service.read(db, biz_id)
     if not biz:
         raise HTTPException(status_code=404, detail="business not found")
@@ -60,7 +62,9 @@ async def earn_points(biz_id: UUID, payload: EarnRequest, db: AsyncSession = Dep
     response_model=RedeemResponse,
     status_code=status.HTTP_201_CREATED,
 )
-async def redeem_points(biz_id: UUID, payload: RedeemRequest, db: AsyncSession = Depends(get_db)):
+async def redeem_points(
+    biz_id: UUID, payload: RedeemRequest, db: AsyncSession = Depends(get_db)
+):
     campaign = await promotion_campaign_service.read(db, payload.campaign_id)
     if not campaign or str(campaign.business_id) != str(biz_id):
         raise HTTPException(status_code=404, detail="campaign not found")

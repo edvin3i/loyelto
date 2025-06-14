@@ -13,9 +13,8 @@ def admin_cli():
 
 
 @admin_cli.command()
-@click.option('--email', prompt=True, help="Admin's Email")
-@click.option('--password', prompt=True, hide_input=True,
-              confirmation_prompt=True)
+@click.option("--email", prompt=True, help="Admin's Email")
+@click.option("--password", prompt=True, hide_input=True, confirmation_prompt=True)
 def create_admin(email: str, password: str):
     """Creating new admin user"""
 
@@ -34,15 +33,14 @@ def create_admin(email: str, password: str):
             click.echo(f"✅ Admin user created successfully!")
             click.echo(f"Email: {admin.email}")
             click.echo(f"ID: {admin.id}")
-            click.echo(
-                "\nAnd now you can enter to admin dashboard with user/email")
+            click.echo("\nAnd now you can enter to admin dashboard with user/email")
             click.echo("Recomendation: setup the 2FA after first login")
 
     asyncio.run(_create())
 
 
 @admin_cli.command()
-@click.option('--email', prompt=True, help="Admin's Email")
+@click.option("--email", prompt=True, help="Admin's Email")
 def disable_admin(email: str):
     """Deactivating admin user"""
 
@@ -67,6 +65,7 @@ def list_admins():
     async def _list():
         async with AsyncSessionLocal() as db:
             from app.models import Admin
+
             result = await db.execute(select(Admin).order_by(Admin.created_at))
             admins = result.scalars().all()
 

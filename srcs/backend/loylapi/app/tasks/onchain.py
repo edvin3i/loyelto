@@ -29,8 +29,7 @@ def swap_task(self, swap_tx_id: str) -> None:
     """
 
     async def _run_swap() -> None:
-        await publish(f"swap:{swap_tx_id}",
-                      {"swap_id": swap_tx_id, "event": "pending"})
+        await publish(f"swap:{swap_tx_id}", {"swap_id": swap_tx_id, "event": "pending"})
         async with AsyncSessionLocal() as session:  # type: AsyncSession
             # 1) Load SwapTx
             swap = await session.get(SwapTx, swap_tx_id)
@@ -89,14 +88,15 @@ def swap_task(self, swap_tx_id: str) -> None:
             swap.status = TxStatus.SUCCESS
             await session.commit()
 
-            await publish(f"swap:{swap_tx_id}",
-                          {"swap_id": swap_tx_id, "event": "success"})
-
+            await publish(
+                f"swap:{swap_tx_id}", {"swap_id": swap_tx_id, "event": "success"}
+            )
 
     try:
         asyncio.run(_run_swap())
     except Exception as exc:
         logger.error(f"Swap {swap_tx_id} failed: {exc}", exc_info=True)
-        asyncio.run(publish(f"swap:{swap_tx_id}",
-                            {"swap_id": swap_tx_id, "event": "failed"}))
+        asyncio.run(
+            publish(f"swap:{swap_tx_id}", {"swap_id": swap_tx_id, "event": "failed"})
+        )
         raise self.retry(exc=exc, countdown=10, queue="onchain")

@@ -1,4 +1,5 @@
 """Periodic confirmation of outbound Solana transactions."""
+
 from __future__ import annotations
 import asyncio, logging
 from typing import List
@@ -17,8 +18,11 @@ celery: Celery  # autodiscovered by Celery
 
 def _confirm_all() -> None:
     """Async helper: poll pending tasks and update statuses."""
+
     async def _run():
-        async with AsyncSessionLocal() as db, AsyncClient(settings.SOLANA_RPC_URL) as rpc:
+        async with AsyncSessionLocal() as db, AsyncClient(
+            settings.SOLANA_RPC_URL
+        ) as rpc:
             # 1) We collect all PENDING logs with real results.
             stmt = select(CeleryTaskLog).where(
                 CeleryTaskLog.status == TaskStatus.PENDING,
@@ -29,7 +33,9 @@ def _confirm_all() -> None:
                 return
 
             # 2) We take a list of caption strings
-            sigs: List[str] = [log_entry.result for log_entry in pending if log_entry.result]
+            sigs: List[str] = [
+                log_entry.result for log_entry in pending if log_entry.result
+            ]
 
             # 3) We request the statuses.
             res = await rpc.get_signature_statuses(sigs)

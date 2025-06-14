@@ -1,4 +1,5 @@
 """Singleton async Redis connection using redis>=4.0."""
+
 from __future__ import annotations
 from functools import lru_cache
 from redis.asyncio import Redis as _Redis

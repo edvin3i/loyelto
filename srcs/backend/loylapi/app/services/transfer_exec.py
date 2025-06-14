@@ -97,6 +97,7 @@ async def _submit_transfer(
 
 # Blocking wrappers for Celery tasks
 
+
 def earn_token(mint: str, user_pubkey: str, business_kp_b58: str, amount: int) -> str:
     """
     Business → User: local keypair signs and submits.

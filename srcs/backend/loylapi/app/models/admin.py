@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 import uuid
 import datetime
@@ -11,15 +10,15 @@ from app.utils import uuid_pk
 
 class Admin(Base):
     __tablename__ = "admins"
-    __table_args__ = (
-        Index("ix_admin_email", "email", unique=True),
-    )
+    __table_args__ = (Index("ix_admin_email", "email", unique=True),)
 
     id: Mapped[uuid.UUID] = uuid_pk()
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     totp_secret: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    is_totp_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    is_totp_enabled: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     last_login: Mapped[datetime.datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True

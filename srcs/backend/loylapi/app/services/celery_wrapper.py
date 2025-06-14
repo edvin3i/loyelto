@@ -1,4 +1,5 @@
 """Thread-safe logging decorator for Celery tasks (async-db aware)."""
+
 from __future__ import annotations
 import asyncio
 from functools import wraps

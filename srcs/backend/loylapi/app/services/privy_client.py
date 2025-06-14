@@ -8,6 +8,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class PrivyUser(BaseModel):
     id: str  # Privy DID
     created_at: int = 0
@@ -30,18 +31,10 @@ class PrivyClient:
         self.app_id, self.api_key, self.cluster = app_id, api_key, cluster
         self.base_url = "https://api.privy.io/v1"
         self._auth = httpx.BasicAuth(app_id, api_key)
-        self._headers = {
-            "privy-app-id": app_id,
-            "Content-Type": "application/json"
-        }
+        self._headers = {"privy-app-id": app_id, "Content-Type": "application/json"}
 
     # ---------- helpers -------------------------------------------------
-    async def _request(
-        self,
-        method: str,
-        endpoint: str,
-        **kwargs
-    ) -> httpx.Response:
+    async def _request(self, method: str, endpoint: str, **kwargs) -> httpx.Response:
         """Execute HTTP request with retry logic"""
         url = f"{self.base_url}{endpoint}"
         kwargs.setdefault("auth", self._auth)
@@ -69,7 +62,7 @@ class PrivyClient:
                 raise
             except Exception as e:
                 if attempt < max_retries - 1:
-                    await asyncio.sleep(2 ** attempt)
+                    await asyncio.sleep(2**attempt)
                     continue
                 raise
 
@@ -100,8 +93,10 @@ class PrivyClient:
         phone = None
 
         for account in linked_accounts:
-            if account.get("type") == "wallet" and account.get(
-                    "wallet_client_type") == "privy":
+            if (
+                account.get("type") == "wallet"
+                and account.get("wallet_client_type") == "privy"
+            ):
                 embedded_wallet = account.get("address")
             elif account.get("type") == "email":
                 email = account.get("address")
@@ -115,7 +110,7 @@ class PrivyClient:
             embedded_wallet=embedded_wallet,
             email=email,
             phone=phone,
-            custom_metadata=data.get("custom_metadata")
+            custom_metadata=data.get("custom_metadata"),
         )
 
     async def create_wallets(self, privy_id: str) -> str:
@@ -125,11 +120,10 @@ class PrivyClient:
         payload = {
             "createSolanaWallet": True,
             "createEthereumWallet": False,
-            "solanaCluster": self.cluster
+            "solanaCluster": self.cluster,
         }
 
-        r = await self._request("POST", f"/users/{clean_id}/wallets",
-                                json=payload)
+        r = await self._request("POST", f"/users/{clean_id}/wallets", json=payload)
         data = r.json()
         wallets = data.get("wallets", {}).get("solana", [])
 
@@ -145,11 +139,10 @@ class PrivyClient:
             "params": {
                 "transaction": tx_b64,
                 "encoding": "base64",
-                "cluster": self.cluster
-            }
+                "cluster": self.cluster,
+            },
         }
-        r = await self._request("POST", f"/wallets/{wallet_address}/rpc",
-                                json=payload)
+        r = await self._request("POST", f"/wallets/{wallet_address}/rpc", json=payload)
         data = r.json()
 
         if "error" in data:
@@ -180,7 +173,7 @@ class PrivyClient:
         credentials = f"{app_id}:{app_secret}"
         headers = {
             "Authorization": f"Basic {base64.b64encode(credentials.encode()).decode()}",
-            "privy-app-id": app_id
+            "privy-app-id": app_id,
         }
 
         async with httpx.AsyncClient() as client:
@@ -190,10 +183,12 @@ class PrivyClient:
             return response.json()
         else:
             raise Exception(
-                f"Failed to fetch user: {response.status_code} - {response.text}")
+                f"Failed to fetch user: {response.status_code} - {response.text}"
+            )
 
 
 # ---------- utilities --------------------------------------------------
+
 
 def verify_sig(sig: str | None, body: bytes, secret: str) -> bool:
     if not sig:

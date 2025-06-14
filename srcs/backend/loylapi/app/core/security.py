@@ -93,7 +93,7 @@ def verify_privy_token(token: str) -> TokenClaims:
             algorithms=ALGS,
             audience=settings.PRIVY_APP_ID,
             issuer="privy.io",
-            options={"verify_exp": True}
+            options={"verify_exp": True},
         )
         return TokenClaims(
             did=payload["sub"],
@@ -102,7 +102,7 @@ def verify_privy_token(token: str) -> TokenClaims:
             aud=payload["aud"],
             iss=payload["iss"],
             iat=payload["iat"],
-            exp=payload["exp"]
+            exp=payload["exp"],
         )
     except jwt.ExpiredSignatureError:
         raise ValueError("Token has expired")

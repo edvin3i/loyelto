@@ -22,20 +22,27 @@ if TYPE_CHECKING:
     from app.models import Wallet
     from app.models import BusinessReview
 
+
 class User(Base):
     __tablename__ = "users"
     __table_args__ = (
-        CheckConstraint("(email IS NOT NULL OR phone IS NOT NULL)",
-                        name="ck_users_contact_present"),
+        CheckConstraint(
+            "(email IS NOT NULL OR phone IS NOT NULL)", name="ck_users_contact_present"
+        ),
         CheckConstraint("email <> ''", name="ck_users_email_not_empty"),
         CheckConstraint("phone <> ''", name="ck_users_phone_not_empty"),
-
     )
 
     id: Mapped[uuid.UUID] = uuid_pk()
-    privy_id: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
-    email: Mapped[str | None] = mapped_column(CITEXT(), unique=True, nullable=True, index=True)
-    phone: Mapped[str | None] = mapped_column(String(32), unique=True, nullable=True, index=True)
+    privy_id: Mapped[str] = mapped_column(
+        String(64), unique=True, nullable=False, index=True
+    )
+    email: Mapped[str | None] = mapped_column(
+        CITEXT(), unique=True, nullable=True, index=True
+    )
+    phone: Mapped[str | None] = mapped_column(
+        String(32), unique=True, nullable=True, index=True
+    )
     created_at: Mapped[datetime.datetime] = mapped_column(
         # default=datetime.datetime.now(datetime.UTC)
         DateTime(timezone=True),

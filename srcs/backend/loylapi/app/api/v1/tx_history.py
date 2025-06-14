@@ -7,6 +7,7 @@ from app.services.tx_history import tx_history_service
 
 router = APIRouter(prefix="/history", tags=["history"])
 
+
 @router.get("/user/{user_id}", response_model=List[dict])
 async def user_history(
     user_id: UUID,

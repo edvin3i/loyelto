@@ -22,8 +22,8 @@ class TokenMintingStatusResponse(BaseModel):
 
 @router.get("/status/{business_id}", response_model=TokenMintingStatusResponse)
 async def get_token_minting_status(
-    business_id: Annotated[UUID4, Path(...)], 
-    db: Annotated[AsyncSession, Depends(get_db)]
+    business_id: Annotated[UUID4, Path(...)],
+    db: Annotated[AsyncSession, Depends(get_db)],
 ):
     """
     Check the status of token minting for a specific business.
@@ -34,33 +34,31 @@ async def get_token_minting_status(
         select(Business).where(Business.id == business_id)
     )
     business = business_query.scalar_one_or_none()
-    
+
     if not business:
         raise HTTPException(status_code=404, detail="Business not found")
-    
+
     # Prepare the response
     response = TokenMintingStatusResponse(
-        business_id=business.id,
-        business_name=business.name,
-        token_created=False
+        business_id=business.id, business_name=business.name, token_created=False
     )
-    
+
     # Check if token was created
     if business.loyalty_token:
         token = business.loyalty_token
         response.token_created = True
         response.token_symbol = token.symbol
         response.token_mint_address = token.mint
-        
+
         # Check if pool was initialized
         pool_query = await db.execute(
             select(TokenPool).where(TokenPool.token_id == token.id)
         )
         pool = pool_query.scalar_one_or_none()
-        
+
         if pool:
             response.pool_initialized = True
             response.pool_balance_token = pool.balance_token
             response.pool_balance_loyl = pool.balance_loyl
-    
+
     return response

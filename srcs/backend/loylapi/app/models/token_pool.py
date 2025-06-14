@@ -30,7 +30,9 @@ class TokenPool(Base):
     id: Mapped[uuid.UUID] = uuid_pk()
     token_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("tokens.id", ondelete="CASCADE"),
-        index=True, nullable=False, unique=True
+        index=True,
+        nullable=False,
+        unique=True,
     )
     provider: Mapped[str] = mapped_column(
         String(16),

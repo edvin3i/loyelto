@@ -29,9 +29,7 @@ class AdminService(BaseService[Admin, AdminCreate, AdminUpdate]):
 
         # creating admin
         admin = Admin(
-            email=payload.email,
-            password_hash=hashed_password,
-            is_active=True
+            email=payload.email, password_hash=hashed_password, is_active=True
         )
         db.add(admin)
         await db.commit()
@@ -39,7 +37,7 @@ class AdminService(BaseService[Admin, AdminCreate, AdminUpdate]):
         return admin
 
     async def authenticate(
-            self, db: AsyncSession, email: str, password: str
+        self, db: AsyncSession, email: str, password: str
     ) -> Optional[Admin]:
         """Authentication by email and password"""
         # looking for admin
@@ -73,8 +71,7 @@ class AdminService(BaseService[Admin, AdminCreate, AdminUpdate]):
         # create the provisioning URI for QR code
         totp = pyotp.TOTP(secret)
         provisioning_uri = totp.provisioning_uri(
-            name=admin.email,
-            issuer_name="LOYL Admin Panel"
+            name=admin.email, issuer_name="LOYL Admin Panel"
         )
 
         # generate QR code
@@ -86,7 +83,7 @@ class AdminService(BaseService[Admin, AdminCreate, AdminUpdate]):
 
         # converting to base64 for displaying
         buffer = io.BytesIO()
-        img.save(buffer, format='PNG')
+        img.save(buffer, format="PNG")
         buffer.seek(0)
         qr_base64 = base64.b64encode(buffer.getvalue()).decode()
 
@@ -94,14 +91,9 @@ class AdminService(BaseService[Admin, AdminCreate, AdminUpdate]):
         admin.totp_secret = secret
         await db.commit()
 
-        return {
-            "qr_uri": f"data:image/png;base64,{qr_base64}",
-            "secret": secret
-        }
+        return {"qr_uri": f"data:image/png;base64,{qr_base64}", "secret": secret}
 
-    async def enable_totp(
-            self, db: AsyncSession, admin: Admin, code: str
-    ) -> bool:
+    async def enable_totp(self, db: AsyncSession, admin: Admin, code: str) -> bool:
         """Switch on TOTP after code checking"""
         if not admin.totp_secret:
             return False
@@ -115,9 +107,7 @@ class AdminService(BaseService[Admin, AdminCreate, AdminUpdate]):
         await db.commit()
         return True
 
-    async def disable_totp(
-            self, db: AsyncSession, admin: Admin, password: str
-    ) -> bool:
+    async def disable_totp(self, db: AsyncSession, admin: Admin, password: str) -> bool:
         """Switch off TOTP (pass required)"""
         # check password
         if not pwd_context.verify(password, admin.password_hash):
@@ -129,16 +119,12 @@ class AdminService(BaseService[Admin, AdminCreate, AdminUpdate]):
         await db.commit()
         return True
 
-    async def update_last_login(
-            self, db: AsyncSession, admin: Admin
-    ) -> None:
+    async def update_last_login(self, db: AsyncSession, admin: Admin) -> None:
         """Update time of last login"""
         admin.last_login = datetime.now(UTC)
         await db.commit()
 
-    async def get_by_email(
-            self, db: AsyncSession, email: str
-    ) -> Optional[Admin]:
+    async def get_by_email(self, db: AsyncSession, email: str) -> Optional[Admin]:
         """Get admin by email"""
         stmt = select(Admin).where(Admin.email == email)
         result = await db.execute(stmt)

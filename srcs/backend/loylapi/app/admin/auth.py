@@ -26,10 +26,9 @@ class AdminAuthBackend(AuthenticationBackend):
             if admin.is_totp_enabled:
                 # if code unavailable, save temp data
                 if not totp_code:
-                    request.session.update({
-                        "temp_admin_id": str(admin.id),
-                        "needs_totp": True
-                    })
+                    request.session.update(
+                        {"temp_admin_id": str(admin.id), "needs_totp": True}
+                    )
                     return False
 
                 # checking TOTP code
@@ -37,11 +36,13 @@ class AdminAuthBackend(AuthenticationBackend):
                     return False
 
             # succesfull entering
-            request.session.update({
-                "admin_id": str(admin.id),
-                "admin_email": admin.email,
-                "needs_totp": False
-            })
+            request.session.update(
+                {
+                    "admin_id": str(admin.id),
+                    "admin_email": admin.email,
+                    "needs_totp": False,
+                }
+            )
             request.session.pop("temp_admin_id", None)
 
             # update last_login
