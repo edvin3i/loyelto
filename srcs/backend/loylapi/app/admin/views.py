@@ -51,7 +51,7 @@ class BusinessAdmin(BaseAdminView, model=Business):
     column_default_sort = [(Business.created_at, True)]
 
     # hide the private key
-    column_exclude_list = [Business.owner_privkey]
+    # column_exclude_list = [Business.owner_privkey]
     form_excluded_columns = [Business.owner_privkey]
 
 
@@ -156,7 +156,7 @@ class AdminAdmin(BaseAdminView, model=Admin):
     column_default_sort = [(Admin.created_at, True)]
 
     # hide sensitive fields
-    column_exclude_list = [Admin.password_hash, Admin.totp_secret]
+    # column_exclude_list = [Admin.password_hash, Admin.totp_secret]
     form_excluded_columns = [Admin.password_hash, Admin.totp_secret, Admin.last_login]
 
     # only superadmin can rule aother admins
