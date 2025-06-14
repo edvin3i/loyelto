@@ -8,11 +8,16 @@ from app.schemas.business import BusinessCreate
 
 crud_business = CRUDBase[Business, BusinessCreate, BusinessCreate](Business)
 
+
 class BusinessService(BaseService[Business, BusinessCreate, BusinessCreate]):
     async def create(self, db, payload: BusinessCreate) -> Business:
         # 1) generate new Solana keypair
-        kp = Keypair()  # correct way to get a fresh keypair :contentReference[oaicite:0]{index=0}
-        priv_bytes = kp.secret()  # returns the 64-byte secret key :contentReference[oaicite:1]{index=1}
+        kp = (
+            Keypair()
+        )  # correct way to get a fresh keypair :contentReference[oaicite:0]{index=0}
+        priv_bytes = (
+            kp.secret()
+        )  # returns the 64-byte secret key :contentReference[oaicite:1]{index=1}
         pubkey_str = str(kp.pubkey())  # the associated public key
 
         # 2) encode for storage
@@ -31,9 +36,11 @@ class BusinessService(BaseService[Business, BusinessCreate, BusinessCreate]):
         # 4) enqueue your existing mint/pool bootstrap
         from celery.app.task import Task
         from app.tasks.business import mint_token_task
+
         mint_token_task: Task
         mint_token_task.delay(str(biz.id))
 
         return biz
+
 
 business_service = BusinessService(crud_business)

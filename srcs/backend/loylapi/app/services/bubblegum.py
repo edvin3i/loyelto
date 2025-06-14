@@ -2,10 +2,12 @@
 Skeletal wrapper around Bubblegum mints – for MVP minting off-chain,
 returning dummy asset_id (uuid4) and saving to db.
 """
+
 import uuid
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import VoucherTemplate, VoucherNFT, VoucherStatus
+
 
 class BubblegumMinter:
     async def mint(
@@ -23,5 +25,6 @@ class BubblegumMinter:
         await db.commit()
         await db.refresh(nft)
         return nft
+
 
 bubblegum_minter = BubblegumMinter()

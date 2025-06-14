@@ -29,6 +29,7 @@ LOYALTY_PROGRAM_ID = Pubkey.from_string(settings.LOYL_TOKEN_PROGRAM_ID)
 
 # --- Core mint & record logic ------------------------------------------
 
+
 async def _mint_and_record_async(business_id: str) -> None:
     """
     Creates a branded loyalty token for a business and initializes a liquidity pool:
@@ -107,10 +108,10 @@ async def _mint_and_record_async(business_id: str) -> None:
 def mint_and_record(business_id: str) -> None:
     """
     Synchronous wrapper for Celery: runs the async token minting process.
-    
+
     Args:
         business_id: UUID of the business to mint tokens for
-        
+
     Raises:
         RuntimeError: If any step in the token minting process fails
     """
@@ -119,5 +120,8 @@ def mint_and_record(business_id: str) -> None:
     except Exception as err:
         # Log the error with more details
         import logging
-        logging.error(f"Token minting failed for business {business_id}: {err}", exc_info=True)
+
+        logging.error(
+            f"Token minting failed for business {business_id}: {err}", exc_info=True
+        )
         raise RuntimeError(f"mint_and_record failed for {business_id}: {err}") from err

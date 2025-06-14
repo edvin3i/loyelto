@@ -22,9 +22,9 @@ auth_scheme = HTTPBearer(auto_error=False)
 
 @router.post("/handshake", response_model=UserOut)
 async def privy_handshake(
-        request: Request,
-        creds: HTTPAuthorizationCredentials = Depends(auth_scheme),
-        db: AsyncSession = Depends(get_db),
+    request: Request,
+    creds: HTTPAuthorizationCredentials = Depends(auth_scheme),
+    db: AsyncSession = Depends(get_db),
 ):
     """Single round-trip login:
     1. Validate JWT token (access or identity)
@@ -49,7 +49,8 @@ async def privy_handshake(
             is_id_token = False
 
         logger.info(
-            f"🔑 [HANDSHAKE] Received {'identity' if is_id_token else 'access'} token")
+            f"🔑 [HANDSHAKE] Received {'identity' if is_id_token else 'access'} token"
+        )
 
         # Verify token and get user data
         try:
@@ -62,8 +63,7 @@ async def privy_handshake(
                     privy_id = unverified.get("sub", "").replace("did:privy:", "")
                     if not privy_id:
                         raise ValueError("No subject in identity token")
-                    user_data = await privy_client.get_user(
-                        f"did:privy:{privy_id}")
+                    user_data = await privy_client.get_user(f"did:privy:{privy_id}")
                 except jwt.JWTError as e:
                     raise ValueError(f"Invalid identity token format: {e}")
             else:
@@ -73,19 +73,21 @@ async def privy_handshake(
                 user_data = await privy_client.get_user(claims.did)
 
             logger.info(
-                f"✅ [HANDSHAKE] Retrieved user data for Privy ID: {user_data.id}")
+                f"✅ [HANDSHAKE] Retrieved user data for Privy ID: {user_data.id}"
+            )
 
         except Exception as e:
             logger.error(f"❌ [HANDSHAKE] Token verification failed: {e}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f"Invalid token: {str(e)}"
+                detail=f"Invalid token: {str(e)}",
             )
 
         # Create or update user
         try:
             logger.info(
-                f"👤 [HANDSHAKE] Creating/getting user for privy_id: {user_data.id}")
+                f"👤 [HANDSHAKE] Creating/getting user for privy_id: {user_data.id}"
+            )
             user = await user_service.create_or_get(
                 db,
                 privy_id=user_data.id,
@@ -97,19 +99,19 @@ async def privy_handshake(
             logger.error(f"❌ [HANDSHAKE] User creation/retrieval failed: {e}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"User service error: {str(e)}"
+                detail=f"User service error: {str(e)}",
             )
 
         # Handle wallet creation if needed
         try:
             if not user.wallets and user_data.embedded_wallet:
                 logger.info(f"💰 [HANDSHAKE] Adding wallet for user: {user.id}")
-                await wallet_service.add_if_missing(db, user,
-                                                    user_data.embedded_wallet)
+                await wallet_service.add_if_missing(db, user, user_data.embedded_wallet)
                 logger.info(f"✅ [HANDSHAKE] Wallet added to user: {user.id}")
             else:
                 logger.info(
-                    f"✅ [HANDSHAKE] User already has {len(user.wallets)} wallet(s)")
+                    f"✅ [HANDSHAKE] User already has {len(user.wallets)} wallet(s)"
+                )
         except Exception as e:
             logger.error(f"❌ [HANDSHAKE] Wallet addition failed: {e}")
             # Don't fail handshake if wallet creation fails
@@ -117,8 +119,9 @@ async def privy_handshake(
 
         logger.info("✅ [HANDSHAKE] Handshake completed successfully")
         logger.info(
-            f"✅ [HANDSHAKE] Success for user: {user.id}, token_type: {'identity' if is_id_token else 'access'}")
-        return  user
+            f"✅ [HANDSHAKE] Success for user: {user.id}, token_type: {'identity' if is_id_token else 'access'}"
+        )
+        return user
 
     except HTTPException:
         raise
@@ -126,8 +129,9 @@ async def privy_handshake(
         logger.error(f"💥 [HANDSHAKE] Unexpected error: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Internal server error: {str(e)}"
+            detail=f"Internal server error: {str(e)}",
         )
+
 
 # --- callback & webhook unchanged (kept for Pro tier) ----------------------
 @router.get("/callback")
@@ -135,7 +139,9 @@ async def privy_callback(code: str, db: AsyncSession = Depends(get_db)):
     privy = PrivyClient(settings.PRIVY_APP_ID, settings.PRIVY_API_KEY)
     privy_id = await privy.exchange_code(code)
     p_user = await privy.get_user(privy_id)
-    user = await user_service.create_or_get(db, privy_id=p_user.id, email=p_user.email, phone=p_user.phone)
+    user = await user_service.create_or_get(
+        db, privy_id=p_user.id, email=p_user.email, phone=p_user.phone
+    )
     await wallet_service.add_if_missing(db, user, p_user.embedded_wallet)
     return RedirectResponse(url="/")
 

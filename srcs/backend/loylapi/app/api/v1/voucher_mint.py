@@ -8,12 +8,15 @@ from app.schemas.voucher import VoucherNFTOut
 
 router = APIRouter(prefix="/voucher", tags=["vouchers"])
 
+
 @router.post(
     "/template/{template_id}/mint",
     response_model=VoucherNFTOut,
     status_code=status.HTTP_202_ACCEPTED,
 )
-async def mint_voucher(template_id: UUID, user_id: UUID, db: AsyncSession = Depends(get_db)):
+async def mint_voucher(
+    template_id: UUID, user_id: UUID, db: AsyncSession = Depends(get_db)
+):
     tmpl = await db.get(VoucherTemplate, template_id)
     if not tmpl:
         raise HTTPException(404, "template not found")

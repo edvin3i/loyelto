@@ -70,8 +70,12 @@ class LoyaltyService:
             user_pubkey=wallet.pubkey,
             amount=points,
         )
-        logger.info("Enqueued earn_points: biz=%s user=%s pts=%d",
-                    business.id, wallet.user_id, points)
+        logger.info(
+            "Enqueued earn_points: biz=%s user=%s pts=%d",
+            business.id,
+            wallet.user_id,
+            points,
+        )
 
         # 4) Update off-chain balance
         bal = await balance_service.adjust_balance(self.db, wallet, token, points)
@@ -138,11 +142,17 @@ class LoyaltyService:
             business_pubkey=biz_pubkey,
             amount=campaign.price_points,
         )
-        logger.info("Enqueued redeem_points: biz=%s user=%s pts=%d",
-                    biz.id, wallet.user_id, campaign.price_points)
+        logger.info(
+            "Enqueued redeem_points: biz=%s user=%s pts=%d",
+            biz.id,
+            wallet.user_id,
+            campaign.price_points,
+        )
 
         # 5) Update off-chain balance
-        await balance_service.adjust_balance(self.db, wallet, token, -campaign.price_points)
+        await balance_service.adjust_balance(
+            self.db, wallet, token, -campaign.price_points
+        )
         await self.db.flush()
 
         # 6) Persist PointTx(REDEEM)

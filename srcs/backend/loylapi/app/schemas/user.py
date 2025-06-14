@@ -22,5 +22,5 @@ class UserOut(BaseDBSchema):
     @model_validator(mode="after")
     def validete_contacts_present(self):
         if not self.email and not self.phone:
-            raise ValueError('Either email or phone must be present')
+            raise ValueError("Either email or phone must be present")
         return self

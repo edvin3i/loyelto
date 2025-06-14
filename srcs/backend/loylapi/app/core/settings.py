@@ -8,7 +8,9 @@ from solders.keypair import Keypair
 from solders.pubkey import Pubkey
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -30,6 +32,10 @@ class Settings(BaseSettings):
     POSTGRES_DB: str | None = Field(default="loyelto_stage")
     POSTGRES_USER: str | None = Field(default="pgdbuser")
     POSTGRES_PASSWORD: str | None = Field(default=None)
+
+    ADMIN_SECRET_KEY: str = Field(
+        default="nkjbrkth5ugafkvrughasdljvnau444t32t4g3jng3n24t"
+    )
 
     TREASURY_KEYPAIR: str = Field(...)
     SOLANA_RPC_URL: str = Field("https://api.test.solana.com")

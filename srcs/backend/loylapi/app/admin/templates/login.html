@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - LOYL</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f7fb;
+        }
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+        }
+        .totp-section {
+            display: none;
+        }
+        .totp-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-box">
+            <h2 class="text-center mb-4">Admin Panel</h2>
+
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="post" id="loginForm">
+                <div id="credentialsSection">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="username" class="form-control"
+                               placeholder="admin@example.com" required autofocus>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control"
+                               placeholder="Password" required>
+                    </div>
+                </div>
+
+                <div class="totp-section" id="totpSection">
+                    <div class="mb-3">
+                        <label class="form-label">2FA Code</label>
+                        <input type="text" name="totp_code" class="form-control"
+                               placeholder="123456" maxlength="6" pattern="[0-9]{6}"
+                               autocomplete="off">
+                        <small class="form-text text-muted">
+                            Enter the 6-digit code from your authenticator app
+                        </small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // checking TOTP
+        {% if needs_totp %}
+        document.getElementById('credentialsSection').style.display = 'none';
+        document.getElementById('totpSection').classList.add('active');
+        document.querySelector('[name="totp_code"]').focus();
+        {% endif %}
+    </script>
+</body>
+</html>
