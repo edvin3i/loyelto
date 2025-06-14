@@ -2,6 +2,7 @@ from typing import Union
 from pathlib import Path
 from fastapi import FastAPI, APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer
+
 from app.core.settings import settings
 from app.core.security import verify_privy_token
 from app.api.v1.auth import router as auth_router
@@ -12,6 +13,8 @@ from app.services.exchange_client import ExchangeClient
 # for admin panel
 from app.admin import setup_admin
 from app.db.session import engine
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 
 bearer = HTTPBearer(auto_error=False)
@@ -41,6 +44,17 @@ def current_user(creds=Depends(bearer)):
 app = FastAPI(**settings.fastapi_kwargs)
 app.state.settings = settings          # type: ignore[attr-defined]
 
+app.add_middleware(
+    ProxyHeadersMiddleware, # type: ignore
+    trusted_hosts="*",
+    trusted_ips="*",
+)
+
+app.add_middleware(
+    SessionMiddleware, # type: ignore
+    secret_key=app.state.settings.ADMIN_SECRET_KEY,
+)
+
 from fastapi.middleware.cors import CORSMiddleware
 
 origins = [
@@ -50,7 +64,7 @@ origins = [
 ]
 
 app.add_middleware(
-    CORSMiddleware,
+    CORSMiddleware, # type: ignore
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
