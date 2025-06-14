@@ -71,7 +71,7 @@ class AdminService(BaseService[Admin, AdminCreate, AdminUpdate]):
         # create the provisioning URI for QR code
         totp = pyotp.TOTP(secret)
         provisioning_uri = totp.provisioning_uri(
-            name=admin.email, issuer_name="Loyelto Admin Panel"
+            name=admin.email, issuer_name="LOYL Admin Panel"
         )
 
         # generate QR code
