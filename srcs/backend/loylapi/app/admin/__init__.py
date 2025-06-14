@@ -31,7 +31,7 @@ def setup_admin(app, engine):
     admin = Admin(
         app=app,
         engine=engine,
-        title="LOYL Admin Panel",
+        title="Loyelto Admin Panel",
         authentication_backend=admin_auth_backend,
         templates_dir="app/admin/templates",  # for custom dashboards
     )

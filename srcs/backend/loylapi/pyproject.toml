@@ -28,6 +28,7 @@ dependencies = [
     "qrcode[pil]>=8.2",
     "pyotp>=2.9.0",
     "sqladmin[full]>=0.20.1",
+    "starlette>=0.46.2",
 ]
 
 [dependency-groups]

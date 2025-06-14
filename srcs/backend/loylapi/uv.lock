@@ -619,6 +619,7 @@ dependencies = [
     { name = "solana" },
     { name = "sqladmin", extra = ["full"] },
     { name = "sqlalchemy" },
+    { name = "starlette" },
     { name = "typer" },
     { name = "uvicorn" },
 ]
@@ -654,6 +655,7 @@ requires-dist = [
     { name = "solana", specifier = ">=0.36.6" },
     { name = "sqladmin", extras = ["full"], specifier = ">=0.20.1" },
     { name = "sqlalchemy", specifier = ">=2.0.41" },
+    { name = "starlette", specifier = ">=0.46.2" },
     { name = "typer", extras = ["all"], specifier = ">=0.15.3" },
     { name = "uvicorn", specifier = ">=0.34.1" },
 ]

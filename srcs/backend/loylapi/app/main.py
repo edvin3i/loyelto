@@ -12,6 +12,7 @@ from app.services.exchange_client import ExchangeClient
 # for admin panel
 from app.admin import setup_admin
 from app.db.session import engine
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 
 bearer = HTTPBearer(auto_error=False)
@@ -57,6 +58,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(
+    ProxyHeadersMiddleware,
+    trusted_hosts="*",
+    trusted_ips="*",
+)
 
 # 1) public endpoints ver 1
 public_v1 = APIRouter(prefix="/api/v1")
