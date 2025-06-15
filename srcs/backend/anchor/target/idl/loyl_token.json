@@ -3,7 +3,7 @@
   "name": "loyl_token",
   "instructions": [
     {
-      "name": "createLoyaltyMint",
+      "name": "createLoyaltyMintWithPda",
       "accounts": [
         {
           "name": "platformConfig",
@@ -26,7 +26,12 @@
           "isSigner": false
         },
         {
-          "name": "businessAuthority",
+          "name": "businessPda",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
           "isMut": true,
           "isSigner": true
         },
@@ -98,12 +103,21 @@
       ],
       "args": [
         {
-          "name": "rateLoyl",
-          "type": "u64"
+          "name": "businessId",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
         },
         {
           "name": "decimals",
           "type": "u8"
+        },
+        {
+          "name": "rateLoyl",
+          "type": "u64"
         },
         {
           "name": "initialSupply",

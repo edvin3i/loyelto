@@ -13,6 +13,7 @@ const SEED_MINT_AUTH:     &[u8] = b"mint";
 const SEED_META:          &[u8] = b"meta";
 const SEED_POOL:          &[u8] = b"pool";
 const SEED_TREASURY:      &[u8] = b"treasury";
+const SEED_BUSINESS:      &[u8] = b"business";
 
 /*────────────────────────────  PROGRAM ID  ───────────────────────────*/
 declare_id!("3kzE3Xvgzi9PurL9cjRU7t9twHLYZUhaVv2AVmLXqbxm");
@@ -47,6 +48,13 @@ pub struct Treasury {
 impl LoyaltyMeta { pub const SIZE: usize = 8 + 32 + 32 + 1 + 8 + 1; }
 impl Pool        { pub const SIZE: usize = 8 + 32 + 8 + 8 + 8 + 1; }
 impl Treasury    { pub const SIZE: usize = 8 + 1; }
+#[account]
+pub struct Business {
+    pub id:   [u8; 16],
+    pub bump: u8,
+}
+
+impl Business { pub const SIZE: usize = 8 + 16 + 1; }
 
 /*────────────────────────── EVENTS & ERRORS ─────────────────────────*/
 #[event]
@@ -88,6 +96,7 @@ const SPL_MINT_ACCOUNT_SIZE: usize = spl_token::state::Mint::LEN;// 82 B — raw
 
 
 #[derive(Accounts)]
+#[instruction(business_id: [u8;16])]
 pub struct CreateMint<'info> {
     /*--- global config (read-only) ---*/
     #[account(seeds = [SEED_CONFIG], bump)]
@@ -104,37 +113,47 @@ pub struct CreateMint<'info> {
     )]
     pub platform_treasury_ata: InterfaceAccount<'info, TokenAccount>,
 
-    /*Business address*/
+    /* Business PDA */
+    #[account(
+        init_if_needed,
+        payer = payer,
+        space = Business::SIZE,
+        seeds = [SEED_BUSINESS, business_id.as_ref()],
+        bump
+    )]
+    pub business: Account<'info, Business>,
+
+    /* Payer for initialization */
     #[account(mut)]
-    pub business_authority: Signer<'info>,
+    pub payer: Signer<'info>,
 
     /*--- PDA mint-authority ---*/
-    #[account(seeds = [SEED_MINT_AUTH, business_authority.key().as_ref()], bump)]
+    #[account(seeds = [SEED_MINT_AUTH, business.key().as_ref()], bump)]
     /// CHECK: PDA authority
     pub mint_authority: UncheckedAccount<'info>,
 
     /*--- Branded Mint account ---*/
     #[account(
         init,
-        payer  = business_authority,
+        payer  = payer,
         space  = SPL_MINT_ACCOUNT_SIZE,
-        seeds  = [b"brand_mint", business_authority.key().as_ref()],
+        seeds  = [b"brand_mint", business.key().as_ref()],
         bump
     )]
     pub mint: InterfaceAccount<'info, Mint>,
 
     #[account(
         init,
-        payer  = business_authority,
+        payer  = payer,
         associated_token::mint      = mint,
-        associated_token::authority = business_authority
+        associated_token::authority = business
     )]
     pub business_ata: InterfaceAccount<'info, TokenAccount>,
 
     /*--- meta ---*/
     #[account(
         init,
-        payer = business_authority,
+        payer = payer,
         space = LoyaltyMeta::SIZE,
         seeds = [SEED_META, mint.key().as_ref()],
         bump
@@ -144,7 +163,7 @@ pub struct CreateMint<'info> {
     /*--- pool ---*/
     #[account(
         init,
-        payer = business_authority,
+        payer = payer,
         space = Pool::SIZE,
         seeds = [SEED_POOL, mint.key().as_ref()],
         bump
@@ -152,14 +171,14 @@ pub struct CreateMint<'info> {
     pub pool: Account<'info, Pool>,
     #[account(
         init,
-        payer  = business_authority,
+        payer  = payer,
         associated_token::mint      = mint,
         associated_token::authority = pool
     )]
     pub pool_vault_token: InterfaceAccount<'info, TokenAccount>,
     #[account(
         init,
-        payer  = business_authority,
+        payer  = payer,
         associated_token::mint      = loyl_mint,
         associated_token::authority = pool
     )]
@@ -168,7 +187,7 @@ pub struct CreateMint<'info> {
     /*--- treasury ---*/
     #[account(
         init,
-        payer = business_authority,
+        payer = payer,
         space = Treasury::SIZE,
         seeds = [SEED_TREASURY, mint.key().as_ref()],
         bump
@@ -176,7 +195,7 @@ pub struct CreateMint<'info> {
     pub treasury: Account<'info, Treasury>,
     #[account(
         init,
-        payer  = business_authority,
+        payer  = payer,
         associated_token::mint      = mint,
         associated_token::authority = treasury
     )]
@@ -243,10 +262,14 @@ pub struct Redeem<'info> {
 pub struct MintExtra<'info> {
     #[account(mut)]
     pub mint: InterfaceAccount<'info, Mint>,
-    #[account(seeds = [SEED_MINT_AUTH, business_authority.key().as_ref()], bump)]
+    #[account(seeds = [SEED_MINT_AUTH, business.key().as_ref()], bump)]
     /// CHECK: PDA authority
     pub mint_authority: UncheckedAccount<'info>,
-    pub business_authority: Signer<'info>,
+    #[account(
+        seeds = [SEED_BUSINESS, business.id.as_ref()],
+        bump = business.bump
+    )]
+    pub business: Account<'info, Business>,
     #[account(mut)]
     pub destination: InterfaceAccount<'info, TokenAccount>,
     pub token_program: Program<'info, token_2022::Token2022>,
@@ -262,9 +285,10 @@ pub struct UpdateRate<'info> {
     pub pool: Account<'info, Pool>,
     #[account(mut)]
     pub mint: InterfaceAccount<'info, Mint>,
-    pub business_authority: Signer<'info>,
+    #[account(seeds = [SEED_BUSINESS, business.id.as_ref()], bump = business.bump)]
+    pub business: Account<'info, Business>,
 
-    #[account(seeds = [SEED_META, mint.key().as_ref()], bump)]
+    #[account(seeds = [SEED_META, mint.key().as_ref()], bump, constraint = loyalty_meta.business == business.key())]
     pub loyalty_meta: Account<'info, LoyaltyMeta>,
 
     #[account(seeds = [SEED_CONFIG], bump)]
@@ -277,20 +301,27 @@ pub mod loyl_token {
     use super::*;
 
     /*──────────── create_loyalty_mint ────────────*/
-    pub fn create_loyalty_mint(
+    pub fn create_loyalty_mint_with_pda(
         ctx: Context<CreateMint>,
-        rate_loyl:      u64,
-        decimals:       u8,
+        business_id:   [u8;16],
+        decimals:      u8,
+        rate_loyl:     u64,
         initial_supply: u64,
     ) -> Result<()> {
         /* 1. Basic validation */
         require!(rate_loyl > 0, ErrorCode::InvalidRate);
 
         /* 2. seed preparation */
+        let business_key = ctx.accounts.business.key();
         let mint_auth_seeds = &[
             SEED_MINT_AUTH,
-            ctx.accounts.business_authority.key.as_ref(),
+            business_key.as_ref(),
             &[ctx.bumps.mint_authority],
+        ];
+        let business_seeds = &[
+            SEED_BUSINESS,
+            business_id.as_ref(),
+            &[ctx.accounts.business.bump],
         ];
         let loyl_treasury_seeds = &[SEED_LOYL_TREASURY, &[ctx.bumps.platform_treasury_authority]];
 
@@ -329,10 +360,11 @@ pub mod loyl_token {
                 TransferChecked {
                     from:      ctx.accounts.business_ata.to_account_info(),
                     to:        ctx.accounts.pool_vault_token.to_account_info(),
-                    authority: ctx.accounts.business_authority.to_account_info(),
+                    authority: ctx.accounts.business.to_account_info(),
                     mint:      ctx.accounts.mint.to_account_info(),
                 },
-            ),
+            )
+            .with_signer(&[business_seeds]),
             quarter,
             decimals,
         )?;
@@ -376,10 +408,13 @@ pub mod loyl_token {
             loyl_decimals,
         )?;
 
+        ctx.accounts.business.id = business_id;
+        ctx.accounts.business.bump = ctx.bumps.business;
+
         /* 6. state and event recording */
         ctx.accounts.loyalty_meta.set_inner(LoyaltyMeta {
             mint:      ctx.accounts.mint.key(),
-            business:  ctx.accounts.business_authority.key(),
+            business:  ctx.accounts.business.key(),
             decimals,
             rate_loyl,
             bump: ctx.bumps.loyalty_meta,
@@ -395,7 +430,7 @@ pub mod loyl_token {
 
         emit!(MintCreated {
             mint:            ctx.accounts.mint.key(),
-            business:        ctx.accounts.business_authority.key(),
+            business:        ctx.accounts.business.key(),
             initial_supply,
             rate_loyl,
         });
@@ -463,9 +498,10 @@ pub mod loyl_token {
     pub fn mint_extra(ctx: Context<MintExtra>, amount: u64) -> Result<()> {
         require!(amount > 0, ErrorCode::InvalidAmount);
 
+        let business_key = ctx.accounts.business.key();
         let mint_auth_seeds = &[
             SEED_MINT_AUTH,
-            ctx.accounts.business_authority.key.as_ref(),
+            business_key.as_ref(),
             &[ctx.bumps.mint_authority],
         ];
         token_2022::mint_to(
