@@ -1,8 +1,8 @@
 from __future__ import annotations
-import asyncio, base58
+import asyncio
+import uuid
 from pathlib import Path
 from solders.pubkey import Pubkey
-from solders.keypair import Keypair
 from solana.rpc.async_api import AsyncClient
 from anchorpy import Provider, Wallet, Idl, Program
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,72 +12,69 @@ from app.models import Business, Token
 from app.services.exchange_client import ExchangeClient
 from app.services.pool import PoolService
 
-# --- Constants & cached IDL load ----------------------------------------
-# The path to the IDL for loyalty_token
+# ───────────────────────────────────────── constants ─────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent
-# print(f"==================== {BASE_DIR} ====================")
-IDL_PATH = (BASE_DIR / settings.LOYL_IDL_PATH).resolve()
+IDL_PATH = (BASE_DIR / settings.LOYL_IDL_PATH).resolve()          # e.g. "./idl/loyl_token.json"
 
-_IDL: Idl
 try:
-    _IDL = Idl.from_json(IDL_PATH.read_text())
-except Exception as e:
+    _IDL: Idl = Idl.from_json(IDL_PATH.read_text())
+except Exception as e:                                            # pragma: no cover
     raise RuntimeError(f"Failed to load IDL at {IDL_PATH}: {e}")
 
 LOYALTY_PROGRAM_ID = Pubkey.from_string(settings.LOYL_TOKEN_PROGRAM_ID)
 
 
-# --- Core mint & record logic ------------------------------------------
-
-
+# ───────────────────────────────────────── core logic ─────────────────────────────────────────
 async def _mint_and_record_async(business_id: str) -> None:
     """
-    Creates a branded loyalty token for a business and initializes a liquidity pool:
-    1) Retrieve the business and its owner's keypair
-    2) Create the branded loyalty token via the Anchor RPC createLoyaltyMint
-    3) Derive the PDA (Program Derived Address) for the mint
-    4) Save the token record to the database
-    5) Bootstrap the liquidity pool via ExchangeClient + PoolService
+    1. Get business id from DB
+    2. Calculating PDA  → authority for mint.
+    3. Calling on-chain instruction `createLoyaltyMintWithPda`.
+    4. Save Token and bootstraping the pool.
     """
-    # 1) We open a session
-    async with AsyncSessionLocal() as db:  # type: AsyncSession
+    async with AsyncSessionLocal() as db:                     # type: AsyncSession
         biz: Business | None = await db.get(Business, business_id)
         if biz is None:
             raise ValueError(f"Business {business_id} not found")
 
-        # Decoding the owner's key
-        owner_kp = Keypair.from_bytes(base58.b58decode(biz.owner_privkey))
+        # ---------- PDA derivation ----------
+        business_id_bytes = uuid.UUID(business_id).bytes
+        business_pda, _bump = Pubkey.find_program_address(
+            [b"business", business_id_bytes],
+            LOYALTY_PROGRAM_ID,
+        )
 
-        # 2) Creating a Solana RPC client
-        async with AsyncClient(settings.SOLANA_RPC_URL) as rpc_client:
-            # Setting up AnchorPy Provider + Program
-            provider = Provider(rpc_client, Wallet(owner_kp))
+        # ---------- Anchor provider ----------
+        async with AsyncClient(settings.SOLANA_RPC_URL) as rpc:
+            provider = Provider(rpc, Wallet(settings.treasury_kp))
             program = Program(_IDL, LOYALTY_PROGRAM_ID, provider)
 
             decimals = 2
-            initial_supply = 1_000_000 * 10**decimals
+            initial_supply = 1_000_000 * 10**decimals  # 1 000 000 единиц
 
-            # Calling the on-chain method
-            tx_sig = await program.rpc["createLoyaltyMint"](
+            # ---------- on-chain call ----------
+            await program.rpc["createLoyaltyMintWithPda"](
+                business_id_bytes,
                 decimals,
-                int(biz.rate_loyl * 10**6),  # fix-point 6 digits
+                int(biz.rate_loyl * 10**6),               # μLOYL
                 initial_supply,
                 ctx={
                     "accounts": {
-                        "authority": owner_kp.pubkey(),
-                        "systemProgram": program.program.account["System"].program_id,
+                        "businessPda": business_pda,
+                        "payer": settings.treasury_kp.pubkey(),
+                        "systemProgram": Program.SYSTEM_PROGRAM_ID,
                     },
-                    "signers": [owner_kp],
+                    "signers": [settings.treasury_kp],
                 },
             )
 
-            # 3) PDA mint derivation
+            # ---------- mint PDA (derived from business PDA) ----------
             mint_pda, _ = Pubkey.find_program_address(
-                [b"mint", bytes(owner_kp.pubkey())],
+                [b"mint", bytes(business_pda)],
                 LOYALTY_PROGRAM_ID,
             )
 
-        # 4) Saving the Token in the DB
+        # ---------- DB persist ----------
         db_token = Token(
             mint=str(mint_pda),
             symbol=biz.slug.upper()[:6],
@@ -85,15 +82,13 @@ async def _mint_and_record_async(business_id: str) -> None:
             settlement_token=False,
             rate_loyl=biz.rate_loyl,
             decimals=decimals,
-            min_rate=None,
-            max_rate=None,
             total_supply=initial_supply,
         )
         db.add(db_token)
         await db.commit()
         await db.refresh(db_token)
 
-        # 5) We initialize the liquidity pool.
+        # ---------- pool bootstrap ----------
         anchor_client = ExchangeClient(
             rpc_url=settings.SOLANA_RPC_URL,
             payer_keypair=settings.treasury_kp,
@@ -101,27 +96,20 @@ async def _mint_and_record_async(business_id: str) -> None:
             idl_path=settings.root / "anchor/target/idl/exchange.json",
         )
         pool_service = PoolService(db, anchor_client)
-        await pool_service.bootstrap_pool(db_token)
+        await pool_service.bootstrap_pool(db_token, business_id)
         await db.commit()
 
 
 def mint_and_record(business_id: str) -> None:
     """
-    Synchronous wrapper for Celery: runs the async token minting process.
-
-    Args:
-        business_id: UUID of the business to mint tokens for
-
-    Raises:
-        RuntimeError: If any step in the token minting process fails
+    Sync wrapper for Celery/CLI.
     """
     try:
         asyncio.run(_mint_and_record_async(business_id))
-    except Exception as err:
-        # Log the error with more details
+    except Exception as err:                                    # pragma: no cover
         import logging
 
         logging.error(
-            f"Token minting failed for business {business_id}: {err}", exc_info=True
+            "Token minting failed for business %s: %s", business_id, err, exc_info=True
         )
         raise RuntimeError(f"mint_and_record failed for {business_id}: {err}") from err

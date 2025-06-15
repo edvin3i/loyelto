@@ -1,4 +1,3 @@
-import base58
 from solders.pubkey import Pubkey
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
