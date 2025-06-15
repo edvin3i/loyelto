@@ -12,9 +12,8 @@ from app.models import Business, Token
 from app.services.exchange_client import ExchangeClient
 from app.services.pool import PoolService
 
-# ───────────────────────────────────────── constants ─────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent
-IDL_PATH = (BASE_DIR / settings.LOYL_IDL_PATH).resolve()          # e.g. "./idl/loyl_token.json"
+IDL_PATH = (BASE_DIR / settings.LOYL_IDL_PATH).resolve()
 
 try:
     _IDL: Idl = Idl.from_json(IDL_PATH.read_text())
@@ -24,11 +23,10 @@ except Exception as e:                                            # pragma: no c
 LOYALTY_PROGRAM_ID = Pubkey.from_string(settings.LOYL_TOKEN_PROGRAM_ID)
 
 
-# ───────────────────────────────────────── core logic ─────────────────────────────────────────
 async def _mint_and_record_async(business_id: str) -> None:
     """
     1. Get business id from DB
-    2. Calculating PDA  → authority for mint.
+    2. Calculating PDA → authority for mint.
     3. Calling on-chain instruction `createLoyaltyMintWithPda`.
     4. Save Token and bootstraping the pool.
     """
@@ -37,14 +35,14 @@ async def _mint_and_record_async(business_id: str) -> None:
         if biz is None:
             raise ValueError(f"Business {business_id} not found")
 
-        # ---------- PDA derivation ----------
+        # PDA derivation
         business_id_bytes = uuid.UUID(business_id).bytes
         business_pda, _bump = Pubkey.find_program_address(
             [b"business", business_id_bytes],
             LOYALTY_PROGRAM_ID,
         )
 
-        # ---------- Anchor provider ----------
+        # Anchor provider
         async with AsyncClient(settings.SOLANA_RPC_URL) as rpc:
             provider = Provider(rpc, Wallet(settings.treasury_kp))
             program = Program(_IDL, LOYALTY_PROGRAM_ID, provider)
@@ -52,7 +50,7 @@ async def _mint_and_record_async(business_id: str) -> None:
             decimals = 2
             initial_supply = 1_000_000 * 10**decimals  # 1 000 000 единиц
 
-            # ---------- on-chain call ----------
+            # on-chain call
             await program.rpc["createLoyaltyMintWithPda"](
                 business_id_bytes,
                 decimals,
@@ -68,13 +66,13 @@ async def _mint_and_record_async(business_id: str) -> None:
                 },
             )
 
-            # ---------- mint PDA (derived from business PDA) ----------
+            # mint PDA (derived from business PDA)
             mint_pda, _ = Pubkey.find_program_address(
                 [b"mint", bytes(business_pda)],
                 LOYALTY_PROGRAM_ID,
             )
 
-        # ---------- DB persist ----------
+        # DB persist
         db_token = Token(
             mint=str(mint_pda),
             symbol=biz.slug.upper()[:6],
@@ -88,7 +86,7 @@ async def _mint_and_record_async(business_id: str) -> None:
         await db.commit()
         await db.refresh(db_token)
 
-        # ---------- pool bootstrap ----------
+        # pool bootstrap
         anchor_client = ExchangeClient(
             rpc_url=settings.SOLANA_RPC_URL,
             payer_keypair=settings.treasury_kp,

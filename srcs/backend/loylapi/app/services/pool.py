@@ -1,11 +1,9 @@
-import base58
+import asyncio                    # noqa: F401
 from decimal import Decimal, ROUND_DOWN
 from sqlalchemy.ext.asyncio import AsyncSession
-from solders.keypair import Keypair
 from app.services.exchange_client import ExchangeClient
 from app.models.token import Token
 from app.models.token_pool import TokenPool
-from app.core.settings import settings
 
 
 class PoolService:
@@ -16,30 +14,39 @@ class PoolService:
         """
         self.db, self.anchor = db, anchor
 
-    async def bootstrap_pool(self, token: Token, percent: Decimal = Decimal("0.25")):
+    async def bootstrap_pool(
+        self,
+        token: Token,
+        business_id: str,
+        percent: Decimal = Decimal("0.25"),
+    ):
+        """
+        Creates initial liquidity for a brand-token pool.
+
+        token      – Token ORM object (already persisted)
+        business_id– UUID of the Business; used to derive PDA on-chain
+        percent    – share of initial_supply sent to the pool (0.25 = 25 %)
+        """
+        # 1. volumes -------------------------------------------------------
         initial_supply = 1_000_000 * token.base_units
 
-        # 1. calc volumes
         deposit_token = int(initial_supply * percent)
 
         loyl_dec = (Decimal(deposit_token) * token.rate_loyl).quantize(
             Decimal("1"), rounding=ROUND_DOWN
         )
         deposit_loyl = int(loyl_dec)
-        business_kp = Keypair.from_bytes(base58.b58decode(token.business.owner_privkey))
-
-        # deposit_loyl = int(Decimal(deposit_token) * token.rate_loyl)
-        # business_kp = Keypair.from_base58_string(token.business.owner_privkey)
 
         # 2. on-chain transaction (Anchor)
-        tx_sig = await self.anchor.init_pool(
+        # authority == business PDA, signer == treasury_kp
+        tx_sig = await self.anchor.init_pool_with_pda(
             loyalty_mint=token.mint,
             deposit_token=deposit_token,
             deposit_loyl=deposit_loyl,
-            business_signer=business_kp,
+            business_id=business_id,
         )
 
-        # 3. save to db
+        # 3. save to DB
         pool = TokenPool(
             token_id=token.id,
             provider="platform",
@@ -48,6 +55,6 @@ class PoolService:
             init_tx=tx_sig,
         )
         self.db.add(pool)
-        await self.db.flush()  # ← id needs for Celery-task for confirmation
+        await self.db.flush()  # ← id required for Celery confirmation
 
         return pool
