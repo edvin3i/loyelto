@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useAuthStore } from '../../utils/providers/stores/authStore';
+import styles from './styles_wallet_info';
 
 export default function WalletInfo() {
   const { user } = useAuthStore();
@@ -33,21 +34,4 @@ export default function WalletInfo() {
       </TouchableOpacity>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F0F7FF',
-    padding: 12,
-    borderRadius: 8,
-    marginVertical: 8,
-  },
-  address: {
-    marginLeft: 8,
-    marginRight: 8,
-    fontFamily: 'monospace',
-    fontSize: 14,
-  },
-}); 
+} 
