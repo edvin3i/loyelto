@@ -97,10 +97,6 @@ class Business(Base):
     slug: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     logo_url: Mapped[str | None] = mapped_column(String(512))
     owner_email: Mapped[str] = mapped_column(String(320), index=True)
-    # owner_pubkey: Mapped[str] = mapped_column(
-    #     String(44), nullable=False, unique=True, index=True
-    # )
-    # owner_privkey: Mapped[str] = mapped_column(String(88))
     description: Mapped[str] = mapped_column(String(512))
     country: Mapped[str] = mapped_column(String(64))
     city: Mapped[str] = mapped_column(String(128))

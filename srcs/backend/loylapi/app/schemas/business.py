@@ -10,8 +10,6 @@ from app.schemas.types import (
     ZipCodeStr,
     RateDecimals,
     RatingInt,
-    # OwnerPrivKey,
-    # PubkeyStr,
 )
 
 
@@ -20,8 +18,6 @@ class BusinessCreate(BaseSchema):
     slug: SlugStr
     logo_url: AnyUrl | None = None
     owner_email: EmailStr
-    # owner_pubkey: OwnerPrivKey
-    # owner_privkey: OwnerPrivKey
     description: TextAreaStr
     country: CountryStr
     city: CityStr
@@ -35,7 +31,6 @@ class BusinessUpdate(BaseSchema):
     slug: SlugStr | None = None
     logo_url: AnyUrl | None = None
     owner_email: EmailStr | None = None
-    # owner_privkey: OwnerPrivKey | None = None
     description: TextAreaStr | None = None
     country: CountryStr | None = None
     city: CityStr | None = None
@@ -49,8 +44,6 @@ class BusinessOut(BaseDBSchema):
     slug: SlugStr
     logo_url: AnyUrl | None
     owner_email: EmailStr
-    # owner_pubkey: PubkeyStr
-    # owner_privkey: OwnerPrivKey
     description: TextAreaStr
     rating: RatingInt
     country: CountryStr
