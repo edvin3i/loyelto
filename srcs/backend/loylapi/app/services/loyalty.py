@@ -2,14 +2,19 @@ import logging
 import base58
 from decimal import Decimal, ROUND_DOWN
 from typing import Dict
-from solders.keypair import Keypair
+from solders.pubkey import Pubkey
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models import Business, Wallet, PromotionCampaign, TxType
 from app.services.balance import balance_service
 from app.services.point_tx import point_tx_service
 from app.schemas.point_tx import PointTxCreate
-from app.tasks.transfer import transfer_earn_task, transfer_redeem_task
+from app.tasks.transfer import (
+    transfer_earn_pda_task,
+    transfer_redeem_pda_task,
+)
+from app.core.settings import settings
+from app.services.business import business_service
 
 logger = logging.getLogger(__name__)
 
@@ -63,11 +68,18 @@ class LoyaltyService:
         if points <= 0:
             raise ValueError("purchase_amount too small to earn any points")
 
-        # 3) Enqueue on-chain transfer
-        transfer_earn_task.delay(
-            business_kp_b58=business.owner_privkey,
+        # 3) Enqueue on-chain transfer via Business PDA
+        biz_pda, _ = business_service.pda_for(
+            str(business.id), Pubkey.from_string(settings.LOYL_TOKEN_PROGRAM_ID)
+        )
+        treasury_b58 = base58.b58encode(settings.treasury_kp.to_bytes()).decode(
+            "utf-8"
+        )
+        transfer_earn_pda_task.delay(
+            business_pda=str(biz_pda),
             mint=token.mint,
             user_pubkey=wallet.pubkey,
+            treasury_kp_b58=treasury_b58,
             amount=points,
         )
         logger.info(
@@ -131,15 +143,20 @@ class LoyaltyService:
                 f"Balance {balance} < required {campaign.price_points}"
             )
 
-        # 3) Prepare business pubkey for on-chain transfer
-        biz_kp = Keypair.from_bytes(base58.b58decode(biz.owner_privkey))
-        biz_pubkey = str(biz_kp.pubkey())
+        # 3) Determine destination PDA (business or treasury)
+        if biz.id:
+            biz_pda, _ = business_service.pda_for(
+                str(biz.id), Pubkey.from_string(settings.LOYL_TOKEN_PROGRAM_ID)
+            )
+            dest_pubkey = str(biz_pda)
+        else:
+            dest_pubkey = str(settings.treasury_kp.pubkey())
 
-        # 4) Enqueue on-chain transfer
-        transfer_redeem_task.delay(
+        # 4) Enqueue on-chain transfer via PDA
+        transfer_redeem_pda_task.delay(
             user_pubkey=wallet.pubkey,
             mint=token.mint,
-            business_pubkey=biz_pubkey,
+            business_pda=dest_pubkey,
             amount=campaign.price_points,
         )
         logger.info(

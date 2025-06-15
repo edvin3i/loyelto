@@ -129,3 +129,43 @@ def redeem_token(mint: str, user_pubkey: str, business_pubkey: str, amount: int)
             sign_with_privy=True,
         )
     )
+
+
+def earn_token_pda(
+    mint: str,
+    user_pubkey: str,
+    business_pda: str,
+    treasury_kp_b58: str,
+    amount: int,
+) -> str:
+    """Business PDA → User: signed by platform treasury."""
+    kp = Keypair.from_bytes(base58.b58decode(treasury_kp_b58))
+    return asyncio.run(
+        _submit_transfer(
+            mint=mint,
+            sender=business_pda,
+            recipient=user_pubkey,
+            amount=amount,
+            sender_kp=kp,
+            sign_with_privy=False,
+        )
+    )
+
+
+def redeem_token_pda(
+    mint: str,
+    user_pubkey: str,
+    business_pda: str,
+    amount: int,
+) -> str:
+    """User → Business PDA: signed by user via Privy."""
+    return asyncio.run(
+        _submit_transfer(
+            mint=mint,
+            sender=user_pubkey,
+            recipient=business_pda,
+            amount=amount,
+            sender_kp=None,
+            sign_with_privy=True,
+        )
+    )
