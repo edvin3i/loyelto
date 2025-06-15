@@ -20,7 +20,7 @@ function App() {
         {/* <BusinessMain /> */}
         {/* <ClientPage /> */}
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route index path="/" element={<LandingPage />} />
           <Route element={<MainLayout />} >
             <Route path="/client-page" element={<ClientPage />} />
             <Route path="/business-main" element={<BusinessMain />} />
