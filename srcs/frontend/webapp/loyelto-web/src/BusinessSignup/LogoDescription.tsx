@@ -1,4 +1,4 @@
-import { Stack, Button, Typography, TextField } from "@mui/material"
+import { Stack, Button, Typography, TextField, Grid } from "@mui/material"
 import { useTheme, Theme } from '@mui/material/styles';
 import { useState } from "react";
 import { styled } from '@mui/material/styles';
@@ -58,28 +58,41 @@ export default function LogoDescription({ handleSubmit }: LogoDescriptionProps) 
                 paddingY: 3,
                 paddingX: 2
             }}>
-            <Stack sx={{ paddingY: 1 }} spacing={3}>
-                <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                    <Typography variant="h5" sx={{ fontWeight: 600, fontSize: 20 }}>
-                        Logo
-                    </Typography>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        endIcon={<AddIcon />}
-                        disableElevation
-                    >
-                        Add
-                        <VisuallyHiddenInput
-                            required
-                            type="file"
-                            onChange={handleLogoChange}
-                            multiple
-                        />
-                    </Button>
-                </Stack>
+            <Stack sx={{ paddingY: 3 }} spacing={1}>
+                {/* <Stack direction="row" sx={{ justifyContent: 'space-between' }}> */}
+                <Grid container spacing={2} sx={{pb:3}}>
+                    <Grid size={6}>
+                        <Typography variant="h5" sx={{ fontWeight: 500, fontSize: 20 }}>
+                            Logo
+                        </Typography>
+                    </Grid>
+                    <Grid size={6}>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            endIcon={<AddIcon />}
+                            disableElevation
+                            size="medium"
+                            color="info"
+                            fullWidth
+                            sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600, fontSize: 16 }}
+                        >
+                            Add
+                            <VisuallyHiddenInput
+                                required
+                                type="file"
+                                onChange={handleLogoChange}
+                                multiple
+                            />
+                        </Button>
+                    </Grid>
+                </Grid>
+                {/* </Stack> */}
+                <Typography variant="h5" sx={{ fontWeight: 500, fontSize: 20 }}>
+                    Description of your business
+                </Typography>
                 <TextField
                     required
                     id="Description"
@@ -97,7 +110,14 @@ export default function LogoDescription({ handleSubmit }: LogoDescriptionProps) 
                     }}
                 />
             </Stack>
-            <Button fullWidth disableElevation size="large" color="success" variant="contained" type="submit">
+              <Button fullWidth disableElevation size="large" color="success" variant="contained" type="submit"
+                sx={{
+                    fontSize: 16,
+                    fontWeight: 600, 
+                    textTransform: 'none',
+                    borderRadius: 2
+                }}
+            >
                 Next
             </Button>
 

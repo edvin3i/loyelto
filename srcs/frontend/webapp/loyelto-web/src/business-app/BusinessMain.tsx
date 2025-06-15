@@ -136,7 +136,7 @@ export default function BusinessMain() {
                             marginBottom: 1.5
                         }}>
                             <CustomersOrOffersHeading heading='My active offers' chipContent={5} />
-                            <Button variant="contained" color="info" endIcon={<AddIcon fontSize='large' />}
+                            <Button variant="contained" color="success" endIcon={<AddIcon fontSize='large' />}
                                 sx={{
                                     textTransform: 'none',
                                     fontWeight: 700,
