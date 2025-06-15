@@ -41,7 +41,7 @@ export default function BusinessOnboardingScreen() {
     city: '',
     address: '',
     zip_code: '',
-    rate_loyl: 1,
+    rate_loyl: 1.0,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -90,8 +90,8 @@ export default function BusinessOnboardingScreen() {
     }
 
     if (step === 3) {
-      if (formData.rate_loyl < 0.1 || formData.rate_loyl > 10) {
-        newErrors.rate_loyl = 'Loyalty rate must be between 0.1 and 10';
+      if (formData.rate_loyl < 0.1 || formData.rate_loyl > 100) {
+        newErrors.rate_loyl = 'Loyalty rate must be between 0.1 and 100';
       }
     }
 
@@ -100,7 +100,25 @@ export default function BusinessOnboardingScreen() {
   };
 
   const handleInputChange = (field: keyof FormData, value: string | number) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'rate_loyl') {
+      // Ensure rate_loyl is always a proper decimal number
+      let numValue: number;
+      if (typeof value === 'string') {
+        numValue = parseFloat(value);
+        // If parseFloat returns NaN, default to 1.0
+        if (isNaN(numValue)) {
+          numValue = 1.0;
+        }
+      } else {
+        numValue = Number(value);
+      }
+      
+      // Ensure it's a proper decimal (not integer)
+      setFormData(prev => ({ ...prev, [field]: numValue }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
+    
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
@@ -154,13 +172,17 @@ export default function BusinessOnboardingScreen() {
     try {
       setLoading(true);
       
+      // Ensure rate_loyl is sent as a proper decimal by parsing it as float
       const businessData: BusinessCreate = {
         ...formData,
+        rate_loyl: parseFloat(formData.rate_loyl.toString()), // Force decimal conversion
         owner_email: userEmail,
         logo_url: null, // Can be added later
       };
 
       console.log('🚀 [ONBOARDING] Creating business profile:', businessData);
+      console.log('🔍 [ONBOARDING] rate_loyl type:', typeof businessData.rate_loyl, 'value:', businessData.rate_loyl);
+      console.log('🔍 [ONBOARDING] rate_loyl as string:', businessData.rate_loyl.toString());
       
       await createBusinessProfile(businessData);
       
@@ -176,13 +198,25 @@ export default function BusinessOnboardingScreen() {
           },
         ]
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ [ONBOARDING] Failed to create business profile:', error);
-      Alert.alert(
-        'Error',
-        'Failed to create your business profile. Please try again.',
-        [{ text: 'OK' }]
-      );
+      
+      // Handle specific error cases
+      if (error?.status === 400 || error?.message?.includes('duplicate') || error?.message?.includes('already exists')) {
+        Alert.alert(
+          'Business Name Already Exists',
+          'A business with this name already exists. Please choose a different name.',
+          [{ text: 'OK' }]
+        );
+        // Go back to step 1 to change the name
+        setCurrentStep(1);
+      } else {
+        Alert.alert(
+          'Error',
+          'Failed to create your business profile. Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -325,8 +359,17 @@ export default function BusinessOnboardingScreen() {
           style={[styles.input, errors.rate_loyl ? styles.inputError : null]}
           value={formData.rate_loyl.toString()}
           onChangeText={(value) => {
-            const numValue = parseFloat(value) || 0;
-            handleInputChange('rate_loyl', numValue);
+            // Handle empty string case
+            if (value === '' || value === '.') {
+              handleInputChange('rate_loyl', 0.0);
+              return;
+            }
+            
+            // Parse the value and ensure it's a decimal
+            const numValue = parseFloat(value);
+            if (!isNaN(numValue)) {
+              handleInputChange('rate_loyl', numValue);
+            }
           }}
           placeholder="1.0"
           keyboardType="decimal-pad"
@@ -352,6 +395,10 @@ export default function BusinessOnboardingScreen() {
         <View style={styles.summaryItem}>
           <ThemedText style={styles.summaryLabel}>Email:</ThemedText>
           <ThemedText style={styles.summaryValue}>{getUserEmail()}</ThemedText>
+        </View>
+        <View style={styles.summaryItem}>
+          <ThemedText style={styles.summaryLabel}>Loyalty Rate:</ThemedText>
+          <ThemedText style={styles.summaryValue}>{formData.rate_loyl.toFixed(1)} points/$</ThemedText>
         </View>
       </View>
     </ThemedView>
