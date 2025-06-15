@@ -71,8 +71,6 @@ def upgrade() -> None:
     sa.Column('slug', sa.String(length=64), nullable=False),
     sa.Column('logo_url', sa.String(length=512), nullable=True),
     sa.Column('owner_email', sa.String(length=320), nullable=False),
-    sa.Column('owner_pubkey', sa.String(length=44), nullable=False),
-    sa.Column('owner_privkey', sa.String(length=88), nullable=False),
     sa.Column('description', sa.String(length=512), nullable=False),
     sa.Column('country', sa.String(length=64), nullable=False),
     sa.Column('city', sa.String(length=128), nullable=False),
@@ -86,7 +84,6 @@ def upgrade() -> None:
     )
     with op.batch_alter_table('businesses', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_businesses_owner_email'), ['owner_email'], unique=False)
-        batch_op.create_index(batch_op.f('ix_businesses_owner_pubkey'), ['owner_pubkey'], unique=True)
         batch_op.create_index(batch_op.f('ix_businesses_slug'), ['slug'], unique=True)
 
     op.create_table('celery_task_logs',
