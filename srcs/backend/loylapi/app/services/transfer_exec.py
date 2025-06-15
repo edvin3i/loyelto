@@ -1,9 +1,10 @@
-import asyncio, base58, base64
+import asyncio
+import base58
+import base64
 from base64 import b64encode
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
 from solders.transaction import Transaction
-from solders.signature import Signature
 from solders.instruction import Instruction, AccountMeta
 from solders.message import Message
 from solana.rpc.async_api import AsyncClient
@@ -13,7 +14,10 @@ from spl.token.constants import TOKEN_2022_PROGRAM_ID
 from spl.token.instructions import get_associated_token_address
 
 from app.services.privy_client import PrivyClient
+from app.services.loyl_token_client import LoylTokenClient
 from app.core.settings import settings
+
+_loyl_client = LoylTokenClient()
 
 
 def build_transfer_ix(
@@ -98,37 +102,16 @@ async def _submit_transfer(
 # Blocking wrappers for Celery tasks
 
 
-def earn_token(mint: str, user_pubkey: str, business_kp_b58: str, amount: int) -> str:
-    """
-    Business → User: local keypair signs and submits.
-    """
-    kp = Keypair.from_bytes(base58.b58decode(business_kp_b58))
-    return asyncio.run(
-        _submit_transfer(
-            mint=mint,
-            sender=str(kp.pubkey()),
-            recipient=user_pubkey,
-            amount=amount,
-            sender_kp=kp,
-            sign_with_privy=False,
-        )
-    )
+def earn_token(mint: str, user_pubkey: str, amount: int) -> str:
+    """Business PDA → user via `loyl_token` program."""
+
+    return asyncio.run(_loyl_client.earn_points(mint, user_pubkey, amount))
 
 
-def redeem_token(mint: str, user_pubkey: str, business_pubkey: str, amount: int) -> str:
-    """
-    User → Business: transaction signed via Privy.
-    """
-    return asyncio.run(
-        _submit_transfer(
-            mint=mint,
-            sender=user_pubkey,
-            recipient=business_pubkey,
-            amount=amount,
-            sender_kp=None,
-            sign_with_privy=True,
-        )
-    )
+def redeem_token(mint: str, user_pubkey: str, amount: int) -> str:
+    """User → treasury via `loyl_token` program (Privy signing)."""
+
+    return asyncio.run(_loyl_client.redeem_points(mint, user_pubkey, amount))
 
 
 def earn_token_pda(

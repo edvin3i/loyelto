@@ -1,14 +1,16 @@
 from __future__ import annotations
-import asyncio, base58
+
+import asyncio
 from typing import cast
+
 from sqlalchemy.future import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession  # noqa: F401
+
 from app.celery_app import celery
 from app.db.session import AsyncSessionLocal
 from app.models import SwapTx, TxStatus, Wallet, Token
 from app.services.transfer_exec import redeem_token, earn_token
 from app.services.pubsub import publish
-from app.core.settings import settings
 from app.services.celery_wrapper import log_task
 from logging import getLogger
 
@@ -62,22 +64,17 @@ def swap_task(self, swap_tx_id: str) -> None:
                 raise ValueError("Token(s) for swap not found")
 
             # 5) Step 1: user → platform for Token A
-            platform_pubkey = str(settings.treasury_kp.pubkey())
             sig_redeem = redeem_token(
                 mint=str(from_token.mint),
                 user_pubkey=wallet.pubkey,
-                business_pubkey=platform_pubkey,
                 amount=from_amt,
             )
             logger.info(f"Redeem signature: {sig_redeem}")
 
             # 6) Step 2: platform → user for Token B
-            treasury_bytes = settings.treasury_kp.to_bytes()
-            treasury_b58 = base58.b58encode(treasury_bytes).decode("utf-8")
             sig_earn = earn_token(
                 mint=str(to_token.mint),
                 user_pubkey=wallet.pubkey,
-                business_kp_b58=treasury_b58,
                 amount=to_amt,
             )
             logger.info(f"Earn signature: {sig_earn}")
