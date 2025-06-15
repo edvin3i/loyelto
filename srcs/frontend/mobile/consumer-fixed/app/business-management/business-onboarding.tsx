@@ -12,19 +12,19 @@ import styles from './styles/styles_business_information';
 
 interface FormData {
   name: string;
-  slug: string;
+  logo_url: string;
   description: string;
   country: string;
   city: string;
   address: string;
   zip_code: string;
-  rate_loyl: number;
+  average_spend: number;
+  points_per_spend: number;
 }
 
 interface FormErrors {
   [key: string]: string;
 }
-
 
 export default function BusinessOnboardingScreen() {
   const router = useRouter();
@@ -35,18 +35,18 @@ export default function BusinessOnboardingScreen() {
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
-    slug: '',
+    logo_url: '',
     description: '',
     country: '',
     city: '',
     address: '',
     zip_code: '',
-    rate_loyl: 1.0,
+    average_spend: 0,
+    points_per_spend: 1,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
 
-  // Get user email from Privy
   const getUserEmail = (): string => {
     if (!user?.linked_accounts) return '';
     
@@ -64,13 +64,12 @@ export default function BusinessOnboardingScreen() {
       if (!formData.name.trim()) {
         newErrors.name = 'Business name is required';
       }
-      if (!formData.slug.trim()) {
-        newErrors.slug = 'Business slug is required';
-      } else if (!/^[a-z0-9-]+$/.test(formData.slug)) {
-        newErrors.slug = 'Slug can only contain lowercase letters, numbers, and hyphens';
-      }
       if (!formData.description.trim()) {
         newErrors.description = 'Business description is required';
+      }
+      // Logo URL is optional, but if provided, should be a valid URL
+      if (formData.logo_url.trim() && !isValidUrl(formData.logo_url)) {
+        newErrors.logo_url = 'Please enter a valid URL for the logo';
       }
     }
 
@@ -90,8 +89,11 @@ export default function BusinessOnboardingScreen() {
     }
 
     if (step === 3) {
-      if (formData.rate_loyl < 0.1 || formData.rate_loyl > 100) {
-        newErrors.rate_loyl = 'Loyalty rate must be between 0.1 and 100';
+      if (formData.average_spend <= 0) {
+        newErrors.average_spend = 'Average spend must be greater than 0';
+      }
+      if (formData.points_per_spend <= 0) {
+        newErrors.points_per_spend = 'Points per spend must be greater than 0';
       }
     }
 
@@ -99,21 +101,27 @@ export default function BusinessOnboardingScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const isValidUrl = (string: string): boolean => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
   const handleInputChange = (field: keyof FormData, value: string | number) => {
-    if (field === 'rate_loyl') {
-      // Ensure rate_loyl is always a proper decimal number
+    if (field === 'average_spend' || field === 'points_per_spend') {
+      // Handle numeric fields
       let numValue: number;
       if (typeof value === 'string') {
         numValue = parseFloat(value);
-        // If parseFloat returns NaN, default to 1.0
         if (isNaN(numValue)) {
-          numValue = 1.0;
+          numValue = 0;
         }
       } else {
         numValue = Number(value);
       }
-      
-      // Ensure it's a proper decimal (not integer)
       setFormData(prev => ({ ...prev, [field]: numValue }));
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));
@@ -122,23 +130,6 @@ export default function BusinessOnboardingScreen() {
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  const generateSlugFromName = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-  };
-
-  const handleNameChange = (value: string) => {
-    handleInputChange('name', value);
-    // Auto-generate slug if it's empty or matches the previous auto-generated slug
-    if (!formData.slug || formData.slug === generateSlugFromName(formData.name)) {
-      handleInputChange('slug', generateSlugFromName(value));
     }
   };
 
@@ -172,17 +163,21 @@ export default function BusinessOnboardingScreen() {
     try {
       setLoading(true);
       
-      // Ensure rate_loyl is sent as a proper decimal by parsing it as float
+      // Calculate rate_loyl from points_per_spend (assuming 1:1 ratio for now)
       const businessData: BusinessCreate = {
-        ...formData,
-        rate_loyl: parseFloat(formData.rate_loyl.toString()), // Force decimal conversion
+        name: formData.name,
+        slug: generateSlugFromName(formData.name),
+        logo_url: formData.logo_url || null,
         owner_email: userEmail,
-        logo_url: null, // Can be added later
+        description: formData.description,
+        country: formData.country,
+        city: formData.city,
+        address: formData.address,
+        zip_code: formData.zip_code,
+        rate_loyl: formData.points_per_spend, // Using points_per_spend as rate_loyl
       };
 
       console.log('🚀 [ONBOARDING] Creating business profile:', businessData);
-      console.log('🔍 [ONBOARDING] rate_loyl type:', typeof businessData.rate_loyl, 'value:', businessData.rate_loyl);
-      console.log('🔍 [ONBOARDING] rate_loyl as string:', businessData.rate_loyl.toString());
       
       await createBusinessProfile(businessData);
       
@@ -201,14 +196,12 @@ export default function BusinessOnboardingScreen() {
     } catch (error: any) {
       console.error('❌ [ONBOARDING] Failed to create business profile:', error);
       
-      // Handle specific error cases
       if (error?.status === 400 || error?.message?.includes('duplicate') || error?.message?.includes('already exists')) {
         Alert.alert(
           'Business Name Already Exists',
           'A business with this name already exists. Please choose a different name.',
           [{ text: 'OK' }]
         );
-        // Go back to step 1 to change the name
         setCurrentStep(1);
       } else {
         Alert.alert(
@@ -220,6 +213,15 @@ export default function BusinessOnboardingScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateSlugFromName = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
   };
 
   const renderProgressBar = () => (
@@ -252,7 +254,7 @@ export default function BusinessOnboardingScreen() {
         <TextInput
           style={[styles.input, errors.name ? styles.inputError : null]}
           value={formData.name}
-          onChangeText={handleNameChange}
+          onChangeText={(value) => handleInputChange('name', value)}
           placeholder="Enter your business name"
           autoCapitalize="words"
         />
@@ -260,19 +262,20 @@ export default function BusinessOnboardingScreen() {
       </View>
 
       <View style={styles.formGroup}>
-        <ThemedText style={styles.label}>Business Slug *</ThemedText>
+        <ThemedText style={styles.label}>Logo URL (Optional)</ThemedText>
         <TextInput
-          style={[styles.input, errors.slug ? styles.inputError : null]}
-          value={formData.slug}
-          onChangeText={(value) => handleInputChange('slug', value)}
-          placeholder="business-slug"
+          style={[styles.input, errors.logo_url ? styles.inputError : null]}
+          value={formData.logo_url}
+          onChangeText={(value) => handleInputChange('logo_url', value)}
+          placeholder="https://example.com/logo.png"
           autoCapitalize="none"
           autoCorrect={false}
+          keyboardType="url"
         />
         <ThemedText style={styles.helperText}>
-          This will be used in your business URL. Only lowercase letters, numbers, and hyphens allowed.
+          Enter a URL to your business logo image (optional)
         </ThemedText>
-        {errors.slug && <ThemedText style={styles.errorText}>{errors.slug}</ThemedText>}
+        {errors.logo_url && <ThemedText style={styles.errorText}>{errors.logo_url}</ThemedText>}
       </View>
 
       <View style={styles.formGroup}>
@@ -354,30 +357,51 @@ export default function BusinessOnboardingScreen() {
       </ThemedText>
 
       <View style={styles.formGroup}>
-        <ThemedText style={styles.label}>Loyalty Rate *</ThemedText>
+        <ThemedText style={styles.label}>Average Customer Spend *</ThemedText>
         <TextInput
-          style={[styles.input, errors.rate_loyl ? styles.inputError : null]}
-          value={formData.rate_loyl.toString()}
+          style={[styles.input, errors.average_spend ? styles.inputError : null]}
+          value={formData.average_spend.toString()}
           onChangeText={(value) => {
-            // Handle empty string case
             if (value === '' || value === '.') {
-              handleInputChange('rate_loyl', 0.0);
+              handleInputChange('average_spend', 0);
               return;
             }
-            
-            // Parse the value and ensure it's a decimal
             const numValue = parseFloat(value);
             if (!isNaN(numValue)) {
-              handleInputChange('rate_loyl', numValue);
+              handleInputChange('average_spend', numValue);
+            }
+          }}
+          placeholder="25.00"
+          keyboardType="decimal-pad"
+        />
+        <ThemedText style={styles.helperText}>
+          Average amount a customer spends per visit (in your local currency)
+        </ThemedText>
+        {errors.average_spend && <ThemedText style={styles.errorText}>{errors.average_spend}</ThemedText>}
+      </View>
+
+      <View style={styles.formGroup}>
+        <ThemedText style={styles.label}>Points per Spend *</ThemedText>
+        <TextInput
+          style={[styles.input, errors.points_per_spend ? styles.inputError : null]}
+          value={formData.points_per_spend.toString()}
+          onChangeText={(value) => {
+            if (value === '' || value === '.') {
+              handleInputChange('points_per_spend', 0);
+              return;
+            }
+            const numValue = parseFloat(value);
+            if (!isNaN(numValue)) {
+              handleInputChange('points_per_spend', numValue);
             }
           }}
           placeholder="1.0"
           keyboardType="decimal-pad"
         />
         <ThemedText style={styles.helperText}>
-          Points earned per dollar spent (e.g., 1.0 = 1 point per $1)
+          Points earned per unit of currency spent (e.g., 1.0 = 1 point per $1)
         </ThemedText>
-        {errors.rate_loyl && <ThemedText style={styles.errorText}>{errors.rate_loyl}</ThemedText>}
+        {errors.points_per_spend && <ThemedText style={styles.errorText}>{errors.points_per_spend}</ThemedText>}
       </View>
 
       <View style={styles.summaryContainer}>
@@ -397,8 +421,12 @@ export default function BusinessOnboardingScreen() {
           <ThemedText style={styles.summaryValue}>{getUserEmail()}</ThemedText>
         </View>
         <View style={styles.summaryItem}>
-          <ThemedText style={styles.summaryLabel}>Loyalty Rate:</ThemedText>
-          <ThemedText style={styles.summaryValue}>{formData.rate_loyl.toFixed(1)} points/$</ThemedText>
+          <ThemedText style={styles.summaryLabel}>Average Spend:</ThemedText>
+          <ThemedText style={styles.summaryValue}>${formData.average_spend.toFixed(2)}</ThemedText>
+        </View>
+        <View style={styles.summaryItem}>
+          <ThemedText style={styles.summaryLabel}>Points Rate:</ThemedText>
+          <ThemedText style={styles.summaryValue}>{formData.points_per_spend.toFixed(1)} points/unit</ThemedText>
         </View>
       </View>
     </ThemedView>
