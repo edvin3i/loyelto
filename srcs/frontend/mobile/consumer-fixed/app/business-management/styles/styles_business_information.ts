@@ -169,20 +169,23 @@ const styles_business_information = StyleSheet.create({
     marginTop: 8,
   },
   progressContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 16,
     paddingHorizontal: 20,
   },
   progressBar: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+    flex: 1,
+    height: 4,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 2,
+    overflow: 'hidden',
   },
   progressStep: {
-    width: 60,
-    height: 4,
-    borderRadius: 2,
-    marginHorizontal: 4,
+    height: '100%',
+    flex: 1,
+    marginHorizontal: 2,
   },
   progressStepActive: {
     backgroundColor: '#4CAF50',
@@ -191,6 +194,7 @@ const styles_business_information = StyleSheet.create({
     backgroundColor: '#E0E0E0',
   },
   progressText: {
+    marginLeft: 12,
     fontSize: 14,
     color: '#666',
   },
@@ -262,28 +266,25 @@ const styles_business_information = StyleSheet.create({
     marginTop: 16,
   },
   summaryTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginBottom: 16,
     color: '#333',
   },
   summaryItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 4,
+    marginBottom: 8,
   },
   summaryLabel: {
     fontSize: 14,
     color: '#666',
-    flex: 1,
   },
   summaryValue: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#333',
-    fontWeight: '500',
-    flex: 2,
-    textAlign: 'right',
   },
 });
 
