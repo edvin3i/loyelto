@@ -50,9 +50,6 @@ class BusinessAdmin(BaseAdminView, model=Business):
     column_sortable_list = [Business.created_at, Business.rate_loyl]
     column_default_sort = [(Business.created_at, True)]
 
-    # hide the private key
-    # column_exclude_list = [Business.owner_privkey]
-    form_excluded_columns = [Business.owner_privkey]
 
 
 class TokenAdmin(BaseAdminView, model=Token):
