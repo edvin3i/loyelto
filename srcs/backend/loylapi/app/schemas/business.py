@@ -10,8 +10,8 @@ from app.schemas.types import (
     ZipCodeStr,
     RateDecimals,
     RatingInt,
-    OwnerPrivKey,
-    PubkeyStr,
+    # OwnerPrivKey,
+    # PubkeyStr,
 )
 
 
@@ -49,7 +49,7 @@ class BusinessOut(BaseDBSchema):
     slug: SlugStr
     logo_url: AnyUrl | None
     owner_email: EmailStr
-    owner_pubkey: PubkeyStr
+    # owner_pubkey: PubkeyStr
     # owner_privkey: OwnerPrivKey
     description: TextAreaStr
     rating: RatingInt
